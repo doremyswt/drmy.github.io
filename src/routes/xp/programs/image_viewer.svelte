@@ -1,6 +1,6 @@
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
-    import {onMount, tick } from 'svelte';
+    import {onMount, tick, unmount } from 'svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive, queueProgram } from '../../../lib/store'
     import {get,set} from 'idb-keyval';
     
@@ -37,7 +37,7 @@
 
     export async function destroy(){
         runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        unmount(self);
     }
 
     export let options = {

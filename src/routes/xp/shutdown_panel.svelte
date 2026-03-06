@@ -1,3 +1,4 @@
+import { unmount } from 'svelte';
 <script>
     import Button from "../../lib/components/xp/Button.svelte";
     import {queueCommand} from '../../lib/store';
@@ -5,7 +6,7 @@
     export let self;
 
     export function destroy(){
-        self.$destroy();
+        unmount(self);
     }
 
 </script>

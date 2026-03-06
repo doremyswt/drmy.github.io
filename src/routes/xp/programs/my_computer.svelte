@@ -1,6 +1,6 @@
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
-    import {onMount } from 'svelte';
+    import {onMount, unmount } from 'svelte';
     import { runningPrograms, zIndex, hardDrive, selectingItems, queueProgram } from '../../../lib/store'
     import {recycle_bin_id, icons} from '../../../lib/system';
     import Menu from '../../../lib/components/xp/Menu.svelte';
@@ -200,7 +200,7 @@
    
     export function destroy(){
         runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        unmount(self);
     }
 
     export let options = {

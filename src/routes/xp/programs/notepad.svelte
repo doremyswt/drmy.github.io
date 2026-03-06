@@ -1,3 +1,4 @@
+import { unmount } from 'svelte';
 <svelte:options accessors={true} />
 
 <script>
@@ -184,7 +185,7 @@
 
     function close_program() {
         runningPrograms.update((programs) => programs.filter((p) => p != self));
-        self.$destroy();
+        unmount(self);
     }
 
     async function pick_file({ filetypes_desc, filetypes }) {

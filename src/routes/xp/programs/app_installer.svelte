@@ -1,3 +1,4 @@
+import { unmount } from 'svelte';
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
     import Button from '../../../lib/components/xp/Button.svelte';
@@ -22,7 +23,7 @@
 
     export async function destroy(){
         runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        unmount(self);
     }
 
     export let options = {

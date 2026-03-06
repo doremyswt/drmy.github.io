@@ -1,3 +1,4 @@
+import { unmount } from 'svelte';
 <script>
     import Window from './Window.svelte';
     import { hardDrive, selectingItems} from '../../store';
@@ -45,7 +46,7 @@
 
     export function destroy(){
         console.log(self);
-        self.$destroy();
+        unmount(self);
     }
 
     export let on_save = () => {}

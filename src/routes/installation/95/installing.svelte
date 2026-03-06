@@ -1,7 +1,7 @@
 <script>
 
   import * as utils from '../../../lib/utils';
-  import { onMount, createEventDispatcher, onDestroy } from 'svelte';
+  import { onMount, createEventDispatcher, onDestroy, unmount } from 'svelte';
   import RadioBtn from '../../../lib/components/xp/RadioBtn.svelte';
   
   let dispatcher = createEventDispatcher();
@@ -85,7 +85,7 @@
           //show product key windows at the end of phase 0
           const ProductKeyWindows = (await import('./product_key_windows.svelte')).default;
           let product_key_windows = new ProductKeyWindows({target:document.querySelector('#_95-installing-right-side')});
-          product_key_windows.on_click_next = () => { paused = false; product_key_windows.$destroy()}
+          product_key_windows.on_click_next = () => { paused = false; unmount(product_key_windows)}
           paused = true;
         }
         phase_index++;

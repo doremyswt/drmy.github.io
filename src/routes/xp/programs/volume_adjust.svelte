@@ -1,3 +1,4 @@
+import { unmount } from 'svelte';
 <script>
     import { systemVolume} from '../../../lib/store';
     import RangeSlider from "svelte-range-slider-pips";
@@ -10,7 +11,7 @@
     let width = 80;
 
     function destroy(){
-        self.$destroy();
+        unmount(self);
     }
 
     function update_system_volume(e){

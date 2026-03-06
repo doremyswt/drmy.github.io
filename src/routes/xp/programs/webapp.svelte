@@ -6,7 +6,7 @@
     import short from 'short-uuid';
     import * as finder from '../../../lib/finder'
     import DumbProgress from '../../../lib/components/xp/DumbProgress.svelte';
-    import {onMount} from 'svelte';
+    import {onMount, unmount} from 'svelte';
     
 
     export let id;
@@ -27,7 +27,7 @@
 
     export async function destroy(){
         runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        unmount(self);
     }
 
     let ws_size = {width: document.querySelector('#work-space').offsetWidth, height: document.querySelector('#work-space').offsetHeight};

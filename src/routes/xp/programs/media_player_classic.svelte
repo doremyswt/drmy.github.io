@@ -1,7 +1,7 @@
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
     import RangeSlider from "svelte-range-slider-pips";
-    import {onMount, tick } from 'svelte';
+    import {onMount, tick, unmount } from 'svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive } from '../../../lib/store'
     import * as utils from '../../../lib/utils';
     import * as fs from '../../../lib/fs';
@@ -89,7 +89,7 @@
 
     export function destroy(){
         runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        unmount(self);
         clearTimeout(idle_timer);
     }
 

@@ -1,7 +1,7 @@
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
     import Button from '../../../lib/components/xp/Button.svelte';
-    import {onMount, tick } from 'svelte';
+    import {onMount, tick, unmount } from 'svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive, queueProgram } from '../../../lib/store'
     import * as utils from '../../../lib/utils';
     import * as fs from '../../../lib/fs';
@@ -58,7 +58,7 @@
     export async function destroy(){
         cancelled = true;
         runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        unmount(self);
     }
 
     async function decrypt(){

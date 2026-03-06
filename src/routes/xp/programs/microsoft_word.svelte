@@ -1,3 +1,4 @@
+import { unmount } from 'svelte';
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive, queueProgram } from '../../../lib/store'
@@ -65,7 +66,7 @@
 
     function close_program(){
         runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        unmount(self);
     }
 
     let ws_size = {width: document.querySelector('#work-space').offsetWidth, height: document.querySelector('#work-space').offsetHeight};

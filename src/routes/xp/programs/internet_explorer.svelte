@@ -1,7 +1,7 @@
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
     import Button from '../../../lib/components/xp/Button.svelte';
-    import {onMount } from 'svelte';
+    import {onMount, unmount } from 'svelte';
     import { runningPrograms, zIndex } from '../../../lib/store'
     import Menu from '../../../lib/components/xp/Menu.svelte';
     import RButton from '../../../lib/components/xp/RButton.svelte';
@@ -87,7 +87,7 @@
 
     export function destroy(){
         runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        unmount(self);
     }
 
     let ws_size = {width: document.querySelector('#work-space').offsetWidth, height: document.querySelector('#work-space').offsetHeight};

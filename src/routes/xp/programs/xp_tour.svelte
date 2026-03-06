@@ -1,6 +1,6 @@
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
-    import {onMount } from 'svelte';
+    import {onMount, unmount } from 'svelte';
     import { runningPrograms } from '../../../lib/store'
 
     export let id;
@@ -25,7 +25,7 @@
 
     export function destroy(){
         runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        unmount(self);
     }
 
     export let options = {

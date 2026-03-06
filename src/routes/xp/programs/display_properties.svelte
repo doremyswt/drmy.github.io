@@ -2,7 +2,7 @@
     import Window from '../../../lib/components/xp/Window.svelte';
     import Button from '../../../lib/components/xp/Button.svelte';
     import Tab from '../../../lib/components/xp/Tab.svelte';
-    import {onMount } from 'svelte';
+    import {onMount, unmount } from 'svelte';
     import { runningPrograms, wallpaper, hardDrive } from '../../../lib/store';
     import {get, set} from 'idb-keyval';
     import _, { isEqual } from 'lodash';
@@ -24,7 +24,7 @@
 
     export function destroy(){
         runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        unmount(self);
     }
 
     function apply(){

@@ -1,5 +1,5 @@
 <script>
-    import {onMount, createEventDispatcher} from 'svelte';
+    import {onMount, createEventDispatcher, unmount} from 'svelte';
     import * as utils from '../../lib/utils';
 
     export let self;
@@ -32,7 +32,7 @@
 
     export function destroy(){
         destroyed = true;
-        self.$destroy();
+        unmount(self);
     }
     
 </script>

@@ -3,7 +3,7 @@
     import Button from '../../../lib/components/xp/Button.svelte';
     import Tab from '../../../lib/components/xp/Tab.svelte';
     import CheckBox from '../../../lib/components/xp/CheckBox.svelte';
-    import {onMount } from 'svelte';
+    import {onMount, unmount } from 'svelte';
     import { runningPrograms, hardDrive } from '../../../lib/store';
     import {icons} from '../../../lib/system';
     import * as utils from '../../../lib/utils';
@@ -47,7 +47,7 @@
 
     export function destroy(){
         runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        unmount(self);
     }
 
 

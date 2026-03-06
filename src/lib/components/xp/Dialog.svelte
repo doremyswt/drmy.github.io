@@ -1,3 +1,4 @@
+import { unmount } from 'svelte';
 <script>
     import * as utils from '../../utils';
 
@@ -16,7 +17,7 @@
 
     export function destroy(){
         console.log(self);
-        self.$destroy();
+        unmount(self);
     }
 
 
