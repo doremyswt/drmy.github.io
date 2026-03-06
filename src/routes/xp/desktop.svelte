@@ -52,7 +52,7 @@
         }),
     ];
 
-    let welcome_scene;
+    let show_welcome = true;
 
     onMount(async () => {
         //load other pure js lib
@@ -62,9 +62,6 @@
             "https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js",
             "https://unpkg.com/@ruffle-rs/ruffle"
         ]);
-
-        welcome_scene.self = welcome_scene;
-
     });
 
     onDestroy(() => {
@@ -85,4 +82,4 @@
     <ContextMenu />
 </div>
 
-<Welcome bind:this={welcome_scene} />
+{#if show_welcome}<Welcome on:done={() => show_welcome = false} />{/if}
