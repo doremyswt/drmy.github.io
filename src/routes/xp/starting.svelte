@@ -33,13 +33,13 @@
             assets_loaded = true;
         });
 
-        let wait_count = 0;
-        do {
-            await utils.sleep(5000);
-
-            wait_count++;
-            if(wait_count >= 2) break;
-        } while (!assets_loaded);
+        // wait at least 3s (aesthetic), then up to 7s more for assets
+        await utils.sleep(3000);
+        let waited = 3000;
+        while (!assets_loaded && waited < 10000) {
+            await utils.sleep(500);
+            waited += 500;
+        }
         
         preload_iframes();
         preload_context_menus();
@@ -127,6 +127,7 @@
         for(let type of types){
             contextMenu.set({x: -1000, y: -1000, type, originator: {}});
         }
+        contextMenu.set(null);
     }
 
 </script>

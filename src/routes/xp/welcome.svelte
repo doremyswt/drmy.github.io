@@ -15,10 +15,15 @@
     onMount(() => {
         let welcome_audio = new Audio("/audio/xp_startup.mp3");
         welcome_audio.addEventListener("canplaythrough", () => {
-            welcome_audio.play().catch(() => {});
+            welcome_audio.play().catch(() => done()); // autoplay blocked → skip immediately
         });
         welcome_audio.addEventListener("ended", () => done());
+        welcome_audio.addEventListener("error", () => done());
         fallback_timer = setTimeout(() => done(), 7000);
+        return () => {
+            welcome_audio.pause();
+            welcome_audio.src = '';
+        };
     })
 
 </script>

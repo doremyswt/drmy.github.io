@@ -191,10 +191,8 @@
 		<script>
 			function load_assets(assets, completion){
 				Promise
-				.all(assets.map(asset=>fetch(asset)))
-				.then(responses =>
-					Promise.all(responses.map(res => res.blob()))
-				).then(completion);
+				.allSettled(assets.map(asset => fetch(asset).then(res => res.blob()).catch(() => null)))
+				.then(completion);
 			}
 
 			load_assets([
