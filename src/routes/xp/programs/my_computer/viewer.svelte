@@ -260,17 +260,18 @@
 
         if(!read_transfer_guide && id != null){
             const Dialog = (await import('../../../../lib/components/xp/Dialog.svelte')).default;
+            let dialog;
             let buttons = [{name: 'OK', action: () => dialog.destroy(), focus: true}]
-            let dialog = mount(Dialog, {
+            dialog = mount(Dialog, {
                 target: my_computer_instance.window.node_ref,
                 props:{
                     title: 'File Transfer',
                     message: 'Drag & drop files from your computer to the blank space in a folder to transfer them into Windows XP',
                     buttons,
-                    button_align: 'center'
+                    button_align: 'center',
+                    get_self: () => dialog,
                 }
-            })
-            dialog.self = dialog;
+            });
             set('my_computer::read_transfer_guide', true);
         }
     }
