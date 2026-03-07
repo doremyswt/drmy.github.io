@@ -1,24 +1,25 @@
 <script>
     import ProgressBar from "./ProgressBar.svelte";
     import * as utils from '../../utils';
-    import {onMount} from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
 
     export let style = '';
     export let increment = 5;
 
-    let progress_bar;
+    let value = 10;
+    let running = true;
+
     onMount(async () => {
-        while(progress_bar != null){
-            progress_bar.value = Math.min(progress_bar.value + increment, 100);
-            if(progress_bar.value >= 100){
-                progress_bar.value = 0;
-            }
+        while(running){
+            value = value + increment;
+            if(value >= 100) value = 0;
             await utils.sleep(500);
         }
     })
 
+    onDestroy(() => { running = false; })
 </script>
 
 <div style="{style}">
-    <ProgressBar bind:this={progress_bar} value={10} style="width:100%;height:100%;"></ProgressBar>
+    <ProgressBar {value} style="width:100%;height:100%;"></ProgressBar>
 </div>
