@@ -140,17 +140,17 @@
                 style:background-image="{file_icon($hardDrive[id])}">
             </div>
         </div>
-        <button class="mx-1.5 ml-4 w-4 h-4 bg-[url(/images/xp/icons/Back.png)] bg-contain disabled:grayscale"
+        <button class="mx-1.5 ml-4 w-4 h-4 bg-[url(/images/xp/icons/Back.png)] bg-contain bg-no-repeat disabled:grayscale"
             disabled={page_index == 0}
             on:click={back}>
         </button>
 
-        <button class="mx-1.5 w-4 h-4 bg-[url(/images/xp/icons/Forward.png)] bg-contain disabled:grayscale"
+        <button class="mx-1.5 w-4 h-4 bg-[url(/images/xp/icons/Forward.png)] bg-contain bg-no-repeat disabled:grayscale"
             disabled={page_index == history.length-1}
             on:click={next}>
         </button>
 
-        <button class="mx-1.5 w-5 h-5 bg-[url(/images/xp/icons/Up.png)] bg-contain disabled:grayscale"
+        <button class="mx-1.5 w-5 h-5 bg-[url(/images/xp/icons/Up.png)] bg-contain bg-no-repeat disabled:grayscale"
             disabled={history[page_index] == null}
             on:click={up}>
         </button>
@@ -191,7 +191,7 @@
             <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS"
                 on:dblclick={() => open(item.id)}
                 use:double_tap on:double_tap={() => open(item.id)}>
-                <div class="w-[40px] h-[40px] shrink-0 bg-[url(/images/xp/icons/FolderClosed.png)] bg-contain"
+                <div class="w-[40px] h-[40px] shrink-0 bg-[url(/images/xp/icons/FolderClosed.png)] bg-contain bg-no-repeat bg-center"
                     style:background-image="{item.icon == null ? '' : `url(${item.icon})`}">
                 </div>
                 <div class="px-1 text-[11px] line-clamp-2 text-ellipsis leading-tight">
@@ -206,7 +206,7 @@
             <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS"
                 on:dblclick={() => open(item.id)}
                 use:double_tap on:double_tap={() => open(item.id)}>
-                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/LocalDisk.png)] bg-contain">
+                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/LocalDisk.png)] bg-contain bg-no-repeat bg-center">
                 </div>
                 <div class="px-1 text-[11px] line-clamp-2 text-ellipsis leading-tight">
                     {item.display_name != null ? item.display_name : item.name}
@@ -220,7 +220,7 @@
             <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS"
                 on:dblclick={() => open(item.id)}
                 use:double_tap on:double_tap={() => open(item.id)}>
-                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/RemovableMedia.png)] bg-contain">
+                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/RemovableMedia.png)] bg-contain bg-no-repeat bg-center">
                 </div>
                 <div class="px-1 text-[11px] line-clamp-2 text-ellipsis leading-tight">
                     {item.display_name != null ? item.display_name : item.name}

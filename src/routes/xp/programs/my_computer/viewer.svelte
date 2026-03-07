@@ -338,7 +338,7 @@
                 on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
                 use:double_tap on:double_tap={() => open(item.id)}
                 use:long_press on:long_press={(e) => on_rightclick({x: e.detail.x, y: e.detail.y}, item)}>
-                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/FolderClosed.png)] bg-contain"
+                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/FolderClosed.png)] bg-contain bg-no-repeat bg-center"
                     style:background-image="{item.icon == null ? '' : `url(${item.icon})`}">
                 </div>
                 <div class="px-1 text-[11px] line-clamp-2 text-ellipsis leading-tight">
@@ -354,7 +354,7 @@
                 on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
                 use:double_tap on:double_tap={() => open(item.id)}
                 use:long_press on:long_press={(e) => on_rightclick({x: e.detail.x, y: e.detail.y}, item)}>
-                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/LocalDisk.png)] bg-contain">
+                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/LocalDisk.png)] bg-contain bg-no-repeat bg-center">
                 </div>
                 <div class="px-1 text-[11px] line-clamp-2 text-ellipsis leading-tight">
                     {item.display_name != null ? item.display_name : item.name}
@@ -369,7 +369,7 @@
                 on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
                 use:double_tap on:double_tap={() => open(item.id)}
                 use:long_press on:long_press={(e) => on_rightclick({x: e.detail.x, y: e.detail.y}, item)}>
-                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/RemovableMedia.png)] bg-contain">
+                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/RemovableMedia.png)] bg-contain bg-no-repeat bg-center">
                 </div>
                 <div class="px-1 text-[11px] line-clamp-2 text-ellipsis leading-tight">
                     {item.display_name != null ? item.display_name : item.name}
