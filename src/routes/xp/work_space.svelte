@@ -273,7 +273,7 @@
     }
 
     async function get_url(item){
-        if(item == null) return 'https://app.usepanda.com/#/';
+        if(item == null) return 'https://wiby.me/';
 
         if(item.storage_type == 'local'){
             return finder.to_url(item.id);
