@@ -1,7 +1,7 @@
 <svelte:options accessors={true} />
 
 <script>
-    import { unmount } from 'svelte';
+    import { unmount, mount } from 'svelte';
     import Window from "../../../lib/components/xp/Window.svelte";
     import {
         runningPrograms,
@@ -324,7 +324,7 @@
                 },
             },
         ];
-        let dialog = new Dialog({
+        let dialog = mount(Dialog, {
             target: node_ref,
             props: {
                 icon,

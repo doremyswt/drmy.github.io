@@ -1,5 +1,5 @@
 <script>
-    import { unmount } from 'svelte';
+    import { unmount, mount } from 'svelte';
     import Window from '../../../lib/components/xp/Window.svelte';
     import Button from '../../../lib/components/xp/Button.svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive } from '../../../lib/store'
@@ -73,7 +73,7 @@
                 action: () => console.log('Cancel')
             }
         ]
-        let dialog = new Dialog({
+        let dialog = mount(Dialog, {
             target: window.node_ref,
             props:{
                 icon: '/images/xp/icons/RecycleBinempty.png',

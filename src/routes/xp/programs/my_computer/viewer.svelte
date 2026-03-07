@@ -58,7 +58,7 @@
         }
     }
 
-    $: is_focus = $zIndex == my_computer_instance?.window.z_index;
+    $: is_focus = $zIndex == my_computer_instance?.window?.z_index;
     let computer = my_computer.map(el => $hardDrive[el]);
 
     let node_ref;
@@ -260,7 +260,7 @@
         if(!read_transfer_guide && id != null){
             const Dialog = (await import('../../../../lib/components/xp/Dialog.svelte')).default;
             let buttons = [{name: 'OK', action: () => dialog.destroy(), focus: true}]
-            let dialog = new Dialog({
+            let dialog = mount(Dialog, {
                 target: my_computer_instance.window.node_ref,
                 props:{
                     title: 'File Transfer',
