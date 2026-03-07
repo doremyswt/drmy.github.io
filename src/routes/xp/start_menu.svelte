@@ -440,10 +440,11 @@
 
     async function show_shutdown_panel(){
         const ShutDownPanel = (await import('./shutdown_panel.svelte')).default;
-        let panel = mount(ShutDownPanel, {
-            target: document.querySelector('#desktop')
+        let panel;
+        panel = mount(ShutDownPanel, {
+            target: document.querySelector('#desktop'),
+            props: { get_self: () => panel }
         });
-        panel.self = panel;
         hide();
     }
 
