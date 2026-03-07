@@ -1,4 +1,5 @@
 <script>
+    import { mount } from 'svelte';
     import {hardDrive, queueProgram } from '../../lib/store';
     import { my_pictures_id, my_music_id } from '../../lib/system';
     import * as utils from '../../lib/utils';
@@ -439,7 +440,7 @@
 
     async function show_shutdown_panel(){
         const ShutDownPanel = (await import('./shutdown_panel.svelte')).default;
-        let panel = new ShutDownPanel({
+        let panel = mount(ShutDownPanel, {
             target: document.querySelector('#desktop')
         });
         panel.self = panel;
