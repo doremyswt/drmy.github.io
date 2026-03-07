@@ -43,11 +43,20 @@
             }
         }
 
-        if(options.top == null){
-            options.top = (node_ref.parentNode.offsetHeight - node_ref.offsetHeight)/2;
-        }
-        if(options.left == null){
-            options.left = (node_ref.parentNode.offsetWidth - node_ref.offsetWidth)/2;
+        if(options.top == null && options.left == null && window.innerWidth < 640){
+            // mobile: open maximized when no saved position
+            options.top = 0;
+            options.left = 0;
+            options.width = node_ref.parentNode.offsetWidth;
+            options.height = node_ref.parentNode.offsetHeight;
+            maximized = true;
+        } else {
+            if(options.top == null){
+                options.top = (node_ref.parentNode.offsetHeight - node_ref.offsetHeight)/2;
+            }
+            if(options.left == null){
+                options.left = (node_ref.parentNode.offsetWidth - node_ref.offsetWidth)/2;
+            }
         }
         set_position({top: options.top, left: options.left, width: options.width, height: options.height});
         

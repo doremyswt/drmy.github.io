@@ -71,7 +71,7 @@
 </script>
 
 <div class="w-screen h-screen bg-black overflow-hidden font-MSSS">
-    <div class="mt-12 ml-8 text-lg">
+    <div class="mt-6 ml-4 sm:mt-12 sm:ml-8 text-base sm:text-lg">
         <p class="text-slate-100">Use the ↑(Up) and ↓(Down) key to move the pointer to desired boot device.</p>
         <p class="text-slate-100">Press (Enter) to attempt to boot or ESC to cancel. On touch devices, tap an option to select it.</p>
         {#if !is_chromium}
