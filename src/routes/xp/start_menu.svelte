@@ -463,9 +463,8 @@
 
 </script>
 
-<div id="start-menu" class="absolute left-0 h-[500px] w-[390px] max-w-full z-20 flex flex-col shadow-lg rounded-t-md hidden"
-    style:bottom="calc(30px + env(safe-area-inset-bottom))"
-    style:background-color="rgb(66, 130, 214)"
+<div id="start-menu" class="absolute left-0 w-[390px] max-w-full z-20 flex flex-col shadow-lg rounded-t-md hidden"
+    style="bottom: 100%; background-color: rgb(66, 130, 214);"
     use:click_outside on:click_outside={hide}>
     <div class="h-[3px] absolute top-0 left-[3px] right-[3px]" style="background: linear-gradient(to right, transparent 0px, rgba(255, 255, 255, 0.3) 1%, rgba(255, 255, 255, 0.5) 2%, rgba(255, 255, 255, 0.5) 95%, rgba(255, 255, 255, 0.3) 98%, rgba(255, 255, 255, 0.2) 99%, transparent 100%);
     box-shadow: rgb(14 96 203) 0px -1px 1px inset;"></div>
@@ -477,7 +476,7 @@
     <div class="shrink-0 h-[2px] w-full" style:background-image="linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgb(218, 136, 74) 50%, rgba(0, 0, 0, 0) 100%)">
     </div>
 
-    <div class="grow bg-slate-50 mx-0.5 relative flex flex-row">
+    <div class="bg-slate-50 mx-0.5 relative flex flex-row">
 
         <!-- ── Mobile: All Programs full-panel accordion overlay ── -->
         {#if programs_open}
@@ -557,12 +556,12 @@
         {/if}
 
         <!-- ── Left column ── -->
-        <div class="grow w-1/2 flex flex-col h-full shrink-0 px-1">
+        <div class="w-1/2 flex flex-col shrink-0 px-1">
             {#each col_1 as item}
                 {#if item == null}
                     <div class="my-0.5 mx-auto w-5/6 h-[2px] bg-slate-200 shrink-0"></div>
                 {:else}
-                    <div class="flex flex-row items-center grow p-1 group/c1 hover:bg-blue-500"
+                    <div class="flex flex-row items-center shrink-0 p-1 group/c1 hover:bg-blue-500"
                         on:mouseenter={() => { ap_open = false; open_l2 = null; open_l3 = null; }}
                         on:click={() => launch(item)}>
                         <div class="w-8 h-8 bg-contain mr-1" style:background-image="url({item.icon})"></div>
@@ -573,7 +572,7 @@
             <div class="my-0.5 mx-auto w-5/6 h-[2px] bg-slate-200 shrink-0"></div>
             <!-- All Programs button + desktop hover flyout -->
             <!-- All Programs button + desktop JS-state flyout -->
-            <div class="relative grow">
+            <div class="relative shrink-0">
                 <div class="flex pl-9 py-2 items-center flex-row cursor-pointer hover:bg-blue-500 group/ap-btn"
                     class:bg-blue-500={ap_open}
                     on:mouseenter={() => ap_open = true}
@@ -661,12 +660,12 @@
         </div>
 
         <!-- ── Right column ── -->
-        <div class="grow w-1/2 flex flex-col h-full bg-blue-200 shrink-0 px-1">
+        <div class="w-1/2 flex flex-col shrink-0 px-1 bg-blue-200">
             {#each col_2 as item}
                 {#if item == null}
                     <div class="my-0.5 mx-auto w-5/6 h-[1px] bg-blue-100 shrink-0"></div>
                 {:else}
-                    <div class="flex flex-row items-center grow p-1 group/c2 hover:bg-blue-500" on:click={() => launch(item)}>
+                    <div class="flex flex-row items-center shrink-0 p-1 group/c2 hover:bg-blue-500" on:click={() => launch(item)}>
                         <div class="w-7 h-7 bg-contain mr-1" style:background-image="url({item.icon})"></div>
                         <div class="text-[11px] group-hover/c2:text-white text-slate-800 {item.font == 'bold' ? 'font-bold' : ''}">{item.name}</div>
                     </div>

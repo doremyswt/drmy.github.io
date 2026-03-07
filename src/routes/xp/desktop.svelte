@@ -11,7 +11,6 @@
         wallpaper,
         queueCommand,
     } from "../../lib/store";
-    import StartMenu from "./start_menu.svelte";
     import Welcome from "./welcome.svelte";
     import * as utils from "../../lib/utils";
     let dispatcher = createEventDispatcher();
@@ -78,7 +77,6 @@
     </div>
 
     <TaskBar />
-    <StartMenu />
     <ContextMenu />
 </div>
 
