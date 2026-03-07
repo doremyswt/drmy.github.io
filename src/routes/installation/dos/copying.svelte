@@ -35,6 +35,7 @@
         while(true){
             if(destroyed) break;
             await utils.sleep(utils.random_int(1,30)*10);
+            if(destroyed || !status_bar) break;
             status_bar.r_message = 'Copying: ' + utils.random_files();
         }
     }
