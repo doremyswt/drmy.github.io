@@ -6,7 +6,7 @@
     import { doctypes, icons, my_computer, hidden_items, recycle_bin_id, previewable_exts } from '../../../../lib/system';
     import * as fs from '../../../../lib/fs';
     const {click_outside} = utils;
-    import { createEventDispatcher, onMount, tick } from 'svelte';
+    import { createEventDispatcher, onMount, tick, mount, unmount } from 'svelte';
     import short from 'short-uuid';
     import {get, set} from 'idb-keyval';
     import { filter, map } from 'lodash';
