@@ -25,6 +25,7 @@
         .filter(el => el != null);
 
     let is_focus = true;
+    let item_long_pressed = false;
     let node_ref;
     let cell_size = 80;
 
@@ -233,7 +234,7 @@
         is_focus = false;
     }}
     on:contextmenu|self={show_void_menu}
-    use:long_press on:long_press|self={(e) => show_void_menu({x: e.detail.x, y: e.detail.y})}
+    use:long_press on:long_press|self={(e) => { if (!item_long_pressed) show_void_menu({x: e.detail.x, y: e.detail.y}); }}
     bind:this={node_ref}>
 
     <div class="top-0 left-0 bottom-0 absolute flex flex-col flex-wrap" 
@@ -242,7 +243,8 @@
 
             <div fs-id="{item.id}" class="relative fs-item w-[150px] flex-shrink-0 flex-grow-0 overflow-hidden m-2 inline-flex flex-col items-center font-MSSS"
                 on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
-                use:long_press on:long_press={(e) => on_rightclick({x: e.detail.x, y: e.detail.y}, item)}
+                on:click={(e) => { let el = e.currentTarget; e.ctrlKey || e.metaKey ? ds.addSelection([el], true) : ds.setSelection([el], true); }}
+                use:long_press on:long_press={(e) => { item_long_pressed = true; setTimeout(() => item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}
                 use:double_tap on:double_tap={() => open(item.id)}
                 style:transform="{item.desktop_css_transform}"
                 style:width="{cell_size}px"
