@@ -73,7 +73,7 @@
 </script>
 
 <div id="desktop" class="absolute inset-0 p-0">
-    <div class="absolute z-0 left-0 right-0 top-0 overflow-hidden" style="bottom: calc(30px + env(safe-area-inset-bottom))"
+    <div class="absolute z-0 left-0 right-0 top-0 overflow-hidden" style="bottom: calc(30px + env(safe-area-inset-bottom))">
         <WorkSpace />
     </div>
 
