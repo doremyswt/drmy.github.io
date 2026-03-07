@@ -1,5 +1,5 @@
-import { unmount } from 'svelte';
 <script>
+    import { unmount } from 'svelte';
     import * as utils from '../../utils';
 
     import _, { find, isEqual } from 'lodash';

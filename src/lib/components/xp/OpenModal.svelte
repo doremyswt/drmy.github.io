@@ -1,5 +1,5 @@
-import { unmount } from 'svelte';
 <script>
+    import { unmount } from 'svelte';
     import Window from './Window.svelte';
     import { hardDrive, selectingItems} from '../../store';
     import {my_pictures_id, my_music_id, desktop_folder} from '../../system';

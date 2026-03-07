@@ -1,7 +1,7 @@
-import { unmount } from 'svelte';
 <svelte:options accessors={true} />
 
 <script>
+    import { unmount } from 'svelte';
     import Window from "../../../lib/components/xp/Window.svelte";
     import {
         runningPrograms,

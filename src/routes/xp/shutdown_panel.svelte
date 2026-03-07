@@ -1,5 +1,5 @@
-import { unmount } from 'svelte';
 <script>
+    import { unmount } from 'svelte';
     import Button from "../../lib/components/xp/Button.svelte";
     import {queueCommand} from '../../lib/store';
 

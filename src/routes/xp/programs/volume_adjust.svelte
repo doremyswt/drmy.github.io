@@ -1,5 +1,5 @@
-import { unmount } from 'svelte';
 <script>
+    import { unmount } from 'svelte';
     import { systemVolume} from '../../../lib/store';
     import RangeSlider from "svelte-range-slider-pips";
     import * as utils from '../../../lib/utils';

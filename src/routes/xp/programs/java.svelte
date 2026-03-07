@@ -1,5 +1,5 @@
-import { unmount } from 'svelte';
 <script>
+    import { unmount } from 'svelte';
     import Window from '../../../lib/components/xp/Window.svelte';
     import Button from '../../../lib/components/xp/Button.svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive } from '../../../lib/store'
