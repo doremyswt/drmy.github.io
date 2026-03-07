@@ -6,7 +6,7 @@
     import * as utils from '../../utils';
     import { doctypes, icons, hidden_items, previewable_exts } from '../../system';
     import * as fs from '../../fs';
-    const {click_outside} = utils;
+    const {click_outside, double_tap} = utils;
     import { createEventDispatcher, onMount, tick } from 'svelte';
     import short from 'short-uuid';
     import {get, set} from 'idb-keyval';
@@ -162,7 +162,8 @@
             <div fs-id="{item.id}" class="w-[100px] overflow-hidden m-2 inline-flex flex-row items-center font-MSSS relative
                 {is_desired(item) ? '' : 'opacity-50'}" 
                 on:dblclick={() => open(item.id)}
-                on:click={(e) => on_click(e, item)}>
+                on:click={(e) => on_click(e, item)}
+                use:double_tap on:double_tap={() => open(item.id)}>
                 {#if previewable_exts.includes(item.ext)}
                     <Previewable size={30} default_icon={file_icon(item)} fs_id={item.id}></Previewable>
                 {:else}
@@ -187,8 +188,9 @@
         <p class="ml-2 mt-0.5 font-MSSS text-black text-[11px] font-bold">Files Stored on This Computer</p>
         <div class="mb-4 w-[300px] h-[2px] bg-gradient-to-r from-blue-500 to-slate-50"></div>
         {#each computer.filter(el => el.type == 'folder') as item}
-            <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS" 
-                on:dblclick={() => open(item.id)}>
+            <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS"
+                on:dblclick={() => open(item.id)}
+                use:double_tap on:double_tap={() => open(item.id)}>
                 <div class="w-[40px] h-[40px] shrink-0 bg-[url(/images/xp/icons/FolderClosed.png)] bg-contain"
                     style:background-image="{item.icon == null ? '' : `url(${item.icon})`}">
                 </div>
@@ -201,8 +203,9 @@
         <p class="ml-2 mt-4 font-MSSS text-black text-[11px] font-bold">Hard Disk Drives</p>
         <div class="mb-4 w-[300px] h-[2px] bg-gradient-to-r from-blue-500 to-slate-50"></div>
         {#each computer.filter(el => el.type == 'drive') as item}
-            <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS" 
-                on:dblclick={() => open(item.id)}>
+            <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS"
+                on:dblclick={() => open(item.id)}
+                use:double_tap on:double_tap={() => open(item.id)}>
                 <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/LocalDisk.png)] bg-contain">
                 </div>
                 <div class="px-1 text-[11px] line-clamp-2 text-ellipsis leading-tight">
@@ -214,8 +217,9 @@
         <p class="ml-2 mt-4 font-MSSS text-black text-[11px] font-bold">Devices with Removable Storage</p>
         <div class="mb-4 w-[300px] h-[2px] bg-gradient-to-r from-blue-500 to-slate-50"></div>
         {#each computer.filter(el => el.type == 'removable_storage') as item}
-            <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS" 
-                on:dblclick={() => open(item.id)}>
+            <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS"
+                on:dblclick={() => open(item.id)}
+                use:double_tap on:double_tap={() => open(item.id)}>
                 <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/RemovableMedia.png)] bg-contain">
                 </div>
                 <div class="px-1 text-[11px] line-clamp-2 text-ellipsis leading-tight">
