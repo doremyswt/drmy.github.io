@@ -73,7 +73,7 @@
 <div class="w-screen h-screen bg-black overflow-hidden font-MSSS">
     <div class="mt-12 ml-8 text-lg">
         <p class="text-slate-100">Use the ↑(Up) and ↓(Down) key to move the pointer to desired boot device.</p>
-        <p class="text-slate-100">Press (Enter) to attempt to boot or ESC to cancel.</p>
+        <p class="text-slate-100">Press (Enter) to attempt to boot or ESC to cancel. On touch devices, tap an option to select it.</p>
         {#if !is_chromium}
         <p class="text-slate-100 mt-2 max-w-[500px]">WIN32.RUN might have unexpected behaviors on browsers that are NOT Chromium-based (Safari, Firefox, Internet Explorer, etc.)</p>
         {/if}
@@ -81,11 +81,9 @@
         <p class="text-slate-100 uppercase mt-4 mb-2">boot options:</p>
         {#each boot_options.slice(0, 4) as option, index }
             <div>
-                <div class="ml-8 p-2 inline-block {index == current_option ? 'text-slate-900 bg-slate-200' : 'text-slate-300'}"
-                    on:click={() => {
-                        //current_option = index;
-                        //boot();
-                    }}>
+                <div class="ml-8 p-2 inline-block cursor-pointer {index == current_option ? 'text-slate-900 bg-slate-200' : 'text-slate-300'}"
+                    on:click={() => { current_option = index; boot(); }}
+                    on:touchend|preventDefault={() => { current_option = index; boot(); }}>
                     {option}
                 </div>
             </div>
