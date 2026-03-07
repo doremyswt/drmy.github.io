@@ -346,6 +346,38 @@ export function timestamp_to_readable(timestamp){
   return date.toString();
 }
 
+/** Svelte action: fires 'double_tap' custom event on two taps within 300ms.
+ *  Resets on 'long_press' events to avoid false triggers after a long press.
+ *  Usage: <div use:double_tap on:double_tap={() => handler()}>
+ */
+export function double_tap(node) {
+  let lastTap = 0;
+
+  function handle(e) {
+    const now = Date.now();
+    const diff = now - lastTap;
+    if (diff < 300 && diff > 0) {
+      e.preventDefault();
+      node.dispatchEvent(new CustomEvent('double_tap', { bubbles: true }));
+      lastTap = 0;
+    } else {
+      lastTap = now;
+    }
+  }
+
+  function reset() { lastTap = 0; }
+
+  node.addEventListener('touchend', handle);
+  node.addEventListener('long_press', reset);
+
+  return {
+    destroy() {
+      node.removeEventListener('touchend', handle);
+      node.removeEventListener('long_press', reset);
+    }
+  };
+}
+
 /** Svelte action: fires 'long_press' custom event after holding touch for `duration` ms.
  *  Cancels if the finger moves more than 10px.
  *  Usage: <div use:long_press on:long_press={(e) => handler(e.detail.x, e.detail.y)}>

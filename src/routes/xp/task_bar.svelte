@@ -16,11 +16,14 @@
 </script>
 
 
-<div class="z-10 absolute bottom-0 left-0 right-0 w-full h-[30px] bg-[linear-gradient(var(--xp-gradient))] flex flex-row items-center overflow-hidden">
-    <div id="start-menu-btn" class="w-[100px] h-full bg-[url(/images/xp/start_btn_normal.png)] bg-cover hover:brightness-110 shrink-0"
-        on:click={start_menu}>
-    </div>
+<div class="z-10 absolute bottom-0 left-0 right-0 w-full bg-[linear-gradient(var(--xp-gradient))] overflow-hidden"
+    style="padding-bottom: env(safe-area-inset-bottom)">
+    <div class="h-[30px] flex flex-row items-center overflow-hidden">
+        <div id="start-menu-btn" class="w-[100px] h-full bg-[url(/images/xp/start_btn_normal.png)] bg-cover hover:brightness-110 shrink-0"
+            on:click={start_menu}>
+        </div>
 
-    <ProgramTray></ProgramTray>
-    <SystemTray></SystemTray>
+        <ProgramTray></ProgramTray>
+        <SystemTray></SystemTray>
+    </div>
 </div>
