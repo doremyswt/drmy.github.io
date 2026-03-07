@@ -133,7 +133,7 @@
             const OpenModal = (
                 await import("../../../lib/components/xp/OpenModal.svelte")
             ).default;
-            let modal = new OpenModal({
+            let modal = mount(OpenModal, {
                 target: node_ref,
                 props: { filetypes, filetypes_desc, multiple },
             });
@@ -155,7 +155,7 @@
             const SaveModal = (
                 await import("../../../lib/components/xp/SaveModal.svelte")
             ).default;
-            let modal = new SaveModal({
+            let modal = mount(SaveModal, {
                 target: node_ref,
                 props: { filetypes, selected_filetype: current_filetype, id },
             });

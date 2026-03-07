@@ -30,7 +30,7 @@
 
     async function open_file(){
         const OpenModal = (await import('../../../lib/components/xp/OpenModal.svelte')).default;
-        let modal = new OpenModal({
+        let modal = mount(OpenModal, {
             target: window.node_ref,
             props:{filetypes: ['.jpg'], filetypes_desc: 'Image Files'}
         })
@@ -48,7 +48,7 @@
             {name: 'png image', value: '.png'},
             {name: 'bmp image', value: '.bmp'}
         ]
-        let modal = new SaveModal({
+        let modal = mount(SaveModal, {
             target: window.node_ref,
             props:{filetypes}
         })

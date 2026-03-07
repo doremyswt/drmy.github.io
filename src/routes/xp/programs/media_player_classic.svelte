@@ -74,7 +74,7 @@
 
     async function open_file(){
         const OpenModal = (await import('../../../lib/components/xp/OpenModal.svelte')).default;
-        let modal = new OpenModal({
+        let modal = mount(OpenModal, {
             target: window.node_ref,
             props:{filetypes: ['.mp3','.mp4', '.ogg', '.webm', '.wav', '.flac', '.aac'], filetypes_desc: 'Audio and Video Files'}
         })
