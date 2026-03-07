@@ -83,7 +83,7 @@
         {
             name: 'Control Panel',
             icon: '/images/xp/icons/ControlPanel.png',
-            path: ''
+            path: './programs/my_computer.svelte'
         },
         {
             name: 'Display Properties',
