@@ -4,7 +4,23 @@ import adapter from '@sveltejs/adapter-cloudflare';
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   kit: {
-    adapter: adapter()
+    adapter: adapter({
+      routes: {
+        include: ['/*'],
+        exclude: [
+          '<build>',
+          '/audio/*',
+          '/empty/*',
+          '/favicon.png',
+          '/files/*',
+          '/fonts/*',
+          '/html/*',
+          '/images/*',
+          '/js/*',
+          '/json/*',
+        ]
+      }
+    })
   },
   compilerOptions: {
     compatibility: {
