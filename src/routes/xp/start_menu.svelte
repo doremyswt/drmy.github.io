@@ -477,7 +477,7 @@
     <div class="shrink-0 h-[2px] w-full" style:background-image="linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgb(218, 136, 74) 50%, rgba(0, 0, 0, 0) 100%)">
     </div>
 
-    <div class="grow bg-slate-50 mx-0.5 relative overflow-hidden flex flex-row">
+    <div class="grow bg-slate-50 mx-0.5 relative flex flex-row">
 
         <!-- ── Mobile: All Programs full-panel accordion overlay ── -->
         {#if programs_open}
@@ -569,26 +569,24 @@
                 {/if}
             {/each}
             <div class="my-0.5 mx-auto w-5/6 h-[2px] bg-slate-200 shrink-0"></div>
-            <!-- All Programs button + desktop popup -->
-            <div class="relative grow">
-                <div class="flex pl-9 py-2 items-center flex-row cursor-pointer hover:bg-blue-500 group/ap"
+            <!-- All Programs button + desktop hover flyout -->
+            <!-- group/ap on outer so hovering the flyout itself keeps it visible -->
+            <div class="relative grow group/ap">
+                <div class="flex pl-9 py-2 items-center flex-row cursor-pointer group-hover/ap:bg-blue-500"
                     on:click|stopPropagation={() => { programs_open = !programs_open; open_l2 = null; open_l3 = null; }}>
                     <div class="font-bold text-black text-[11px] group-hover/ap:text-white">All Programs</div>
                     <div class="w-4 h-4 ml-1 bg-contain bg-[url(/images/xp/icons/876.png)]"></div>
                 </div>
 
-                {#if programs_open}
-                <!-- Desktop-only flyout (hidden on mobile, shown sm+) -->
-                <div class="hidden sm:block absolute z-10 bottom-0 left-[90%] w-[250px] shadow-xl border-t border-l-4 border-blue-500 bg-slate-50">
+                <!-- Desktop flyout: CSS hover on sm+, hidden on mobile -->
+                <div class="hidden sm:group-hover/ap:block absolute z-10 bottom-0 left-[90%] w-[250px] shadow-xl border-t border-l-4 border-blue-500 bg-slate-50">
                     {#each programs as item}
                         {#if item == null}
                             <div class="my-0.5 mx-auto w-5/6 h-[1px] bg-slate-200 shrink-0"></div>
                         {:else}
+                            <!-- group/l1: hover reveals level-2 flyout -->
                             <div class="flex flex-row items-center grow p-1 group/l1 hover:bg-blue-500 relative cursor-pointer"
-                                on:click|stopPropagation={(e) => {
-                                    if(item.items) { open_l2 = open_l2 === item.name ? null : item.name; open_l3 = null; pick_l2_side(e); }
-                                    else { launch(item); }
-                                }}>
+                                on:click={() => { if(!item.items) launch(item); }}>
                                 <div class="w-5 h-5 bg-contain mr-1 shrink-0" style:background-image="url({item.icon})"></div>
                                 <div class="text-[11px] text-slate-800 group-hover/l1:text-white grow">{item.name}</div>
                                 <div class="w-[10px] shrink-0">
@@ -596,10 +594,10 @@
                                         <svg class="fill-slate-900 group-hover/l1:fill-white w-[10px] h-[10px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/></svg>
                                     {/if}
                                 </div>
-                                {#if item.items != null && open_l2 === item.name}
-                                <div class="absolute z-20 top-0 w-[200px] shadow-xl border-t border-b border-l-4 border-blue-500 bg-slate-50"
-                                    style:left="{l2_side === 'right' ? '100%' : 'auto'}"
-                                    style:right="{l2_side === 'left' ? '100%' : 'auto'}">
+                                {#if item.items != null}
+                                <!-- Level-2: shown on hover of parent (group/l1) -->
+                                <div class="hidden group-hover/l1:block absolute z-20 left-full w-[200px] shadow-xl border-t border-b border-l-4 border-blue-500 bg-slate-50"
+                                    style:top="{item.top ?? '0'}">
                                     {#if item.items.length == 0}
                                         <div class="h-6 text-slate-400 text-[11px] w-full px-4 flex items-center">(Empty)</div>
                                     {/if}
@@ -607,11 +605,9 @@
                                         {#if subitem == null}
                                             <div class="my-0.5 mx-auto w-5/6 h-[1px] bg-slate-200 shrink-0"></div>
                                         {:else}
+                                            <!-- group/l2: hover reveals level-3 flyout -->
                                             <div class="flex flex-row items-center grow p-1 group/l2 hover:bg-blue-500 relative cursor-pointer"
-                                                on:click|stopPropagation={() => {
-                                                    if(subitem.items) { open_l3 = open_l3 === subitem.name ? null : subitem.name; }
-                                                    else { launch(subitem); }
-                                                }}>
+                                                on:click={() => { if(!subitem.items) launch(subitem); }}>
                                                 <div class="w-5 h-5 bg-contain mr-1 shrink-0" style:background-image="url({subitem.icon})"></div>
                                                 <div class="text-[11px] text-slate-800 group-hover/l2:text-white grow">{subitem.name}</div>
                                                 <div class="w-[10px] shrink-0">
@@ -619,14 +615,15 @@
                                                         <svg class="fill-slate-900 group-hover/l2:fill-white w-[10px] h-[10px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/></svg>
                                                     {/if}
                                                 </div>
-                                                {#if subitem.items != null && open_l3 === subitem.name}
-                                                <div class="absolute z-30 top-0 left-full w-[220px] shadow-xl border-t border-b border-l-4 border-blue-500 bg-slate-50">
+                                                {#if subitem.items != null}
+                                                <!-- Level-3: shown on hover of parent (group/l2) -->
+                                                <div class="hidden group-hover/l2:block absolute z-30 top-0 left-full w-[220px] shadow-xl border-t border-b border-l-4 border-blue-500 bg-slate-50">
                                                     {#each subitem.items as subsubitem}
                                                         {#if subsubitem == null}
                                                             <div class="my-0.5 mx-auto w-5/6 h-[1px] bg-slate-200 shrink-0"></div>
                                                         {:else}
                                                             <div class="flex flex-row items-center grow p-1 group/l3 hover:bg-blue-500 cursor-pointer"
-                                                                on:click|stopPropagation={() => launch(subsubitem)}>
+                                                                on:click={() => launch(subsubitem)}>
                                                                 <div class="w-5 h-5 bg-contain mr-1 shrink-0" style:background-image="url({subsubitem.icon})"></div>
                                                                 <div class="text-[11px] text-slate-800 group-hover/l3:text-white grow">{subsubitem.name}</div>
                                                             </div>
@@ -643,7 +640,6 @@
                         {/if}
                     {/each}
                 </div>
-                {/if}
             </div>
         </div>
 
