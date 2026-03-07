@@ -71,6 +71,8 @@
     }
 
     export let renaming = false;
+    let _click_protected = false;
+    let _click_protected_timer = null;
 
     const ds = new DragSelect({
         customStyles: false,
@@ -78,10 +80,12 @@
     });
 
     ds.subscribe('callback', (e) => {
+        // On mobile, DS fires an empty-items callback via pointer events
+        // right after our on:click sets the selection. Guard against that.
+        if (_click_protected && e.items.length === 0) return;
         $selectingItems = e.items
             .map(el => el.getAttribute('fs-id'))
             .filter(el => $hardDrive[el] != null);
-       console.log($selectingItems.map(el => $hardDrive[el]));
     });
     const observer = new MutationObserver(mutations => {
         ds.setSettings({
@@ -103,7 +107,6 @@
         let el = node_ref.querySelector(`.fs-item[fs-id="${item.id}"]`);
 
         if(!selected && el && el.classList.contains('fs-item')){
-            
             if(ev.metaKey || ev.ctrlKey){
                 ds.addSelection([el], true);
             } else {
@@ -126,8 +129,8 @@
     }
 
     function clear_selection(){
-        console.log('clear_selection');
-        ds.clearSelection(true);
+        ds.clearSelection(false);
+        $selectingItems = [];
     }
 
 
@@ -288,14 +291,14 @@
 </style>
 <div class="absolute inset-0 overflow-auto bg-slate-50"
     on:drop={on_drop} on:dragover={on_drop_over} bind:this={node_ref}>
-    <div class="w-full min-h-[90%]" class:hidden={id == null} 
-        on:contextmenu|self={show_void_menu}>
+    <div class="w-full min-h-[90%]" class:hidden={id == null}
+        on:contextmenu|self={show_void_menu} on:click|self={clear_selection}>
         {#if sorted_items}
             {#each sorted_items as item (item.id)}
                 <div fs-id="{item.id}" class="fs-item w-[150px] overflow-hidden m-2 inline-flex flex-row items-center font-MSSS relative
                     {$clipboard.includes(item.id) && $clipboard_op == 'cut' ? 'opacity-70' : ''}"
                     on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
-                    on:click={(e) => { let el = e.currentTarget; e.ctrlKey || e.metaKey ? ds.addSelection([el], true) : ds.setSelection([el], true); }}
+                    on:click={(e) => { clearTimeout(_click_protected_timer); _click_protected = true; _click_protected_timer = setTimeout(() => _click_protected = false, 300); let el = e.currentTarget; e.ctrlKey || e.metaKey ? ds.addSelection([el], true) : ds.setSelection([el], true); }}
                     use:double_tap on:double_tap={() => open(item.id)}
                     use:long_press on:long_press={(e) => on_rightclick({x: e.detail.x, y: e.detail.y}, item)}>
                     {#if previewable_exts.includes(item.ext)}

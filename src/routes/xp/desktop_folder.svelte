@@ -26,6 +26,8 @@
 
     let is_focus = true;
     let item_long_pressed = false;
+    let _click_protected = false;
+    let _click_protected_timer = null;
     let node_ref;
     let cell_size = 80;
 
@@ -45,10 +47,12 @@
 
             $hardDrive[fs_id]['desktop_css_transform'] = node.style.transform;
         }
+        // On mobile, DS fires an empty-items callback via pointer events
+        // right after our on:click sets the selection. Guard against that.
+        if (_click_protected && e.items.length === 0) return;
         $selectingItems = e.items
         .map(el => el.getAttribute('fs-id'))
         .filter(el => $hardDrive[el] != null);
-        console.log($selectingItems.map(el => $hardDrive[el]));
     });
     const observer = new MutationObserver(mutations => {
         ds.setSettings({
@@ -95,7 +99,6 @@
     }
 
     function clear_selection(){
-        console.log('clear_selection');
         ds.clearSelection(true);
     }
 
@@ -243,7 +246,7 @@
 
             <div fs-id="{item.id}" class="relative fs-item w-[150px] flex-shrink-0 flex-grow-0 overflow-hidden m-2 inline-flex flex-col items-center font-MSSS"
                 on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
-                on:click={(e) => { let el = e.currentTarget; e.ctrlKey || e.metaKey ? ds.addSelection([el], true) : ds.setSelection([el], true); }}
+                on:click={(e) => { clearTimeout(_click_protected_timer); _click_protected = true; _click_protected_timer = setTimeout(() => _click_protected = false, 300); let el = e.currentTarget; e.ctrlKey || e.metaKey ? ds.addSelection([el], true) : ds.setSelection([el], true); }}
                 use:long_press on:long_press={(e) => { item_long_pressed = true; setTimeout(() => item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}
                 use:double_tap on:double_tap={() => open(item.id)}
                 style:transform="{item.desktop_css_transform}"
