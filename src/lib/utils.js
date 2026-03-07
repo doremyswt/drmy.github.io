@@ -34,14 +34,14 @@ function parent_match_selector (target, selector) {
 
 /** Dispatch event on click outside of node */
 export function click_outside(node) {
-  
+
     const handleClick = event => {
       if (node && !node.contains(event.target) && !event.defaultPrevented) {
         if(parent_match_selector(event.target, '.context-menu')) return;
         if(parent_match_selector(event.target, '.toolbar-menu')) return;
-        
+
         if(parent_match_selector(event.target, '.tox-tinymce-aux')) return;
-        
+
         if(parent_match_selector(event.target, '#start-menu-btn')
         && node == document.querySelector('#start-menu')) return;
 
@@ -52,16 +52,16 @@ export function click_outside(node) {
             if(parent_match_selector(event.target, selector)) return;
           }
         }
-        
+
 
         node.dispatchEvent(
           new CustomEvent('click_outside', node)
         )
       }
     }
-  
+
     document.addEventListener('click', handleClick, true);
-    
+
     return {
       destroy() {
         document.removeEventListener('click', handleClick, true);

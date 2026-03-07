@@ -29,7 +29,7 @@
         .filter(el => !hidden_items.includes(el.id));
 
     $: sorted_items = id ? null : null;//reset sorted_items every time id changes
-    $: if (id !== undefined) { ds?.clearSelection?.(true); $selectingItems = []; }
+    $: if (id !== undefined) { ds?.clearSelection?.(false); $selectingItems = []; }
     let worker = new Worker(new URL('./sort.js', import.meta.url), {type: 'module'});
     worker.onmessage = ({data}) => {
         if(data.type == 'sorted' && data.id == id){
@@ -73,6 +73,8 @@
     export let renaming = false;
     let _click_protected = false;
     let _click_protected_timer = null;
+    let _ds_had_items = false;
+    let _pre_mousedown_ids = new Set();
 
     const ds = new DragSelect({
         customStyles: false,
@@ -80,9 +82,8 @@
     });
 
     ds.subscribe('callback', (e) => {
-        // On mobile, DS fires an empty-items callback via pointer events
-        // right after our on:click sets the selection. Guard against that.
-        if (_click_protected && e.items.length === 0) return;
+        _ds_had_items = e.items.length > 0;
+        if (_click_protected) return;
         $selectingItems = e.items
             .map(el => el.getAttribute('fs-id'))
             .filter(el => $hardDrive[el] != null);
@@ -99,6 +100,9 @@
             area: node_ref
         })
         observer.observe(node_ref, {attributes: false, childList: true, characterData: false, subtree:true});
+        node_ref.addEventListener('mousedown', () => {
+            _pre_mousedown_ids = new Set($selectingItems);
+        }, { passive: true });
 
     })
 
@@ -132,6 +136,7 @@
         ds.clearSelection(false);
         $selectingItems = [];
     }
+
 
 
     function open(id){
@@ -290,7 +295,8 @@
     }
 </style>
 <div class="absolute inset-0 overflow-auto bg-slate-50"
-    on:drop={on_drop} on:dragover={on_drop_over} bind:this={node_ref}>
+    on:drop={on_drop} on:dragover={on_drop_over} bind:this={node_ref}
+    on:click={(e) => { if (!e.target.closest('.fs-item')) { if (_ds_had_items) { _ds_had_items = false; return; } ds.clearSelection(false); $selectingItems = []; } }}>
     <div class="w-full min-h-[90%]" class:hidden={id == null}
         on:contextmenu|self={show_void_menu} on:click|self={clear_selection}>
         {#if sorted_items}
@@ -298,7 +304,7 @@
                 <div fs-id="{item.id}" class="fs-item w-[150px] overflow-hidden m-2 inline-flex flex-row items-center font-MSSS relative
                     {$clipboard.includes(item.id) && $clipboard_op == 'cut' ? 'opacity-70' : ''}"
                     on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
-                    on:click={(e) => { clearTimeout(_click_protected_timer); _click_protected = true; _click_protected_timer = setTimeout(() => _click_protected = false, 300); let el = e.currentTarget; e.ctrlKey || e.metaKey ? ds.addSelection([el], true) : ds.setSelection([el], true); }}
+                    on:click={(e) => { clearTimeout(_click_protected_timer); _click_protected = true; _click_protected_timer = setTimeout(() => _click_protected = false, 300); let el = e.currentTarget; let fs_id = el.getAttribute('fs-id'); if (e.ctrlKey || e.metaKey) { if (_pre_mousedown_ids.has(fs_id)) { $selectingItems = $selectingItems.filter(id => id !== fs_id); ds.removeSelection([el], false); } else { ds.addSelection([el], false); } } else { $selectingItems = [fs_id]; ds.setSelection([el], false); } }}
                     use:double_tap on:double_tap={() => open(item.id)}
                     use:long_press on:long_press={(e) => on_rightclick({x: e.detail.x, y: e.detail.y}, item)}>
                     {#if previewable_exts.includes(item.ext)}

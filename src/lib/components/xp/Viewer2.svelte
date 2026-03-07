@@ -230,10 +230,10 @@
     </div>
 
     <div class="shrink-0 w-full h-[70px] text-[11px] text-black">
-        <div class="w-full flex flex-row items-center my-2">
+        <div class="w-full flex flex-row items-center my-1">
             <div class="w-[100px] shrink-0">File name:</div>
             <div class="grow">
-                <input disabled type="text" 
+                <input disabled type="text"
                     value="{selectingItems.map(el => $hardDrive[el].name).join(', ')}"
                     class="w-full h-6 text-[11px] outline-none border border-blue-300 disabled:bg-slate-50">
             </div>
@@ -241,10 +241,10 @@
                 <Button title="Open" on_click={() => on_open(selectingItems)} disabled={selectingItems.length == 0}></Button>
             </div>
         </div>
-        <div class="w-full flex flex-row items-center my-2">
+        <div class="w-full flex flex-row items-center my-1">
             <div class="w-[100px] shrink-0">Files of type:</div>
             <div class="grow">
-                <input disabled type="text" 
+                <input disabled type="text"
                     value="{filetypes_desc} ({filetypes.join(', ')})"
                     class="w-full h-6 p-0.5 text-[11px] outline-none border border-blue-300  disabled:bg-slate-50">
             </div>

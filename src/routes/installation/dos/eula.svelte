@@ -20,6 +20,22 @@
     let status_bar;
     let y_pos = 0;
 
+    let _touch_start_y = null;
+    function on_touchstart(e) {
+        _touch_start_y = e.touches[0].clientY;
+    }
+    function on_touchend(e) {
+        if (_touch_start_y == null) return;
+        let delta = _touch_start_y - e.changedTouches[0].clientY;
+        if (Math.abs(delta) < 10) {
+            // tap (no significant swipe) → agree
+            dispatcher('load_page', {url: './installation/dos/partition.svelte'});
+        } else {
+            y_pos = y_pos - delta * 0.5;
+        }
+        _touch_start_y = null;
+    }
+
     function on_key_pressed(e) {
 		 switch(e.keyCode) {
 			 case 38:
@@ -45,7 +61,8 @@
         <div class="w-full h-[1px] mb-1 bg-slate-400"></div>
         <div class="w-full h-[1px] bg-slate-400"></div>
     </div>
-    <div class="mt-8 p-4 h-[90vh] text-xl text-slate-200 overflow-hidden relative">
+    <div class="mt-8 p-4 h-[90vh] text-xl text-slate-200 overflow-hidden relative"
+        on:touchstart={on_touchstart} on:touchend={on_touchend}>
         <div class="absolute" style:top="{y_pos}%">{@html EULA}</div>
     </div>
 </div>

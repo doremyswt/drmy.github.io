@@ -28,6 +28,8 @@
     let item_long_pressed = false;
     let _click_protected = false;
     let _click_protected_timer = null;
+    let _ds_had_items = false;
+    let _pre_mousedown_ids = new Set();
     let node_ref;
     let cell_size = 80;
 
@@ -39,17 +41,18 @@
     });
 
     ds.subscribe('callback', (e) => {
+        // Always save drag-move transforms
         for(let node of e.items){
             let fs_id = node.getAttribute('fs-id');
             if(fs_id == null) continue;
             if($hardDrive[fs_id] == null) continue;
             if(utils.is_empty(node.style.transform)) continue;
-
             $hardDrive[fs_id]['desktop_css_transform'] = node.style.transform;
         }
-        // On mobile, DS fires an empty-items callback via pointer events
-        // right after our on:click sets the selection. Guard against that.
-        if (_click_protected && e.items.length === 0) return;
+        // Track whether this interaction selected items (used to guard root click from
+        // clearing a drag-select). Always update before the _click_protected guard.
+        _ds_had_items = e.items.length > 0;
+        if (_click_protected) return;
         $selectingItems = e.items
         .map(el => el.getAttribute('fs-id'))
         .filter(el => $hardDrive[el] != null);
@@ -66,7 +69,14 @@
             area: node_ref
         })
         observer.observe(node_ref, {attributes: false, childList: true, characterData: false, subtree:true});
-        
+        // Capture pre-mousedown selection so ctrl+click on:click can correctly add/remove
+        // (DS immediateDrag adds the item on mousedown, making $selectingItems stale by click time).
+        node_ref.addEventListener('mousedown', () => {
+            _pre_mousedown_ids = new Set($selectingItems);
+        }, { passive: true });
+        // On mobile, DS calls preventDefault() on touchstart so the synthetic click never fires.
+        // Restore is_focus via touchstart so items appear selected after any touch interaction.
+        node_ref.addEventListener('touchstart', () => { is_focus = true; }, { passive: true });
     })
     
 
@@ -99,7 +109,8 @@
     }
 
     function clear_selection(){
-        ds.clearSelection(true);
+        ds.clearSelection(false);
+        $selectingItems = [];
     }
 
 
@@ -232,7 +243,7 @@
 
 <div class="absolute z-0 inset-0 overflow-hidden bg-transparent"
     on:drop={on_drop} on:dragover={on_drop_over}
-    on:click={() => is_focus = true}
+    on:click={(e) => { is_focus = true; if (!e.target.closest('.fs-item')) { if (_ds_had_items) { _ds_had_items = false; return; } $selectingItems = []; ds.clearSelection(false); } }}
     use:click_outside on:click_outside={() => {
         is_focus = false;
     }}
@@ -246,7 +257,7 @@
 
             <div fs-id="{item.id}" class="relative fs-item w-[150px] flex-shrink-0 flex-grow-0 overflow-hidden m-2 inline-flex flex-col items-center font-MSSS"
                 on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
-                on:click={(e) => { clearTimeout(_click_protected_timer); _click_protected = true; _click_protected_timer = setTimeout(() => _click_protected = false, 300); let el = e.currentTarget; e.ctrlKey || e.metaKey ? ds.addSelection([el], true) : ds.setSelection([el], true); }}
+                on:click={(e) => { clearTimeout(_click_protected_timer); _click_protected = true; _click_protected_timer = setTimeout(() => _click_protected = false, 300); let el = e.currentTarget; let fs_id = el.getAttribute('fs-id'); if (e.ctrlKey || e.metaKey) { if (_pre_mousedown_ids.has(fs_id)) { $selectingItems = $selectingItems.filter(id => id !== fs_id); ds.removeSelection([el], false); } else { ds.addSelection([el], false); } } else { $selectingItems = [fs_id]; ds.setSelection([el], false); } }}
                 use:long_press on:long_press={(e) => { item_long_pressed = true; setTimeout(() => item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}
                 use:double_tap on:double_tap={() => open(item.id)}
                 style:transform="{item.desktop_css_transform}"

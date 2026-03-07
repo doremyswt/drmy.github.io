@@ -142,11 +142,9 @@
         </div>
     </div>
 
-    <div class="absolute left-8 bottom-8 animate-fadein text-base font-sans">
-        <p>Copyright &copy; Microsoft Corporation</p>
-    </div>
-    <div class="absolute right-8 bottom-8 animate-fadein">
-        <img src="/images/xp_loading_mslogo.jpg" width="120px" alt="">
+    <div class="absolute left-4 right-4 bottom-6 animate-fadein flex flex-row items-end justify-between gap-2">
+        <p class="text-sm sm:text-base font-sans shrink-0">Copyright &copy; Microsoft Corporation</p>
+        <img src="/images/xp_loading_mslogo.jpg" width="120px" alt="" class="shrink-0">
     </div>
 
     

@@ -58,10 +58,15 @@
         <ul class="ml-4 mt-4">
             {#each options as option, i}
                 <div>
-                    <li class="inline-block px-1 {current_option == i ? 'bg-slate-300 text-[rgb(2,7,176)]' : ''}">{option}</li>
+                    <li class="inline-block px-1 cursor-pointer {current_option == i ? 'bg-slate-300 text-[rgb(2,7,176)]' : ''}"
+                        on:click={() => current_option = i}>{option}</li>
                 </div>
             {/each}
         </ul>
+        <button class="mt-8 ml-4 px-4 py-1 bg-slate-300 text-[rgb(2,7,176)] font-bold sm:hidden"
+            on:click={() => dispatcher('load_page', {url: './installation/dos/format.svelte'})}>
+            Continue →
+        </button>
     </div>
 </div>
 
