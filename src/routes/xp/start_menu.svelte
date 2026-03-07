@@ -409,9 +409,11 @@
     ]
 
     let programs_open = false;
-    let open_l2 = null;  // name of open level-2 item (e.g. "Accessories")
-    let open_l3 = null;  // name of open level-3 item (e.g. "System Tools")
-    let l2_side = 'right'; // 'left' | 'right' — computed on click based on available space
+    let ap_open = false;   // All Programs desktop flyout visible
+    let open_l2 = null;   // name of open level-2 item (e.g. "Accessories")
+    let open_l3 = null;   // name of open level-3 item (e.g. "System Tools")
+    let l2_timer = null;
+    let l3_timer = null;
 
     function hide(){
         let el = document.querySelector('#start-menu');
@@ -419,14 +421,11 @@
             el.classList.add('hidden');
         }
         programs_open = false;
+        ap_open = false;
         open_l2 = null;
         open_l3 = null;
-    }
-
-    function pick_l2_side(e) {
-        if(window.innerWidth < 640) return; // mobile: uses CSS stacking, no need
-        const rect = e.currentTarget.getBoundingClientRect();
-        l2_side = rect.right + 200 > window.innerWidth ? 'left' : 'right';
+        clearTimeout(l2_timer);
+        clearTimeout(l3_timer);
     }
 
     function launch(item){
@@ -562,7 +561,9 @@
                 {#if item == null}
                     <div class="my-0.5 mx-auto w-5/6 h-[2px] bg-slate-200 shrink-0"></div>
                 {:else}
-                    <div class="flex flex-row items-center grow p-1 group/c1 hover:bg-blue-500" on:click={() => launch(item)}>
+                    <div class="flex flex-row items-center grow p-1 group/c1 hover:bg-blue-500"
+                        on:mouseenter={() => { ap_open = false; open_l2 = null; open_l3 = null; }}
+                        on:click={() => launch(item)}>
                         <div class="w-8 h-8 bg-contain mr-1" style:background-image="url({item.icon})"></div>
                         <div class="text-[11px] group-hover/c1:text-white text-black {item.font == 'bold' ? 'font-bold' : ''}">{item.name}</div>
                     </div>
@@ -570,33 +571,43 @@
             {/each}
             <div class="my-0.5 mx-auto w-5/6 h-[2px] bg-slate-200 shrink-0"></div>
             <!-- All Programs button + desktop hover flyout -->
-            <!-- group/ap on outer so hovering the flyout itself keeps it visible -->
-            <div class="relative grow group/ap">
-                <div class="flex pl-9 py-2 items-center flex-row cursor-pointer group-hover/ap:bg-blue-500"
+            <!-- All Programs button + desktop JS-state flyout -->
+            <div class="relative grow">
+                <div class="flex pl-9 py-2 items-center flex-row cursor-pointer hover:bg-blue-500 group/ap-btn"
+                    class:bg-blue-500={ap_open}
+                    on:mouseenter={() => ap_open = true}
                     on:click|stopPropagation={() => { programs_open = !programs_open; open_l2 = null; open_l3 = null; }}>
-                    <div class="font-bold text-black text-[11px] group-hover/ap:text-white">All Programs</div>
+                    <div class="font-bold text-[11px] group-hover/ap-btn:text-white"
+                        class:text-white={ap_open}
+                        class:text-black={!ap_open}>All Programs</div>
                     <div class="w-4 h-4 ml-1 bg-contain bg-[url(/images/xp/icons/876.png)]"></div>
                 </div>
 
-                <!-- Desktop flyout: CSS hover on sm+, hidden on mobile -->
-                <div class="hidden sm:group-hover/ap:block absolute z-10 bottom-0 left-[90%] w-[250px] shadow-xl border-t border-l-4 border-blue-500 bg-slate-50">
+                <!-- Desktop flyout: JS state, hidden on mobile -->
+                {#if ap_open}
+                <div class="hidden sm:block absolute z-10 bottom-0 left-[90%] w-[250px] shadow-xl border-t border-l-4 border-blue-500 bg-slate-50">
                     {#each programs as item}
                         {#if item == null}
                             <div class="my-0.5 mx-auto w-5/6 h-[1px] bg-slate-200 shrink-0"></div>
                         {:else}
-                            <!-- group/l1: hover reveals level-2 flyout -->
-                            <div class="flex flex-row items-center grow p-1 group/l1 hover:bg-blue-500 relative cursor-pointer"
+                            <!-- Delay before changing open_l2 so diagonal mouse movement to L2 panel doesn't flicker -->
+                            <div class="flex flex-row items-center grow p-1 group/l1 relative cursor-pointer hover:bg-blue-500"
+                                class:bg-blue-500={open_l2 === item.name}
+                                on:mouseenter={() => { clearTimeout(l2_timer); l2_timer = setTimeout(() => { open_l2 = item.items ? item.name : null; open_l3 = null; }, 180); }}
                                 on:click={() => { if(!item.items) launch(item); }}>
                                 <div class="w-5 h-5 bg-contain mr-1 shrink-0" style:background-image="url({item.icon})"></div>
-                                <div class="text-[11px] text-slate-800 group-hover/l1:text-white grow">{item.name}</div>
+                                <div class="text-[11px] grow text-slate-800 group-hover/l1:text-white"
+                                    class:text-white={open_l2 === item.name}>{item.name}</div>
                                 <div class="w-[10px] shrink-0">
                                     {#if item.items != null}
-                                        <svg class="fill-slate-900 group-hover/l1:fill-white w-[10px] h-[10px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/></svg>
+                                        <svg class="w-[10px] h-[10px] fill-slate-900 group-hover/l1:fill-white"
+                                            class:fill-white={open_l2 === item.name}
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/></svg>
                                     {/if}
                                 </div>
-                                {#if item.items != null}
-                                <!-- Level-2: shown on hover of parent (group/l1) -->
-                                <div class="hidden group-hover/l1:block absolute z-20 left-full w-[200px] shadow-xl border-t border-b border-l-4 border-blue-500 bg-slate-50"
+                                {#if item.items != null && open_l2 === item.name}
+                                <!-- Level-2: stays open until another L1 item is entered -->
+                                <div class="absolute z-20 left-full w-[200px] shadow-xl border-t border-b border-l-4 border-blue-500 bg-slate-50"
                                     style:top="{item.top ?? '0'}">
                                     {#if item.items.length == 0}
                                         <div class="h-6 text-slate-400 text-[11px] w-full px-4 flex items-center">(Empty)</div>
@@ -605,19 +616,23 @@
                                         {#if subitem == null}
                                             <div class="my-0.5 mx-auto w-5/6 h-[1px] bg-slate-200 shrink-0"></div>
                                         {:else}
-                                            <!-- group/l2: hover reveals level-3 flyout -->
-                                            <div class="flex flex-row items-center grow p-1 group/l2 hover:bg-blue-500 relative cursor-pointer"
+                                            <div class="flex flex-row items-center grow p-1 group/l2 relative cursor-pointer hover:bg-blue-500"
+                                                class:bg-blue-500={open_l3 === subitem.name}
+                                                on:mouseenter={() => { clearTimeout(l3_timer); l3_timer = setTimeout(() => { open_l3 = subitem.items ? subitem.name : null; }, 180); }}
                                                 on:click={() => { if(!subitem.items) launch(subitem); }}>
                                                 <div class="w-5 h-5 bg-contain mr-1 shrink-0" style:background-image="url({subitem.icon})"></div>
-                                                <div class="text-[11px] text-slate-800 group-hover/l2:text-white grow">{subitem.name}</div>
+                                                <div class="text-[11px] grow text-slate-800 group-hover/l2:text-white"
+                                                    class:text-white={open_l3 === subitem.name}>{subitem.name}</div>
                                                 <div class="w-[10px] shrink-0">
                                                     {#if subitem.items != null}
-                                                        <svg class="fill-slate-900 group-hover/l2:fill-white w-[10px] h-[10px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/></svg>
+                                                        <svg class="w-[10px] h-[10px] fill-slate-900 group-hover/l2:fill-white"
+                                                            class:fill-white={open_l3 === subitem.name}
+                                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/></svg>
                                                     {/if}
                                                 </div>
-                                                {#if subitem.items != null}
-                                                <!-- Level-3: shown on hover of parent (group/l2) -->
-                                                <div class="hidden group-hover/l2:block absolute z-30 top-0 left-full w-[220px] shadow-xl border-t border-b border-l-4 border-blue-500 bg-slate-50">
+                                                {#if subitem.items != null && open_l3 === subitem.name}
+                                                <!-- Level-3 -->
+                                                <div class="absolute z-30 top-0 left-full w-[220px] shadow-xl border-t border-b border-l-4 border-blue-500 bg-slate-50">
                                                     {#each subitem.items as subsubitem}
                                                         {#if subsubitem == null}
                                                             <div class="my-0.5 mx-auto w-5/6 h-[1px] bg-slate-200 shrink-0"></div>
@@ -640,6 +655,7 @@
                         {/if}
                     {/each}
                 </div>
+                {/if}
             </div>
         </div>
 
