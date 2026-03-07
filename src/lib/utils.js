@@ -357,7 +357,6 @@ export function double_tap(node) {
     const now = Date.now();
     const diff = now - lastTap;
     if (diff < 300 && diff > 0) {
-      e.preventDefault();
       node.dispatchEvent(new CustomEvent('double_tap', { bubbles: true }));
       lastTap = 0;
     } else {
@@ -367,7 +366,9 @@ export function double_tap(node) {
 
   function reset() { lastTap = 0; }
 
-  node.addEventListener('touchend', handle);
+  // passive: true — don't call preventDefault so iOS doesn't redirect
+  // subsequent touches to the parent element
+  node.addEventListener('touchend', handle, { passive: true });
   node.addEventListener('long_press', reset);
 
   return {

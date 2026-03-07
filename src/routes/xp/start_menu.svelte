@@ -464,7 +464,7 @@
 </script>
 
 <div id="start-menu" class="absolute left-0 h-[500px] w-[390px] max-w-full z-20 flex flex-col shadow-lg rounded-t-md hidden"
-    style="bottom: calc(30px + env(safe-area-inset-bottom))"
+    style:bottom="calc(30px + env(safe-area-inset-bottom))"
     style:background-color="rgb(66, 130, 214)"
     use:click_outside on:click_outside={hide}>
     <div class="h-[3px] absolute top-0 left-[3px] right-[3px]" style="background: linear-gradient(to right, transparent 0px, rgba(255, 255, 255, 0.3) 1%, rgba(255, 255, 255, 0.5) 2%, rgba(255, 255, 255, 0.5) 95%, rgba(255, 255, 255, 0.3) 98%, rgba(255, 255, 255, 0.2) 99%, transparent 100%);

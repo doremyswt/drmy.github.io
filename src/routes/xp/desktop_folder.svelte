@@ -99,7 +99,13 @@
     }
 
 
+    let _last_open = 0;
     function open(id){
+        // debounce: double_tap and dblclick may both fire on mobile
+        const now = Date.now();
+        if (now - _last_open < 400) return;
+        _last_open = now;
+
         is_focus = false;
         clear_selection();
         let fs_item = $hardDrive[id];

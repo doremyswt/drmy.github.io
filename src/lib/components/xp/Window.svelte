@@ -49,6 +49,9 @@
             options.left = 0;
             options.width = node_ref.parentNode.offsetWidth;
             options.height = node_ref.parentNode.offsetHeight;
+            // clamp min-width/height so CSS doesn't override the maximized size
+            options.min_width = Math.min(options.min_width || 0, options.width);
+            options.min_height = Math.min(options.min_height || 0, options.height);
             maximized = true;
         } else {
             if(options.top == null){
