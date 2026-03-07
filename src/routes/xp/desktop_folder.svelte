@@ -5,12 +5,11 @@
     import { doctypes, icons, desktop_folder, previewable_exts } from '../../lib/system';
     import * as fs from '../../lib/fs';
     const {click_outside, long_press, double_tap} = utils;
-    import {  onMount, tick } from 'svelte';
+    import { tick } from 'svelte';
     import short from 'short-uuid';
     import {get, set} from 'idb-keyval';
     import { filter, map, transform } from 'lodash';
-    import DragSelect from 'dragselect';
-    import RecycleBin from '../../lib/components/xp/RecycleBin.svelte';
+        import RecycleBin from '../../lib/components/xp/RecycleBin.svelte';
     import { parse_dir } from '../../lib/dir_parser';
     import Previewable from '../../lib/components/xp/Previewable.svelte';
     
@@ -26,69 +25,79 @@
 
     let is_focus = true;
     let item_long_pressed = false;
-    let _click_protected = false;
-    let _click_protected_timer = null;
-    let _ds_had_items = false;
-    let _pre_mousedown_ids = new Set();
     let node_ref;
     let cell_size = 80;
 
     export let renaming = false;
 
-    const ds = new DragSelect({
-        customStyles: false,
-        draggability: true
-    });
+    // Drag state: shared between rubber-band select and icon repositioning
+    let _drag_start = null; // {x, y, on_item, item_el, item_fs_id, item_tx, item_ty}
+    let _drag_moved = false;
+    let rb_visible = false;
+    let rb_left = 0, rb_top = 0, rb_width = 0, rb_height = 0;
 
-    ds.subscribe('callback', (e) => {
-        // Always save drag-move transforms
-        for(let node of e.items){
-            let fs_id = node.getAttribute('fs-id');
-            if(fs_id == null) continue;
-            if($hardDrive[fs_id] == null) continue;
-            if(utils.is_empty(node.style.transform)) continue;
-            $hardDrive[fs_id]['desktop_css_transform'] = node.style.transform;
+    function parse_translate(str) {
+        if (!str) return {x: 0, y: 0};
+        let m = str.match(/translate(?:3d)?\(([^,]+)px,\s*([^,)]+)px/);
+        return m ? {x: parseFloat(m[1]), y: parseFloat(m[2])} : {x: 0, y: 0};
+    }
+
+    function on_mousedown(e) {
+        if (e.button !== 0) return;
+        _drag_moved = false;
+        let item_el = e.target.closest('.fs-item');
+        if (item_el) {
+            let t = parse_translate(item_el.style.transform);
+            _drag_start = {x: e.clientX, y: e.clientY, on_item: true, item_el, item_fs_id: item_el.getAttribute('fs-id'), item_tx: t.x, item_ty: t.y};
+        } else {
+            _drag_start = {x: e.clientX, y: e.clientY, on_item: false};
         }
-        // Track whether this interaction selected items (used to guard root click from
-        // clearing a drag-select). Always update before the _click_protected guard.
-        _ds_had_items = e.items.length > 0;
-        if (_click_protected) return;
-        $selectingItems = e.items
-        .map(el => el.getAttribute('fs-id'))
-        .filter(el => $hardDrive[el] != null);
-    });
-    const observer = new MutationObserver(mutations => {
-        ds.setSettings({
-            selectables: node_ref ? node_ref.querySelectorAll('.fs-item') : []
-        })
-    });
+    }
 
-    onMount(async () => {
-        ds.setSettings({
-            selectables: node_ref.querySelectorAll('.fs-item'),
-            area: node_ref
-        })
-        observer.observe(node_ref, {attributes: false, childList: true, characterData: false, subtree:true});
-        // Capture pre-mousedown selection so ctrl+click on:click can correctly add/remove
-        // (DS immediateDrag adds the item on mousedown, making $selectingItems stale by click time).
-        node_ref.addEventListener('mousedown', () => {
-            _pre_mousedown_ids = new Set($selectingItems);
-        }, { passive: true });
-        // On mobile, DS calls preventDefault() on touchstart so the synthetic click never fires.
-        // Restore is_focus via touchstart so items appear selected after any touch interaction.
-        node_ref.addEventListener('touchstart', () => { is_focus = true; }, { passive: true });
-    })
-    
+    function on_mousemove(e) {
+        if (!_drag_start) return;
+        let dx = e.clientX - _drag_start.x, dy = e.clientY - _drag_start.y;
+        if (!_drag_moved && dx*dx + dy*dy < 25) return;
+        _drag_moved = true;
+        if (_drag_start.on_item) {
+            _drag_start.item_el.style.transform = `translate(${_drag_start.item_tx + dx}px, ${_drag_start.item_ty + dy}px)`;
+        } else {
+            rb_visible = true;
+            let cr = node_ref.getBoundingClientRect();
+            let [sx, sy, cx, cy] = [_drag_start.x, _drag_start.y, e.clientX, e.clientY];
+            let rbc = {left: Math.min(sx,cx), right: Math.max(sx,cx), top: Math.min(sy,cy), bottom: Math.max(sy,cy)};
+            rb_left = rbc.left - cr.left; rb_top = rbc.top - cr.top;
+            rb_width = rbc.right - rbc.left; rb_height = rbc.bottom - rbc.top;
+            let sel = [];
+            for (let el of node_ref.querySelectorAll('.fs-item')) {
+                let r = el.getBoundingClientRect();
+                if (r.left < rbc.right && r.right > rbc.left && r.top < rbc.bottom && r.bottom > rbc.top) {
+                    let fid = el.getAttribute('fs-id');
+                    if ($hardDrive[fid] != null) sel.push(fid);
+                }
+            }
+            $selectingItems = sel;
+        }
+    }
+
+    function on_mouseup() {
+        if (!_drag_start) return;
+        if (_drag_start.on_item && _drag_moved) {
+            let fid = _drag_start.item_fs_id;
+            if ($hardDrive[fid] != null) $hardDrive[fid]['desktop_css_transform'] = _drag_start.item_el.style.transform;
+        }
+        rb_visible = false;
+        _drag_start = null;
+    }
+
 
     function on_rightclick(ev, item){
         let selected = $selectingItems.includes(item.id);
-        let el = node_ref.querySelector(`.fs-item[fs-id="${item.id}"]`);
-
-        if(!selected && el && el.classList.contains('fs-item')){
+        if (!selected) {
             if(ev.metaKey || ev.ctrlKey){
-                ds.addSelection([el], true);
+                $selectingItems = [...$selectingItems, item.id];
             } else {
-                ds.setSelection([el], true);
+                $selectingItems = [item.id];
             }
         }
 
@@ -109,7 +118,6 @@
     }
 
     function clear_selection(){
-        ds.clearSelection(false);
         $selectingItems = [];
     }
 
@@ -206,8 +214,7 @@
         } else if(e.key == 'v'){
             fs.paste(id);
         } else if(e.key == 'a'){
-            let els = node_ref.querySelectorAll('.fs-item');
-            ds.setSelection(els, true);
+            $selectingItems = items.map(el => el.id);
         }
     }
 
@@ -243,7 +250,8 @@
 
 <div class="absolute z-0 inset-0 overflow-hidden bg-transparent"
     on:drop={on_drop} on:dragover={on_drop_over}
-    on:click={(e) => { is_focus = true; if (!e.target.closest('.fs-item')) { if (_ds_had_items) { _ds_had_items = false; return; } $selectingItems = []; ds.clearSelection(false); } }}
+    on:mousedown={on_mousedown}
+    on:click={(e) => { is_focus = true; if (!e.target.closest('.fs-item') && !_drag_moved) { $selectingItems = []; } }}
     use:click_outside on:click_outside={() => {
         is_focus = false;
     }}
@@ -257,7 +265,7 @@
 
             <div fs-id="{item.id}" class="relative fs-item w-[150px] flex-shrink-0 flex-grow-0 overflow-hidden m-2 inline-flex flex-col items-center font-MSSS"
                 on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
-                on:click={(e) => { clearTimeout(_click_protected_timer); _click_protected = true; _click_protected_timer = setTimeout(() => _click_protected = false, 300); let el = e.currentTarget; let fs_id = el.getAttribute('fs-id'); if (e.ctrlKey || e.metaKey) { if (_pre_mousedown_ids.has(fs_id)) { $selectingItems = $selectingItems.filter(id => id !== fs_id); ds.removeSelection([el], false); } else { ds.addSelection([el], false); } } else { $selectingItems = [fs_id]; ds.setSelection([el], false); } }}
+                on:click={(e) => { if (_drag_moved) return; let fs_id = e.currentTarget.getAttribute('fs-id'); if (e.ctrlKey || e.metaKey) { $selectingItems = $selectingItems.includes(fs_id) ? $selectingItems.filter(id => id !== fs_id) : [...$selectingItems, fs_id]; } else { $selectingItems = [fs_id]; } }}
                 use:long_press on:long_press={(e) => { item_long_pressed = true; setTimeout(() => item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}
                 use:double_tap on:double_tap={() => open(item.id)}
                 style:transform="{item.desktop_css_transform}"
@@ -296,7 +304,13 @@
 
     <RecycleBin style="width: {cell_size}px;height: {cell_size}px;"></RecycleBin>
 
+    {#if rb_visible}
+        <div class="absolute pointer-events-none border border-blue-500 bg-blue-500/20"
+            style:left="{rb_left}px" style:top="{rb_top}px" style:width="{rb_width}px" style:height="{rb_height}px">
+        </div>
+    {/if}
+
 </div>
 
 <svelte:options accessors={true}></svelte:options>
-<svelte:window on:keydown={on_keydown}></svelte:window>
+<svelte:window on:keydown={on_keydown} on:mousemove={on_mousemove} on:mouseup={on_mouseup}></svelte:window>

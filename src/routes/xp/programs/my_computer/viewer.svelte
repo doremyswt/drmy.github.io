@@ -6,14 +6,13 @@
     import { doctypes, icons, my_computer, hidden_items, recycle_bin_id, previewable_exts } from '../../../../lib/system';
     import * as fs from '../../../../lib/fs';
     const {click_outside, long_press, double_tap} = utils;
-    import { createEventDispatcher, onMount, tick, mount, unmount } from 'svelte';
+    import { createEventDispatcher, tick, mount, unmount } from 'svelte';
     import short from 'short-uuid';
     import {get, set} from 'idb-keyval';
     import { filter, map } from 'lodash';
     import { parse_dir } from '../../../../lib/dir_parser';
     let dispatch = createEventDispatcher();
-    import DragSelect from 'dragselect';
-    import Previewable from '../../../../lib/components/xp/Previewable.svelte';
+        import Previewable from '../../../../lib/components/xp/Previewable.svelte';
     import hash_sum from 'hash-sum';
 
     export let self;
@@ -29,7 +28,7 @@
         .filter(el => !hidden_items.includes(el.id));
 
     $: sorted_items = id ? null : null;//reset sorted_items every time id changes
-    $: if (id !== undefined) { ds?.clearSelection?.(false); $selectingItems = []; }
+    $: if (id !== undefined) { $selectingItems = []; }
     let worker = new Worker(new URL('./sort.js', import.meta.url), {type: 'module'});
     worker.onmessage = ({data}) => {
         if(data.type == 'sorted' && data.id == id){
@@ -71,50 +70,58 @@
     }
 
     export let renaming = false;
-    let _click_protected = false;
-    let _click_protected_timer = null;
-    let _ds_had_items = false;
-    let _pre_mousedown_ids = new Set();
 
-    const ds = new DragSelect({
-        customStyles: false,
-        draggability: false
-    });
+    // Drag state for rubber-band select
+    let _drag_start = null;
+    let _drag_moved = false;
+    let rb_visible = false;
+    let rb_left = 0, rb_top = 0, rb_width = 0, rb_height = 0;
 
-    ds.subscribe('callback', (e) => {
-        _ds_had_items = e.items.length > 0;
-        if (_click_protected) return;
-        $selectingItems = e.items
-            .map(el => el.getAttribute('fs-id'))
-            .filter(el => $hardDrive[el] != null);
-    });
-    const observer = new MutationObserver(mutations => {
-        ds.setSettings({
-            selectables: node_ref ? node_ref.querySelectorAll('.fs-item') : []
-        })
-    });
+    function on_mousedown(e) {
+        if (e.button !== 0) return;
+        _drag_moved = false;
+        if (!e.target.closest('.fs-item')) {
+            _drag_start = {x: e.clientX, y: e.clientY};
+        }
+    }
 
-    onMount(async () => {
-        ds.setSettings({
-            selectables: node_ref.querySelectorAll('.fs-item'),
-            area: node_ref
-        })
-        observer.observe(node_ref, {attributes: false, childList: true, characterData: false, subtree:true});
-        node_ref.addEventListener('mousedown', () => {
-            _pre_mousedown_ids = new Set($selectingItems);
-        }, { passive: true });
+    function on_mousemove(e) {
+        if (!_drag_start) return;
+        let dx = e.clientX - _drag_start.x, dy = e.clientY - _drag_start.y;
+        if (!_drag_moved && dx*dx + dy*dy < 25) return;
+        _drag_moved = true;
+        rb_visible = true;
+        let cr = node_ref.getBoundingClientRect();
+        let [sx, sy, cx, cy] = [_drag_start.x, _drag_start.y, e.clientX, e.clientY];
+        let rbc = {left: Math.min(sx,cx), right: Math.max(sx,cx), top: Math.min(sy,cy), bottom: Math.max(sy,cy)};
+        rb_left = rbc.left - cr.left + node_ref.scrollLeft;
+        rb_top = rbc.top - cr.top + node_ref.scrollTop;
+        rb_width = rbc.right - rbc.left;
+        rb_height = rbc.bottom - rbc.top;
+        let sel = [];
+        for (let el of node_ref.querySelectorAll('.fs-item')) {
+            let r = el.getBoundingClientRect();
+            if (r.left < rbc.right && r.right > rbc.left && r.top < rbc.bottom && r.bottom > rbc.top) {
+                let fid = el.getAttribute('fs-id');
+                if ($hardDrive[fid] != null) sel.push(fid);
+            }
+        }
+        $selectingItems = sel;
+    }
 
-    })
+    function on_mouseup() {
+        if (!_drag_start) return;
+        rb_visible = false;
+        _drag_start = null;
+    }
 
     function on_rightclick(ev, item){
         let selected = $selectingItems.includes(item.id);
-        let el = node_ref.querySelector(`.fs-item[fs-id="${item.id}"]`);
-
-        if(!selected && el && el.classList.contains('fs-item')){
+        if (!selected) {
             if(ev.metaKey || ev.ctrlKey){
-                ds.addSelection([el], true);
+                $selectingItems = [...$selectingItems, item.id];
             } else {
-                ds.setSelection([el], true);
+                $selectingItems = [item.id];
             }
         }
 
@@ -133,7 +140,6 @@
     }
 
     function clear_selection(){
-        ds.clearSelection(false);
         $selectingItems = [];
     }
 
@@ -226,8 +232,7 @@
         } else if(e.key == 'v'){
             fs.paste(id);
         } else if(e.key == 'a'){
-            let els = node_ref.querySelectorAll('.fs-item');
-            ds.setSelection(els, true);
+            $selectingItems = items.map(el => el.id);
         } else if(e.key == 'ArrowUp'){
             e.preventDefault();
             my_computer_instance.up();
@@ -286,17 +291,10 @@
 
 </script>
 
-<style>
-    .ds-selected {
-        outline: 3px solid black;
-        outline-offset: 3px;
-        color: black;
-        font-weight: bold;
-    }
-</style>
 <div class="absolute inset-0 overflow-auto bg-slate-50"
     on:drop={on_drop} on:dragover={on_drop_over} bind:this={node_ref}
-    on:click={(e) => { if (!e.target.closest('.fs-item')) { if (_ds_had_items) { _ds_had_items = false; return; } ds.clearSelection(false); $selectingItems = []; } }}>
+    on:mousedown={on_mousedown}
+    on:click={(e) => { if (!e.target.closest('.fs-item') && !_drag_moved) { $selectingItems = []; } }}>
     <div class="w-full min-h-[90%]" class:hidden={id == null}
         on:contextmenu|self={show_void_menu} on:click|self={clear_selection}>
         {#if sorted_items}
@@ -304,7 +302,7 @@
                 <div fs-id="{item.id}" class="fs-item w-[150px] overflow-hidden m-2 inline-flex flex-row items-center font-MSSS relative
                     {$clipboard.includes(item.id) && $clipboard_op == 'cut' ? 'opacity-70' : ''}"
                     on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
-                    on:click={(e) => { clearTimeout(_click_protected_timer); _click_protected = true; _click_protected_timer = setTimeout(() => _click_protected = false, 300); let el = e.currentTarget; let fs_id = el.getAttribute('fs-id'); if (e.ctrlKey || e.metaKey) { if (_pre_mousedown_ids.has(fs_id)) { $selectingItems = $selectingItems.filter(id => id !== fs_id); ds.removeSelection([el], false); } else { ds.addSelection([el], false); } } else { $selectingItems = [fs_id]; ds.setSelection([el], false); } }}
+                    on:click={(e) => { if (_drag_moved) return; let fs_id = e.currentTarget.getAttribute('fs-id'); if (e.ctrlKey || e.metaKey) { $selectingItems = $selectingItems.includes(fs_id) ? $selectingItems.filter(id => id !== fs_id) : [...$selectingItems, fs_id]; } else { $selectingItems = [fs_id]; } }}
                     use:double_tap on:double_tap={() => open(item.id)}
                     use:long_press on:long_press={(e) => on_rightclick({x: e.detail.x, y: e.detail.y}, item)}>
                     {#if previewable_exts.includes(item.ext)}
@@ -387,7 +385,13 @@
         {/each}
     </div>
 
+    {#if rb_visible}
+        <div class="absolute pointer-events-none border border-blue-500 bg-blue-500/20"
+            style:left="{rb_left}px" style:top="{rb_top}px" style:width="{rb_width}px" style:height="{rb_height}px">
+        </div>
+    {/if}
+
 </div>
 
 <svelte:options accessors={true}></svelte:options>
-<svelte:window on:keydown={on_keydown}></svelte:window>
+<svelte:window on:keydown={on_keydown} on:mousemove={on_mousemove} on:mouseup={on_mouseup}></svelte:window>
