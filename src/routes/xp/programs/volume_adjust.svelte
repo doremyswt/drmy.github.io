@@ -1,17 +1,17 @@
 <script>
-    import { unmount } from 'svelte';
+    import { unmount, mount } from 'svelte';
     import { systemVolume} from '../../../lib/store';
     import RangeSlider from "svelte-range-slider-pips";
     import * as utils from '../../../lib/utils';
     const { click_outside } = utils;
 
-    export let self;
+    export let get_self = () => null;
     export let position;
     let height = 180;
     let width = 80;
 
     function destroy(){
-        unmount(self);
+        unmount(get_self());
     }
 
     function update_system_volume(e){

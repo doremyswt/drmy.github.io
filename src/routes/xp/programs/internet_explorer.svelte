@@ -14,22 +14,25 @@
 
     export let id;
     export let window;
-    export let self;
+    export let get_self = () => null;
     export let url;
     export let exec_path;
 
     let iframe;
     let address_bar;
-    let homepage = url ? url : 'https://app.usepanda.com/#/';
+    let homepage = url ? url : 'https://wiby.me/';
     let history = [homepage];
     
     let page_index = 0;
     let loading = true;
 
     let real_url;
+    let frame_blocked = false;
+    $: if (frame_blocked) loading = false;
 
     onMount(async () => {
         real_url = await to_real_url(history[page_index]);
+        frame_blocked = await is_frame_blocked(history[page_index]);
     })
 
     function on_user_input(e){
@@ -59,21 +62,38 @@
         history = [...history.slice(0, page_index+1), url, ...history.slice(page_index+1)];
         page_index++;
         console.log(history);
-        real_url = await to_real_url(history[page_index]);
+        const current = history[page_index];
+        [real_url, frame_blocked] = await Promise.all([
+            to_real_url(current),
+            is_frame_blocked(current)
+        ]);
     }
 
     async function back(){
         page_index = page_index - 1;
-        real_url = await to_real_url(history[page_index]);
+        const current = history[page_index];
+        [real_url, frame_blocked] = await Promise.all([to_real_url(current), is_frame_blocked(current)]);
     }
 
     async function next(){
         page_index = page_index + 1;
-        real_url = await to_real_url(history[page_index]);
+        const current = history[page_index];
+        [real_url, frame_blocked] = await Promise.all([to_real_url(current), is_frame_blocked(current)]);
     }
 
     function iframe_loaded(){
         loading = false;
+    }
+
+    async function is_frame_blocked(url) {
+        if (!url || !url.startsWith('http')) return false;
+        try {
+            const res = await fetch(`/api/check_frame?url=${encodeURIComponent(url)}`);
+            const data = await res.json();
+            return data.blocked;
+        } catch {
+            return false;
+        }
     }
 
     async function to_real_url(url){
@@ -86,8 +106,8 @@
     }
 
     export function destroy(){
-        runningPrograms.update(programs => programs.filter(p => p != self));
-        unmount(self);
+        runningPrograms.update(programs => programs.filter(p => p != get_self()));
+        unmount(get_self());
     }
 
     let ws_size = {width: document.querySelector('#work-space').offsetWidth, height: document.querySelector('#work-space').offsetHeight};
@@ -264,7 +284,7 @@
                 }}></RButton>
             <RButton icon="/images/xp/icons/IEHome.png"
                 on_click={() => {
-                    address_bar.value = 'https://app.usepanda.com/#/';
+                    address_bar.value = 'https://wiby.me/';
                     load_page();
                 }}>
             </RButton>
@@ -301,14 +321,46 @@
             <div on:click={load_page} class="w-[30px] h-[20px] bg-[url(/images/xp/icons/Go.png)] bg-center bg-contain bg-no-repeat"></div>
         </div>
         
-        <div class="grow">
-            <!-- svelte-ignore a11y-missing-attribute -->
-            <iframe bind:this={iframe} 
-                class="w-full h-full bg-slate-50 {window?.z_index == $zIndex ? 'pointer-events-auto' : 'pointer-events-none'}" 
-                src="{real_url}" 
-                on:load={(e) => iframe_loaded(e)} frameborder="0">
-            </iframe>
-            
+        <div class="grow relative overflow-auto">
+            {#if frame_blocked}
+                <div class="absolute inset-0 bg-white overflow-auto p-4 font-sans text-[13px] select-text">
+                    <table class="w-full border-b-2 border-[#CC0000] mb-3" cellpadding="0" cellspacing="0">
+                        <tbody>
+                        <tr>
+                            <td class="pb-1">
+                                <p class="text-[18px] font-bold text-[#CC0000]">The page cannot be displayed</p>
+                                <p class="text-[12px] text-gray-700 mt-1">The page you are looking for is currently unavailable. The Web site might be experiencing technical difficulties, or you may need to adjust your browser settings.</p>
+                            </td>
+                            <td class="w-[60px] align-top">
+                                <img src="/images/xp/icons/InternetExplorer6.png" width="48" height="48" alt="">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p class="font-bold mb-1">Please try the following:</p>
+                    <ul class="list-disc ml-6 space-y-1 text-[12px]">
+                        <li>Click the <button class="text-blue-700 underline cursor-pointer bg-transparent border-none p-0 font-inherit" on:click={() => { frame_blocked = false; loading = true; }}>Refresh</button> button, or try again later.</li>
+                        <li>If you typed the page address in the Address bar, make sure that it is spelled correctly.</li>
+                        <li>
+                            To check your connection settings, click the <b>Tools</b> menu, and then click <b>Internet Options</b>.
+                            On the <b>Connections</b> tab, click <b>Settings</b>.
+                            The settings should match those provided by your local area network (LAN) administrator or Internet service provider (ISP).
+                        </li>
+                        <li>Some sites require 128-bit connection security. Click the <b>Help</b> menu and then click <b>About Internet Explorer</b> to determine what strength security you have installed.</li>
+                        <li>If you are trying to reach a secure site, make sure your Security settings can support it. Click the <b>Tools</b> menu, and then click <b>Internet Options</b>. On the Advanced tab, scroll to the Security section and check settings for SSL 2.0, SSL 3.0, TLS 1.0, PCT 1.0.</li>
+                        <li>Click the <b>Back</b> button to try another link.</li>
+                    </ul>
+                    <br>
+                    <p class="text-[12px] text-gray-600">Cannot find server or DNS Error<br><b>Internet Explorer</b></p>
+                </div>
+            {:else}
+                <!-- svelte-ignore a11y-missing-attribute -->
+                <iframe bind:this={iframe}
+                    class="w-full h-full bg-slate-50 {window?.z_index == $zIndex ? 'pointer-events-auto' : 'pointer-events-none'}"
+                    src="{real_url}"
+                    on:load={(e) => iframe_loaded(e)} frameborder="0">
+                </iframe>
+            {/if}
         </div>
         <div class="bg-xp-yellow h-[20px] shrink-0 flex flex-row justify-between items-center px-2">
             <div class="flex flex-row">

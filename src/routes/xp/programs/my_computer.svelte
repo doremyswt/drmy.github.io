@@ -11,7 +11,7 @@
 
     export let id;//this is the program id, don' confuse with file/folder id
     export let window;
-    export let self;
+    export let get_self = () => null;
     export let exec_path;
 
     export let fs_item;//fs: file system, i.e, files and folder
@@ -199,8 +199,8 @@
     }
    
     export function destroy(){
-        runningPrograms.update(programs => programs.filter(p => p != self));
-        unmount(self);
+        runningPrograms.update(programs => programs.filter(p => p != get_self()));
+        unmount(get_self());
     }
 
     export let options = {

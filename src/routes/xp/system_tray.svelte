@@ -22,9 +22,8 @@
         const Program = (await import('./programs/volume_adjust.svelte')).default;
         let program = mount(Program, {
             target: document.body,
-            props:{position: {bottom: e.pageY-20, left: e.pageX}}
+            props:{position: {bottom: e.pageY-20, left: e.pageX}, get_self: () => program}
         });
-        program.self = program;
     }
 
 </script>

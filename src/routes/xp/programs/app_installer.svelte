@@ -1,5 +1,5 @@
 <script>
-    import { unmount } from 'svelte';
+    import { unmount, mount } from 'svelte';
     import Window from '../../../lib/components/xp/Window.svelte';
     import Button from '../../../lib/components/xp/Button.svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive, queueProgram } from '../../../lib/store';
@@ -9,7 +9,7 @@
 
     export let id;
     export let window;
-    export let self;
+    export let get_self = () => null;
     export let parentNode;
     export let exec_path;
 
@@ -22,8 +22,8 @@
     let fs_item_id;
 
     export async function destroy(){
-        runningPrograms.update(programs => programs.filter(p => p != self));
-        unmount(self);
+        runningPrograms.update(programs => programs.filter(p => p != get_self()));
+        unmount(get_self());
     }
 
     export let options = {

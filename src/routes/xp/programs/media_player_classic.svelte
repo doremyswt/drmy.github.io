@@ -12,7 +12,7 @@
 
     export let id;
     export let window;
-    export let self;
+    export let get_self = () => null;
     export let parentNode;
     export let fs_item;
     export let exec_path;
@@ -88,8 +88,8 @@
 
 
     export function destroy(){
-        runningPrograms.update(programs => programs.filter(p => p != self));
-        unmount(self);
+        runningPrograms.update(programs => programs.filter(p => p != get_self()));
+        unmount(get_self());
         clearTimeout(idle_timer);
     }
 

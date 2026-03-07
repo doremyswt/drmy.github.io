@@ -37,9 +37,8 @@
             const Program = (await import('./programs/my_computer.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), fs_item, exec_path: path}
+                props: {id: short.generate(), fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             //add to program tray
             runningPrograms.update(values => {
                 return [...values, program];
@@ -49,9 +48,8 @@
             const Program = (await import('./programs/display_properties.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), exec_path: path}
+                props: {id: short.generate(), exec_path: path, get_self: () => program}
             });
-            program.self = program;
             //add to program tray
             // runningPrograms.update(values => {
             //     return [...values, program];
@@ -61,9 +59,8 @@
             const Program = (await import('./programs/internet_explorer.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), url, exec_path: path}
+                props: {id: short.generate(), url, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             //add to program tray
             runningPrograms.update(values => {
                 return [...values, program];
@@ -72,9 +69,8 @@
             const Program = (await import('./programs/xp_tour.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             
             //add to program tray
             runningPrograms.update(values => {
@@ -84,9 +80,8 @@
             const Program = (await import('./programs/paint.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             
             //add to program tray
             runningPrograms.update(values => {
@@ -96,9 +91,8 @@
             const Program = (await import('./programs/photon.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             
             //add to program tray
             runningPrograms.update(values => {
@@ -109,9 +103,8 @@
             const Program = (await import('./programs/media_player_classic.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             if(fs_item) program.options = {...program.options, title: fs_item.name}
 
             //add to program tray
@@ -122,9 +115,8 @@
             const Program = (await import('./programs/minesweeper.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             //add to program tray
             runningPrograms.update(values => {
                 return [...values, program];
@@ -133,27 +125,24 @@
             const Program = (await import('./programs/properties.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             if(fs_item) program.options = {...program.options, title: fs_item.name + ' Properties'}
             
         }  else if(path == './programs/disk_properties.svelte'){
             const Program = (await import('./programs/disk_properties.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             if(fs_item) program.options = {...program.options, title: fs_item.display_name + ' Properties'}
             
         }  else if(path == './programs/notepad.svelte'){
             const Program = (await import('./programs/notepad.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             
             //add to program tray
             runningPrograms.update(values => {
@@ -164,9 +153,8 @@
             const Program = (await import('./programs/java.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             if(fs_item) program.options = {...program.options, title: fs_item.display_name};
             
             //add to program tray
@@ -177,9 +165,8 @@
             const Program = (await import('./programs/foxit_reader.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             
             //add to program tray
             runningPrograms.update(values => {
@@ -189,9 +176,8 @@
             const Program = (await import('./programs/microsoft_word.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             
             //add to program tray
             runningPrograms.update(values => {
@@ -201,9 +187,8 @@
             const Program = (await import('./programs/koodo.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             
             //add to program tray
             runningPrograms.update(values => {
@@ -213,9 +198,8 @@
             const Program = (await import('./programs/winrar.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             
             //add to program tray
             runningPrograms.update(values => {
@@ -225,9 +209,8 @@
             const Program = (await import('./programs/zip.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             
             //add to program tray
             runningPrograms.update(values => {
@@ -237,9 +220,8 @@
             const Program = (await import('./programs/webapp.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, webapp, exec_path: path + '::' + webapp.url}
+                props: {id: short.generate(), parentNode: node_ref, webapp, exec_path: path + '::' + webapp.url, get_self: () => program}
             });
-            program.self = program;
             
             //add to program tray
             runningPrograms.update(values => {
@@ -249,9 +231,8 @@
             const Program = (await import('./programs/image_viewer.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             
             //add to program tray
             runningPrograms.update(values => {
@@ -262,17 +243,15 @@
             const Program = (await import('./programs/copier.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, copying_obj, target_folder_id, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, copying_obj, target_folder_id, exec_path: path, get_self: () => program}
             });
-            program.self = program;
         } else if(path == './programs/app_installer.svelte'){
 
             const Program = (await import('./programs/app_installer.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, copying_obj, target_folder_id, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, copying_obj, target_folder_id, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             //add to program tray
             runningPrograms.update(values => {
                 return [...values, program];
@@ -281,9 +260,8 @@
             const Program = (await import('./programs/flash_player.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path}
+                props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            program.self = program;
             
             //add to program tray
             runningPrograms.update(values => {
