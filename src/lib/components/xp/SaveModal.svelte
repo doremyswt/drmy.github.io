@@ -54,7 +54,7 @@
 
 </script>
 
-<div class="absolute inset-0 bg-slate-50/40 rounded-t-lg z-10" on:click|self={(e) => {
+<div class="absolute inset-0 bg-slate-50/40 rounded-t-lg" style:z-index="100000" on:click|self={(e) => {
     e.target.querySelector('div').classList.add('animate-blink');
     setTimeout(() => {
         e.target.querySelector('div').classList.remove('animate-blink');

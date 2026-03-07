@@ -22,7 +22,7 @@
 
 </script>
 
-<div class="z-20 dialog absolute inset-0 bg-slate-50/10 rounded-t-lg" on:click|self={(e) => {
+<div class="dialog absolute inset-0 bg-slate-50/10 rounded-t-lg" style:z-index="100000" on:click|self={(e) => {
     e.target.querySelector('div').classList.add('animate-blink');
     setTimeout(() => {
         e.target.querySelector('div').classList.remove('animate-blink');
