@@ -345,3 +345,55 @@ export function timestamp_to_readable(timestamp){
   date.setTime(timestamp);
   return date.toString();
 }
+
+/** Svelte action: fires 'long_press' custom event after holding touch for `duration` ms.
+ *  Cancels if the finger moves more than 10px.
+ *  Usage: <div use:long_press on:long_press={(e) => handler(e.detail.x, e.detail.y)}>
+ */
+export function long_press(node, duration = 500) {
+  let timer = null;
+  let startX = 0;
+  let startY = 0;
+
+  function handle_start(e) {
+    if (e.touches?.length > 1) return;
+    const t = e.touches?.[0] ?? e;
+    startX = t.clientX;
+    startY = t.clientY;
+    timer = setTimeout(() => {
+      node.dispatchEvent(new CustomEvent('long_press', {
+        detail: { x: startX, y: startY },
+        bubbles: true
+      }));
+    }, duration);
+  }
+
+  function handle_move(e) {
+    if (!timer) return;
+    const t = e.touches?.[0] ?? e;
+    if (Math.abs(t.clientX - startX) > 10 || Math.abs(t.clientY - startY) > 10) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
+
+  function handle_end() {
+    clearTimeout(timer);
+    timer = null;
+  }
+
+  node.addEventListener('touchstart', handle_start, { passive: true });
+  node.addEventListener('touchmove', handle_move, { passive: true });
+  node.addEventListener('touchend', handle_end);
+  node.addEventListener('touchcancel', handle_end);
+
+  return {
+    destroy() {
+      clearTimeout(timer);
+      node.removeEventListener('touchstart', handle_start);
+      node.removeEventListener('touchmove', handle_move);
+      node.removeEventListener('touchend', handle_end);
+      node.removeEventListener('touchcancel', handle_end);
+    }
+  };
+}

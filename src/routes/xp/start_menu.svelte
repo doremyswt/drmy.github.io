@@ -408,11 +408,25 @@
         },
     ]
 
+    let programs_open = false;
+    let open_l2 = null;  // name of open level-2 item (e.g. "Accessories")
+    let open_l3 = null;  // name of open level-3 item (e.g. "System Tools")
+    let l2_side = 'right'; // 'left' | 'right' — computed on click based on available space
+
     function hide(){
         let el = document.querySelector('#start-menu');
         if(!el.classList.contains('hidden')){
             el.classList.add('hidden');
         }
+        programs_open = false;
+        open_l2 = null;
+        open_l3 = null;
+    }
+
+    function pick_l2_side(e) {
+        if(window.innerWidth < 640) return; // mobile: uses CSS stacking, no need
+        const rect = e.currentTarget.getBoundingClientRect();
+        l2_side = rect.right + 200 > window.innerWidth ? 'left' : 'right';
     }
 
     function launch(item){
@@ -463,123 +477,185 @@
     <div class="shrink-0 h-[2px] w-full" style:background-image="linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgb(218, 136, 74) 50%, rgba(0, 0, 0, 0) 100%)">
     </div>
 
-    <div class="grow bg-slate-50 mx-0.5 flex flex-row">
-        
+    <div class="grow bg-slate-50 mx-0.5 relative overflow-hidden flex flex-row">
+
+        <!-- ── Mobile: All Programs full-panel accordion overlay ── -->
+        {#if programs_open}
+        <div class="absolute inset-0 z-30 bg-slate-50 flex flex-col sm:hidden">
+            <div class="flex items-center px-3 py-2 border-b-2 border-blue-300 bg-[#c5d9f1] shrink-0">
+                <div class="flex items-center cursor-pointer mr-3"
+                    on:click|stopPropagation={() => { programs_open = false; open_l2 = null; open_l3 = null; }}>
+                    <svg class="w-3 h-3 fill-blue-800 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
+                        <path d="M9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 256c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-128-128z"/>
+                    </svg>
+                    <span class="text-[11px] font-bold text-blue-800">Back</span>
+                </div>
+                <span class="text-[11px] font-bold text-slate-700">All Programs</span>
+            </div>
+            <div class="overflow-y-auto flex-1">
+                {#each programs as item}
+                    {#if item == null}
+                        <div class="h-px bg-slate-200 mx-2 my-0.5 shrink-0"></div>
+                    {:else}
+                        <div>
+                            <div class="flex items-center px-3 py-2.5 group/mp hover:bg-blue-500 cursor-pointer border-b border-slate-100"
+                                on:click|stopPropagation={() => {
+                                    if(item.items) { open_l2 = open_l2 === item.name ? null : item.name; open_l3 = null; }
+                                    else { launch(item); }
+                                }}>
+                                <div class="w-5 h-5 bg-contain mr-2.5 shrink-0" style:background-image="url({item.icon})"></div>
+                                <div class="text-[12px] text-slate-800 group-hover/mp:text-white grow">{item.name}</div>
+                                {#if item.items}
+                                    <svg class="w-3 h-3 shrink-0 fill-slate-400 group-hover/mp:fill-white transition-transform duration-150 {open_l2 === item.name ? 'rotate-90' : ''}"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
+                                        <path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/>
+                                    </svg>
+                                {/if}
+                            </div>
+                            {#if item.items && open_l2 === item.name}
+                            <div class="bg-[#eef3fb]">
+                                {#each item.items as subitem}
+                                    {#if subitem == null}
+                                        <div class="h-px bg-slate-200 mx-2 my-0.5"></div>
+                                    {:else}
+                                        <div>
+                                            <div class="flex items-center pl-7 pr-3 py-2 group/mps hover:bg-blue-500 cursor-pointer border-b border-[#dde8f8]"
+                                                on:click|stopPropagation={() => {
+                                                    if(subitem.items) { open_l3 = open_l3 === subitem.name ? null : subitem.name; }
+                                                    else { launch(subitem); }
+                                                }}>
+                                                <div class="w-4 h-4 bg-contain mr-2 shrink-0" style:background-image="url({subitem.icon})"></div>
+                                                <div class="text-[11px] text-slate-700 group-hover/mps:text-white grow">{subitem.name}</div>
+                                                {#if subitem.items}
+                                                    <svg class="w-3 h-3 shrink-0 fill-slate-400 group-hover/mps:fill-white transition-transform duration-150 {open_l3 === subitem.name ? 'rotate-90' : ''}"
+                                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
+                                                        <path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/>
+                                                    </svg>
+                                                {/if}
+                                            </div>
+                                            {#if subitem.items && open_l3 === subitem.name}
+                                            <div class="bg-[#dce8f8]">
+                                                {#each subitem.items as subsubitem}
+                                                    <div class="flex items-center pl-11 pr-3 py-2 group/mpss hover:bg-blue-500 cursor-pointer border-b border-[#cdd9ec]"
+                                                        on:click|stopPropagation={() => launch(subsubitem)}>
+                                                        <div class="w-4 h-4 bg-contain mr-2 shrink-0" style:background-image="url({subsubitem.icon})"></div>
+                                                        <div class="text-[11px] text-slate-700 group-hover/mpss:text-white grow">{subsubitem.name}</div>
+                                                    </div>
+                                                {/each}
+                                            </div>
+                                            {/if}
+                                        </div>
+                                    {/if}
+                                {/each}
+                            </div>
+                            {/if}
+                        </div>
+                    {/if}
+                {/each}
+            </div>
+        </div>
+        {/if}
+
+        <!-- ── Left column ── -->
         <div class="grow w-1/2 flex flex-col h-full shrink-0 px-1">
             {#each col_1 as item}
                 {#if item == null}
                     <div class="my-0.5 mx-auto w-5/6 h-[2px] bg-slate-200 shrink-0"></div>
                 {:else}
-                    <div class="flex flex-row items-center grow p-1 group hover:bg-blue-500" on:click={() => launch(item)}>
-                        <div class="w-8 h-8 bg-contain mr-1"
-                            style:background-image="url({item.icon})">
-                        </div>
-                        <div class="text-[11px] group-hover:text-white text-black {item.font == 'bold' ? 'font-bold' : ''}">
-                            {item.name}
-                        </div>
+                    <div class="flex flex-row items-center grow p-1 group/c1 hover:bg-blue-500" on:click={() => launch(item)}>
+                        <div class="w-8 h-8 bg-contain mr-1" style:background-image="url({item.icon})"></div>
+                        <div class="text-[11px] group-hover/c1:text-white text-black {item.font == 'bold' ? 'font-bold' : ''}">{item.name}</div>
                     </div>
                 {/if}
             {/each}
             <div class="my-0.5 mx-auto w-5/6 h-[2px] bg-slate-200 shrink-0"></div>
-            <div class="relative grow group">
-                
-                <div class="flex pl-9 py-2 items-center flex-row  group-hover:bg-blue-500">
-                    <div class="font-bold text-black text-[11px] group-hover:text-white">All Programs</div>
+            <!-- All Programs button + desktop popup -->
+            <div class="relative grow">
+                <div class="flex pl-9 py-2 items-center flex-row cursor-pointer hover:bg-blue-500 group/ap"
+                    on:click|stopPropagation={() => { programs_open = !programs_open; open_l2 = null; open_l3 = null; }}>
+                    <div class="font-bold text-black text-[11px] group-hover/ap:text-white">All Programs</div>
                     <div class="w-4 h-4 ml-1 bg-contain bg-[url(/images/xp/icons/876.png)]"></div>
                 </div>
 
-                <div class="absolute left-[90%] bottom-0 w-[250px] shadow-xl border-t border-l-4 border-blue-500 hidden group-hover:block bg-slate-50">
-                    <div class="absolute -left-[50px] bottom-0 w-[820px] h-[500px] ">
-                        <div class="absolute left-[300px] top-0 -bottom-[100px] right-0 " on:click|self={hide}></div>
-                    </div>
+                {#if programs_open}
+                <!-- Desktop-only flyout (hidden on mobile, shown sm+) -->
+                <div class="hidden sm:block absolute z-10 bottom-0 left-[90%] w-[250px] shadow-xl border-t border-l-4 border-blue-500 bg-slate-50">
                     {#each programs as item}
                         {#if item == null}
                             <div class="my-0.5 mx-auto w-5/6 h-[1px] bg-slate-200 shrink-0"></div>
                         {:else}
-                            <div class="flex flex-row items-center grow p-1 group-sub1 hover:bg-blue-500 relative"  on:click={() => launch(item)}>
-                                <div class="w-5 h-5 bg-contain mr-1 shrink-0"
-                                    style:background-image="url({item.icon})">
-                                </div>
-                                <div class="text-[11px]  text-slate-800 grow group-sub1-hover:text-white">
-                                    {item.name}
-                                </div>
+                            <div class="flex flex-row items-center grow p-1 group/l1 hover:bg-blue-500 relative cursor-pointer"
+                                on:click|stopPropagation={(e) => {
+                                    if(item.items) { open_l2 = open_l2 === item.name ? null : item.name; open_l3 = null; pick_l2_side(e); }
+                                    else { launch(item); }
+                                }}>
+                                <div class="w-5 h-5 bg-contain mr-1 shrink-0" style:background-image="url({item.icon})"></div>
+                                <div class="text-[11px] text-slate-800 group-hover/l1:text-white grow">{item.name}</div>
                                 <div class="w-[10px] shrink-0">
                                     {#if item.items != null}
-                                        <svg class="fill-slate-900 group-sub1-hover:fill-slate-50 w-[10px] h-[10px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/></svg>
+                                        <svg class="fill-slate-900 group-hover/l1:fill-white w-[10px] h-[10px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/></svg>
                                     {/if}
                                 </div>
-
-                                {#if item.items != null}
-                                    <div class="absolute left-[100%] top-0 w-[200px] shadow-xl border-t border-b border-l-4 border-blue-500 hidden group-sub1-hover:block bg-slate-50"
-                                        style:top="{item.top}">
-                                        <div  on:click|self={hide} class="absolute left-0 -bottom-[50px] w-[500px]" style:height="{item.items.length * 37}px"></div>
-                                        {#if item.items.length == 0}
-                                            <div class="h-6 text-slate-400 text-[11px] w-full px-4 flex flex-row items-center">(Empty)</div>
-                                        {/if}
-                                        {#each item.items as subitem}
-                                            {#if subitem == null}
-                                                <div class="my-0.5 mx-auto w-5/6 h-[1px] bg-slate-200 shrink-0"></div>
-                                            {:else}
-                                                <div class="flex flex-row items-center grow p-1 group-sub2 hover:bg-blue-500 relative" on:click={() => launch(subitem)}>
-                                                    <div class="w-5 h-5 bg-contain mr-1 shrink-0"
-                                                        style:background-image="url({subitem.icon})">
-                                                    </div>
-                                                    <div class="text-[11px]  text-slate-800 grow group-sub2-hover:text-white">
-                                                        {subitem.name}
-                                                    </div>
-                                                    <div class="w-[10px] shrink-0">
-                                                        {#if subitem.items != null}
-                                                            <svg class="fill-slate-900 group-sub2-hover:fill-slate-50 w-[10px] h-[10px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/></svg>
-                                                        {/if}
-                                                    </div>
+                                {#if item.items != null && open_l2 === item.name}
+                                <div class="absolute z-20 top-0 w-[200px] shadow-xl border-t border-b border-l-4 border-blue-500 bg-slate-50"
+                                    style:left="{l2_side === 'right' ? '100%' : 'auto'}"
+                                    style:right="{l2_side === 'left' ? '100%' : 'auto'}">
+                                    {#if item.items.length == 0}
+                                        <div class="h-6 text-slate-400 text-[11px] w-full px-4 flex items-center">(Empty)</div>
+                                    {/if}
+                                    {#each item.items as subitem}
+                                        {#if subitem == null}
+                                            <div class="my-0.5 mx-auto w-5/6 h-[1px] bg-slate-200 shrink-0"></div>
+                                        {:else}
+                                            <div class="flex flex-row items-center grow p-1 group/l2 hover:bg-blue-500 relative cursor-pointer"
+                                                on:click|stopPropagation={() => {
+                                                    if(subitem.items) { open_l3 = open_l3 === subitem.name ? null : subitem.name; }
+                                                    else { launch(subitem); }
+                                                }}>
+                                                <div class="w-5 h-5 bg-contain mr-1 shrink-0" style:background-image="url({subitem.icon})"></div>
+                                                <div class="text-[11px] text-slate-800 group-hover/l2:text-white grow">{subitem.name}</div>
+                                                <div class="w-[10px] shrink-0">
                                                     {#if subitem.items != null}
-                                                        <div class="absolute left-[100%] top-0 w-[220px] shadow-xl border-t border-b border-l-4 border-blue-500 hidden group-sub2-hover:block bg-slate-50">
-                                                            {#each subitem.items as subsubitem}
-                                                                {#if subsubitem == null}
-                                                                    <div class="my-0.5 mx-auto w-5/6 h-[1px] bg-slate-200 shrink-0"></div>
-                                                                {:else}
-                                                                    <div class="flex flex-row items-center grow p-1 group-sub3 hover:bg-blue-500 relative" on:click={() => launch(subsubitem)}>
-                                                                        <div class="w-5 h-5 bg-contain mr-1 shrink-0"
-                                                                            style:background-image="url({subsubitem.icon})">
-                                                                        </div>
-                                                                        <div class="text-[11px]  text-slate-800 grow group-sub3-hover:text-white">
-                                                                            {subsubitem.name}
-                                                                        </div>
-                                                                        <div class="w-[10px] shrink-0">
-                                                                            {#if subsubitem.items != null}
-                                                                                <svg class="fill-slate-900 group-sub3-hover:fill-slate-50 w-[10px] h-[10px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/></svg>
-                                                                            {/if}
-                                                                        </div>
-                                                                    </div>
-                                                                {/if}
-                                                            {/each}
-                                                        </div>
+                                                        <svg class="fill-slate-900 group-hover/l2:fill-white w-[10px] h-[10px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/></svg>
                                                     {/if}
                                                 </div>
-                                            {/if}
-                                        {/each}
-                                    </div>
+                                                {#if subitem.items != null && open_l3 === subitem.name}
+                                                <div class="absolute z-30 top-0 left-full w-[220px] shadow-xl border-t border-b border-l-4 border-blue-500 bg-slate-50">
+                                                    {#each subitem.items as subsubitem}
+                                                        {#if subsubitem == null}
+                                                            <div class="my-0.5 mx-auto w-5/6 h-[1px] bg-slate-200 shrink-0"></div>
+                                                        {:else}
+                                                            <div class="flex flex-row items-center grow p-1 group/l3 hover:bg-blue-500 cursor-pointer"
+                                                                on:click|stopPropagation={() => launch(subsubitem)}>
+                                                                <div class="w-5 h-5 bg-contain mr-1 shrink-0" style:background-image="url({subsubitem.icon})"></div>
+                                                                <div class="text-[11px] text-slate-800 group-hover/l3:text-white grow">{subsubitem.name}</div>
+                                                            </div>
+                                                        {/if}
+                                                    {/each}
+                                                </div>
+                                                {/if}
+                                            </div>
+                                        {/if}
+                                    {/each}
+                                </div>
                                 {/if}
-
                             </div>
                         {/if}
                     {/each}
                 </div>
+                {/if}
             </div>
         </div>
 
+        <!-- ── Right column ── -->
         <div class="grow w-1/2 flex flex-col h-full bg-blue-200 shrink-0 px-1">
             {#each col_2 as item}
                 {#if item == null}
                     <div class="my-0.5 mx-auto w-5/6 h-[1px] bg-blue-100 shrink-0"></div>
                 {:else}
-                    <div class="flex flex-row items-center grow p-1 group hover:bg-blue-500" on:click={() => launch(item)}>
-                        <div class="w-7 h-7 bg-contain mr-1"
-                            style:background-image="url({item.icon})">
-                        </div>
-                        <div class="text-[11px] group-hover:text-white text-slate-800 {item.font == 'bold' ? 'font-bold' : ''}">
-                            {item.name}
-                        </div>
+                    <div class="flex flex-row items-center grow p-1 group/c2 hover:bg-blue-500" on:click={() => launch(item)}>
+                        <div class="w-7 h-7 bg-contain mr-1" style:background-image="url({item.icon})"></div>
+                        <div class="text-[11px] group-hover/c2:text-white text-slate-800 {item.font == 'bold' ? 'font-bold' : ''}">{item.name}</div>
                     </div>
                 {/if}
             {/each}

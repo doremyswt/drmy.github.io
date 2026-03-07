@@ -4,7 +4,7 @@
     import * as utils from '../../lib/utils';
     import { doctypes, icons, desktop_folder, previewable_exts } from '../../lib/system';
     import * as fs from '../../lib/fs';
-    const {click_outside} = utils;
+    const {click_outside, long_press} = utils;
     import {  onMount, tick } from 'svelte';
     import short from 'short-uuid';
     import {get, set} from 'idb-keyval';
@@ -227,17 +227,20 @@
         is_focus = false;
     }}
     on:contextmenu|self={show_void_menu}
+    use:long_press on:long_press|self={(e) => show_void_menu({x: e.detail.x, y: e.detail.y})}
     bind:this={node_ref}>
 
     <div class="top-0 left-0 bottom-0 absolute flex flex-col flex-wrap" 
         class:hidden={id == null}>
         {#each items as item, index (item.id)}
 
-            <div fs-id="{item.id}" class="relative fs-item w-[150px] flex-shrink-0 flex-grow-0 overflow-hidden m-2 inline-flex flex-col items-center font-MSSS" 
+            <div fs-id="{item.id}" class="relative fs-item w-[150px] flex-shrink-0 flex-grow-0 overflow-hidden m-2 inline-flex flex-col items-center font-MSSS"
                 on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
+                use:long_press on:long_press={(e) => on_rightclick({x: e.detail.x, y: e.detail.y}, item)}
                 style:transform="{item.desktop_css_transform}"
                 style:width="{cell_size}px"
-                style:height="{cell_size}px">
+                style:height="{cell_size}px"
+                style:touch-action="manipulation">
                 {#if previewable_exts.includes(item.ext)}
                     <Previewable size={40} default_icon={file_icon(item)} fs_id={item.id}></Previewable>
                 {:else}
