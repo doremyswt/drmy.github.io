@@ -200,13 +200,13 @@
                 <input type="text" bind:value={filename} 
                     on:keyup={(e) => {
                         if(e.key == 'Enter' && id != null && filename.length > 0){
-                            on_save();
+                            on_save({parent_id: id, filename, selected_filetype: select_box?.items?.[select_box?.selected_index] ?? selected_filetype});
                         }
                     }}
                     class="w-full h-6 text-[11px] outline-none border border-blue-300 disabled:bg-slate-50">
             </div>
             <div class="w-[100px] shrink-0 flex flex-row justify-end ">
-                <Button title="Save" on_click={on_save} disabled={filename.length == 0 || id == null}></Button>
+                <Button title="Save" on_click={() => on_save({parent_id: id, filename, selected_filetype: select_box?.items?.[select_box?.selected_index] ?? selected_filetype})} disabled={filename.length == 0 || id == null}></Button>
             </div>
         </div>
         <div class="absolute bottom-0 right-0 left-0 h-[35px] flex flex-row items-center justify-between">

@@ -29,6 +29,7 @@
         .filter(el => !hidden_items.includes(el.id));
 
     $: sorted_items = id ? null : null;//reset sorted_items every time id changes
+    $: if (id !== undefined) { ds?.clearSelection?.(true); $selectingItems = []; }
     let worker = new Worker(new URL('./sort.js', import.meta.url), {type: 'module'});
     worker.onmessage = ({data}) => {
         if(data.type == 'sorted' && data.id == id){
@@ -121,7 +122,7 @@
     }
 
     function show_void_menu(ev){
-        contextMenu.set({x: ev.x, y: ev.y, type: 'FSVoid', originator: self});
+        contextMenu.set({x: ev.x, y: ev.y, type: 'FSVoid', originator: {id}});
     }
 
     function clear_selection(){
@@ -204,7 +205,7 @@
 
     function on_keydown(e){
         
-        if(my_computer_instance.window.z_index != $zIndex) return;
+        if(my_computer_instance?.window?.z_index != $zIndex) return;
         if(renaming) return;
         if(id == null) return;
         console.log('keyevent in my computer');

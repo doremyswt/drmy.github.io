@@ -6,7 +6,7 @@
     import short from 'short-uuid';
     import * as finder from '../../../lib/finder'
     import DumbProgress from '../../../lib/components/xp/DumbProgress.svelte';
-    import {onMount, unmount} from 'svelte';
+    import {onMount, unmount, mount} from 'svelte';
     
 
     export let id;
@@ -133,15 +133,11 @@
             const OpenModal = (
                 await import("../../../lib/components/xp/OpenModal.svelte")
             ).default;
-            let modal = mount(OpenModal, {
+            let modal;
+            modal = mount(OpenModal, {
                 target: node_ref,
-                props: { filetypes, filetypes_desc, multiple },
+                props: { filetypes, filetypes_desc, multiple, get_self: () => modal, on_open: (items) => { resolve(items); unmount(modal); } },
             });
-            modal.self = modal;
-            modal.on_open = () => {
-                resolve(modal.selected_items);
-                modal.destroy();
-            };
         });
     }
 
@@ -155,19 +151,11 @@
             const SaveModal = (
                 await import("../../../lib/components/xp/SaveModal.svelte")
             ).default;
-            let modal = mount(SaveModal, {
+            let modal;
+            modal = mount(SaveModal, {
                 target: node_ref,
-                props: { filetypes, selected_filetype: current_filetype, id },
+                props: { filetypes, selected_filetype: current_filetype, id, get_self: () => modal, on_save: (data) => { resolve(data); unmount(modal); } },
             });
-            modal.self = modal;
-            modal.on_save = () => {
-                resolve({
-                    parent_id: modal.parent_id,
-                    filename: modal.filename,
-                    selected_filetype: modal.selected_filetype,
-                });
-                modal.destroy();
-            };
         });
     }
 

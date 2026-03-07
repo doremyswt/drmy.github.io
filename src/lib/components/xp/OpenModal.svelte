@@ -1,5 +1,6 @@
 <script>
-    import { unmount } from 'svelte';
+    import { unmount, mount } from 'svelte';
+    export let get_self = () => null;
     import Window from './Window.svelte';
     import { hardDrive, selectingItems} from '../../store';
     import {my_pictures_id, my_music_id, desktop_folder} from '../../system';
@@ -11,7 +12,7 @@
     import Viewer2 from './Viewer2.svelte';
     
 
-    export let self;
+    
     export let selected_items = [];
 
     export let viewer;
@@ -43,7 +44,7 @@
     ]
     export function destroy(){
         console.log(self);
-        unmount(self);
+        unmount(get_self());
     }
 
     export let on_open = () => {}
@@ -77,9 +78,9 @@
 
             <div class="grow flex flex-col relative">
                 <Viewer2 bind:this={viewer} filetypes_desc={filetypes_desc} filetypes={filetypes.map(el => el.toLowerCase())} multiple={multiple}
-                    on_open={() => {
-                        selected_items = viewer.selectingItems;
-                        on_open();
+                    on_open={(items) => {
+                        selected_items = items;
+                        on_open(items);
                     }}
                     on_cancel={destroy}>
                 </Viewer2>

@@ -74,16 +74,20 @@
 
     async function open_file(){
         const OpenModal = (await import('../../../lib/components/xp/OpenModal.svelte')).default;
-        let modal = mount(OpenModal, {
+        let modal;
+        modal = mount(OpenModal, {
             target: window.node_ref,
-            props:{filetypes: ['.mp3','.mp4', '.ogg', '.webm', '.wav', '.flac', '.aac'], filetypes_desc: 'Audio and Video Files'}
-        })
-        modal.self = modal;
-        modal.on_open = () => {
-            let item = $hardDrive[modal.selected_items[0]];
-            load_media(item);
-            modal.destroy();
-        }
+            props: {
+                filetypes: ['.mp3','.mp4', '.ogg', '.webm', '.wav', '.flac', '.aac'],
+                filetypes_desc: 'Audio and Video Files',
+                get_self: () => modal,
+                on_open: (items) => {
+                    let item = $hardDrive[items[0]];
+                    load_media(item);
+                    unmount(modal);
+                }
+            },
+        });
     }
 
 

@@ -1,5 +1,6 @@
 <script>
-    import { unmount } from 'svelte';
+    import { unmount, mount } from 'svelte';
+    export let get_self = () => null;
     import Window from './Window.svelte';
     import { hardDrive, selectingItems} from '../../store';
     import {my_pictures_id, my_music_id, desktop_folder} from '../../system';
@@ -11,7 +12,7 @@
     import Viewer3 from './Viewer3.svelte';
     
 
-    export let self;
+    
     export let id;
 
     export let viewer;
@@ -46,7 +47,7 @@
 
     export function destroy(){
         console.log(self);
-        unmount(self);
+        unmount(get_self());
     }
 
     export let on_save = () => {}
@@ -80,13 +81,7 @@
 
             <div class="absolute top-1 left-[110px] right-1 bottom-1">
                 <Viewer3 bind:this={viewer} id={id} filetypes={filetypes} selected_filetype={selected_filetype}
-                    on_save={() => {
-                        parent_id = viewer.id;
-                        filename = viewer.filename;
-                        selected_filetype = viewer.select_box.items[viewer.select_box.selected_index];
-                        console.log(selected_filetype);
-                        on_save();
-                    }}
+                    on_save={(data) => on_save(data)}
                     on_cancel={destroy}>
                 </Viewer3>
             </div>

@@ -7,7 +7,7 @@
     import Button from './Button.svelte';
     
 
-    export let self;
+    export let get_self = () => null;
     export let title = '';
     export let message = '';
     export let icon = '';
@@ -16,8 +16,7 @@
 
 
     export function destroy(){
-        console.log(self);
-        unmount(self);
+        unmount(get_self());
     }
 
 

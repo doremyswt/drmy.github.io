@@ -30,15 +30,11 @@
 
     async function open_file(){
         const OpenModal = (await import('../../../lib/components/xp/OpenModal.svelte')).default;
-        let modal = mount(OpenModal, {
+        let modal;
+        modal = mount(OpenModal, {
             target: window.node_ref,
-            props:{filetypes: ['.jpg'], filetypes_desc: 'Image Files'}
-        })
-        modal.self = modal;
-        modal.on_open = () => {
-            console.log('selected_items', modal.selected_items.map(el => $hardDrive[el]));
-            modal.destroy();
-        }
+            props: { filetypes: ['.jpg'], filetypes_desc: 'Image Files', get_self: () => modal, on_open: (items) => { console.log('selected_items', items.map(el => $hardDrive[el])); unmount(modal); } },
+        });
     }
 
     async function save_file(){
@@ -48,17 +44,11 @@
             {name: 'png image', value: '.png'},
             {name: 'bmp image', value: '.bmp'}
         ]
-        let modal = mount(SaveModal, {
+        let modal;
+        modal = mount(SaveModal, {
             target: window.node_ref,
-            props:{filetypes}
-        })
-        modal.self = modal;
-        modal.on_save = () => {
-            console.log('save location', $hardDrive[modal.parent_id]);
-            console.log('filename', modal.filename);
-            console.log(modal.selected_filetype);
-            modal.destroy();
-        }
+            props: { filetypes, get_self: () => modal, on_save: (data) => { console.log('save location', $hardDrive[data.parent_id]); console.log('filename', data.filename); console.log(data.selected_filetype); unmount(modal); } },
+        });
     }
 
     async function open_dialog(){
@@ -73,16 +63,17 @@
                 action: () => console.log('Cancel')
             }
         ]
-        let dialog = mount(Dialog, {
+        let dialog;
+        dialog = mount(Dialog, {
             target: window.node_ref,
-            props:{
+            props: {
                 icon: '/images/xp/icons/RecycleBinempty.png',
                 title: 'Confirm File Delete',
                 message: 'Are you sure you want to send Sunset.jpg to the Reycle Bin? ',
-                buttons
+                buttons,
+                get_self: () => dialog,
             }
-        })
-        dialog.self = dialog;
+        });
     }
 
     

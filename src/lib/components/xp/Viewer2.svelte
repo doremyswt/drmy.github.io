@@ -73,7 +73,7 @@
         let fs_item = $hardDrive[item_id];
         if(fs_item?.type == 'file'){
             selectingItems = [item_id];
-            on_open();
+            on_open([item_id]);
         } else {
             history = [...history.slice(0, page_index+1), item_id];
             page_index = history.length - 1;
@@ -234,7 +234,7 @@
                     class="w-full h-6 text-[11px] outline-none border border-blue-300 disabled:bg-slate-50">
             </div>
             <div class="w-[100px] shrink-0 flex flex-row justify-end ">
-                <Button title="Open" on_click={on_open} disabled={selectingItems.length == 0}></Button>
+                <Button title="Open" on_click={() => on_open(selectingItems)} disabled={selectingItems.length == 0}></Button>
             </div>
         </div>
         <div class="w-full flex flex-row items-center my-2">

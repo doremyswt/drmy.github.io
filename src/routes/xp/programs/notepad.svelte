@@ -203,15 +203,11 @@
             const OpenModal = (
                 await import("../../../lib/components/xp/OpenModal.svelte")
             ).default;
-            let modal = mount(OpenModal, {
+            let modal;
+            modal = mount(OpenModal, {
                 target: node_ref,
-                props: { filetypes, filetypes_desc },
+                props: { filetypes, filetypes_desc, get_self: () => modal, on_open: (items) => { resolve(items); unmount(modal); } },
             });
-            modal.self = modal;
-            modal.on_open = () => {
-                resolve(modal.selected_items);
-                modal.destroy();
-            };
         });
     }
 
@@ -274,19 +270,11 @@
             const SaveModal = (
                 await import("../../../lib/components/xp/SaveModal.svelte")
             ).default;
-            let modal = mount(SaveModal, {
+            let modal;
+            modal = mount(SaveModal, {
                 target: node_ref,
-                props: { filetypes, selected_filetype: current_filetype, id },
+                props: { filetypes, selected_filetype: current_filetype, id, get_self: () => modal, on_save: (data) => { resolve(data); unmount(modal); } },
             });
-            modal.self = modal;
-            modal.on_save = () => {
-                resolve({
-                    parent_id: modal.parent_id,
-                    filename: modal.filename,
-                    selected_filetype: modal.selected_filetype,
-                });
-                modal.destroy();
-            };
         });
     }
 
@@ -324,7 +312,8 @@
                 },
             },
         ];
-        let dialog = mount(Dialog, {
+        let dialog;
+        dialog = mount(Dialog, {
             target: node_ref,
             props: {
                 icon,
@@ -332,9 +321,9 @@
                 message,
                 buttons,
                 button_align: "center",
+                get_self: () => dialog,
             },
         });
-        dialog.self = dialog;
     }
 
     async function setup_notepad() {

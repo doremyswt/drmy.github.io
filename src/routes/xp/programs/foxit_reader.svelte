@@ -72,15 +72,11 @@
 
         return new Promise(async (resolve, reject) => {
             const OpenModal = (await import('../../../lib/components/xp/OpenModal.svelte')).default;
-            let modal = mount(OpenModal, {
+            let modal;
+            modal = mount(OpenModal, {
                 target: node_ref,
-                props:{filetypes, filetypes_desc}
-            })
-            modal.self = modal;
-            modal.on_open = () => {
-                resolve(modal.selected_items)
-                modal.destroy();
-            }
+                props: { filetypes, filetypes_desc, get_self: () => modal, on_open: (items) => { resolve(items); unmount(modal); } },
+            });
         })
     }
 
@@ -108,15 +104,11 @@
 
         return new Promise(async (resolve, reject) => {
             const SaveModal = (await import('../../../lib/components/xp/SaveModal.svelte')).default;
-            let modal = mount(SaveModal, {
+            let modal;
+            modal = mount(SaveModal, {
                 target: node_ref,
-                props:{filetypes, selected_filetype: current_filetype, id}
-            })
-            modal.self = modal;
-            modal.on_save = () => {
-                resolve({parent_id: modal.parent_id, filename: modal.filename, selected_filetype: modal.selected_filetype})
-                modal.destroy();
-            }
+                props: { filetypes, selected_filetype: current_filetype, id, get_self: () => modal, on_save: (data) => { resolve(data); unmount(modal); } },
+            });
         })
     }
 

@@ -178,8 +178,10 @@
         }
     ]
 
+    $: mc_interface = { window, up, open };
+
     onMount(() => {
-        
+
     })
 
 
@@ -306,10 +308,10 @@
         </div>
         
         <div class="grow flex flex-row overflow-hidden">
-            <Sidebar my_computer_instance={self} id={history[page_index]} ></Sidebar>
+            <Sidebar my_computer_instance={mc_interface} id={history[page_index]} ></Sidebar>
             <div class="grow relative bg-blue-100">
-                <Viewer bind:this={viewer} self={viewer} id={history[page_index]} 
-                    on:open={(e) => open(e.detail.id)} my_computer_instance={self}>
+                <Viewer bind:this={viewer} id={history[page_index]}
+                    on:open={(e) => open(e.detail.id)} my_computer_instance={mc_interface}>
                 </Viewer>
             </div>
         </div>
