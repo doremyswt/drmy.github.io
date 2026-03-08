@@ -5,7 +5,6 @@
     import * as utils from '../lib/utils';
     let dispatcher = createEventDispatcher();
 
-    let is_chromium = true;
     onMount(() => {
         //load jquery
         loadjs([
@@ -13,9 +12,8 @@
             'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js',
             'https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css'
         ], {async: false});
-        
+
         utils.set_theme('none');
-        is_chromium = window.chrome != null;
     })
 
     let current_option = 0;
@@ -74,11 +72,7 @@
     <div class="mt-6 ml-4 sm:mt-12 sm:ml-8 text-base sm:text-lg">
         <p class="text-slate-100">Use the ↑(Up) and ↓(Down) key to move the pointer to desired boot device.</p>
         <p class="text-slate-100">Press (Enter) to attempt to boot or ESC to cancel. On touch devices, tap an option to select it.</p>
-        {#if !is_chromium}
-        <p class="text-slate-100 mt-2 max-w-[500px]">WIN32.RUN might have unexpected behaviors on browsers that are NOT Chromium-based (Safari, Firefox, Internet Explorer, etc.)</p>
-        {/if}
-
-        <p class="text-slate-100 uppercase mt-4 mb-2">boot options:</p>
+<p class="text-slate-100 uppercase mt-4 mb-2">boot options:</p>
         {#each boot_options.slice(0, 4) as option, index }
             <div>
                 <div class="ml-8 p-2 inline-block cursor-pointer {index == current_option ? 'text-slate-900 bg-slate-200' : 'text-slate-300'}"
