@@ -17,6 +17,8 @@ win32.run is a nostalgia project — a faithful Windows XP simulation that runs 
 
 *Microsoft, Windows XP, and all program names/logos (WinRAR, Internet Explorer, Foxit, etc.) are trademarks of their respective owners. win32.run is purely for nostalgia and is not monetized.*
 
+*Some games in the Games folder are embedded from [CrazyGames](https://www.crazygames.com). These are third-party embeds — CrazyGames may display ads within their games. I have no affiliation with CrazyGames and receive no monetary compensation of any kind from them.*
+
 ---
 
 ## Getting Started
