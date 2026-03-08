@@ -7,7 +7,7 @@
 [![Svelte 5](https://img.shields.io/badge/svelte-5-orange?style=flat-square)](https://svelte.dev)
 [![Cloudflare Pages](https://img.shields.io/badge/deployed-Cloudflare%20Pages-f38020?style=flat-square)](https://pages.cloudflare.com)
 
-> This is a refactored rewrite of the [original win32.run](https://github.com/ducbao414/win32.run), migrated to **Svelte 5** and deployed on **Cloudflare Pages** instead of a VPS.
+> This is a refactored rewrite of the [original win32.run](https://github.com/ducbao414/win32.run), migrated to **Svelte 5** and deployed on **Cloudflare Pages** instead of a VPS. The entire refactor — migration, new features, and bug fixes — was done by [Claude Code](https://claude.ai/claude-code), Anthropic's AI coding assistant, with no manual code changes.
 
 ---
 
