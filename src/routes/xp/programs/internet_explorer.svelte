@@ -25,7 +25,6 @@
     let page_index = 0;
     let loading = true;
     let real_url;
-    let frame_blocked = false;
 
     // Address bar text — kept in sync with navigation
     let address_text = homepage;
@@ -70,19 +69,15 @@
         try { return new URL(u).hostname; } catch { return u; }
     }
 
-    $: if (frame_blocked) loading = false;
-
     onMount(async () => {
         load_favorites();
         real_url = await to_real_url(nav_history[page_index]);
-        frame_blocked = await is_frame_blocked(nav_history[page_index]);
     });
 
     // ── Navigation ──────────────────────────────────────────
 
     async function load_page(nav_url) {
         loading = true;
-        frame_blocked = false;
         let u = nav_url ?? address_input.value;
         if (!u || u.trim() === '') return;
 
@@ -111,16 +106,12 @@
         const u = nav_history[idx];
         address_text = u;
         loading = true;
-        frame_blocked = false;
         await resolve_url(u);
     }
 
     async function resolve_url(u) {
         real_url = null; // reset so Svelte always re-mounts the iframe, even if URL is unchanged
-        [real_url, frame_blocked] = await Promise.all([
-            to_real_url(u),
-            is_frame_blocked(u)
-        ]);
+        real_url = await to_real_url(u);
     }
 
     function back() { navigate_to(page_index - 1); }
@@ -183,15 +174,6 @@
     }
 
     // ── Helpers ──────────────────────────────────────────────
-
-    async function is_frame_blocked(url) {
-        if (!url || !url.startsWith('http')) return false;
-        try {
-            const res = await fetch(`/api/check_frame?url=${encodeURIComponent(url)}`);
-            const data = await res.json();
-            return data.blocked;
-        } catch { return false; }
-    }
 
     async function to_real_url(url) {
         if (/^[A-Z]:\\/.test(url)) {
@@ -445,37 +427,7 @@
 
             <!-- Web content area -->
             <div class="grow relative overflow-hidden">
-                {#if frame_blocked}
-                <div class="absolute inset-0 bg-white overflow-auto p-4 font-sans text-[13px] select-text">
-                    <table class="w-full border-b-2 border-[#CC0000] mb-3" cellpadding="0" cellspacing="0">
-                        <tbody>
-                        <tr>
-                            <td class="pb-1">
-                                <p class="text-[18px] font-bold text-[#CC0000]">The page cannot be displayed</p>
-                                <p class="text-[12px] text-gray-700 mt-1">The page you are looking for is currently unavailable. The Web site might be experiencing technical difficulties, or you may need to adjust your browser settings.</p>
-                            </td>
-                            <td class="w-[60px] align-top">
-                                <img src="/images/xp/icons/InternetExplorer6.png" width="48" height="48" alt="">
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <p class="font-bold mb-1">Please try the following:</p>
-                    <ul class="list-disc ml-6 space-y-1 text-[12px]">
-                        <li>Click the
-                            <!-- svelte-ignore a11y-click-events-have-key-events -->
-                            <!-- svelte-ignore a11y-no-static-element-interactions -->
-                            <span class="text-blue-700 underline cursor-pointer" on:click={refresh}>Refresh</span>
-                            button, or try again later.
-                        </li>
-                        <li>If you typed the page address in the Address bar, make sure that it is spelled correctly.</li>
-                        <li>To check your connection settings, click the <b>Tools</b> menu, and then click <b>Internet Options</b>.</li>
-                        <li>Click the <b>Back</b> button to try another link.</li>
-                    </ul>
-                    <br>
-                    <p class="text-[12px] text-gray-600">Cannot find server or DNS Error<br><b>Internet Explorer</b></p>
-                </div>
-                {:else if real_url}
+                {#if real_url}
                 <!-- svelte-ignore a11y-missing-attribute -->
                 <iframe
                     bind:this={iframe}
