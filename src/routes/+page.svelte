@@ -6,7 +6,6 @@
 
    onMount(async () => {
     await load_page('./boot_manager.svelte');
-    adjust_zoom();
    })
 
 
@@ -101,22 +100,6 @@
     
    }
 
-   function adjust_zoom(){
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-    let zoom = 1;
-    if(width <= 800 || height <= 500){
-        zoom = 0.8;
-    } else if(width <= 900 || height <= 600){
-        zoom = 0.9
-    }
-    document.body.style.zoom = zoom;
-    for(let iframe of document.querySelectorAll('iframe')){
-        try {
-            iframe.contentDocument.body.style.zoom = zoom;
-        } catch (error) {}
-    }
-   }
 
 </script>
 
@@ -126,4 +109,3 @@
 
 <svelte:component this={page}  on:load_page={(e) => load_page(e.detail.url)}>
 </svelte:component>
-<svelte:window on:resize={adjust_zoom}></svelte:window>
