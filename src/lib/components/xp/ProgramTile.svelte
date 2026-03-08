@@ -1,5 +1,6 @@
 <script>
     import { zIndex, runningPrograms, contextMenu } from '../../store';
+    import { long_press } from '../../utils';
     let node_ref;
 
     export let program;
@@ -33,6 +34,7 @@
 </script>
 
 <div bind:this={node_ref} on:contextmenu={on_rightclick} on:mousedown={on_mousedown} on:click={on_click}
+     use:long_press on:long_press={(e) => on_rightclick({x: e.detail.x, y: e.detail.y})}
      program-id="{program.id}"
      class="program-tile h-full w-[150px] min-w-[70px] flex flex-row items-center max-w-[200px] overflow-hidden rounded-sm hover:brightness-125"
      style:background="{program.window?.z_index == $zIndex? 'rgb(30,82,183)' : 'rgb(60,129,243)'}"
