@@ -106,11 +106,11 @@
 
 <Window options={options} bind:this={window} on_click_close={destroy}>
     
-    <div slot="content" class="absolute inset-1 p-2 pb-1  bg-xp-yellow overflow-hidden">
-        <Tab size={'sm'} items={['General', 'Tools', 'Hardware', 'Sharing', 'Quota']} 
+    <div slot="content" class="absolute inset-1 p-2 pb-1  bg-xp-yellow overflow-hidden flex flex-col">
+        <Tab size={'sm'} items={['General', 'Tools', 'Hardware', 'Sharing', 'Quota']}
             selected={'General'}>
         </Tab>
-        <div class="w-full grow bg-[#fafaf9]  shadow-sm -mt-[1px]  overflow-hidden p-2">
+        <div class="w-full grow bg-[#fafaf9]  shadow-sm -mt-[1px]  overflow-y-auto p-2">
 
             <div class="flex flex-row border-b-slate-300 border-b p-2 items-center my-3">
                 <div class="shrink-0 w-[70px]">
