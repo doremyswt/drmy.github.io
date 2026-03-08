@@ -91,10 +91,10 @@
 
     {#if drives_visible}
     <div class="mt-3">
-        <p>Pri. Master  :  WDC WD400BB-00JRA0 &nbsp;&nbsp;&nbsp;&nbsp;40.0GB &nbsp;Ultra DMA Mode-5</p>
-        <p>Pri. Slave   :  None</p>
-        <p>Sec. Master  :  ASUS DVD-E616A3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;48x/16x DVD-ROM</p>
-        <p>Sec. Slave   :  None</p>
+        <p>IDE Channel 0 Device 0 :  WDC WD400BB-00JRA0 &nbsp;&nbsp;40.0GB &nbsp;Ultra DMA Mode-5</p>
+        <p>IDE Channel 0 Device 1 :  None</p>
+        <p>IDE Channel 1 Device 0 :  ASUS DVD-E616A3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;48x/16x DVD-ROM</p>
+        <p>IDE Channel 1 Device 1 :  None</p>
     </div>
     {/if}
 
