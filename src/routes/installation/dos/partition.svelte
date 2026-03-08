@@ -44,26 +44,27 @@
 
 </script>
 
-<div class="absolute inset-0 bg-[rgb(2,7,176)] overflow-hidden font-Levi">
-    <div class=" mt-4 text-xl font-bold text-slate-400 inline-block">
+<div class="absolute inset-0 bg-[rgb(2,7,176)] overflow-hidden font-Levi select-none">
+    <div class="mt-2 sm:mt-4 text-base sm:text-xl font-bold text-slate-400 inline-block">
         <p class="px-2">Windows XP Professional Setup</p>
         <div class="w-full h-[1px] mb-1 bg-slate-400"></div>
         <div class="w-full h-[1px] bg-slate-400"></div>
     </div>
-    <div class="ml-12 mt-8 text-xl text-slate-300">
+    <div class="ml-4 sm:ml-12 mt-4 sm:mt-8 text-sm sm:text-xl text-slate-300">
         <p>A new partition for Windows XP has been created on 10237 MB Disk 0 at Id 0 on bus 0 on atapi [MBR].</p>
         <p class="mt-2">This partition must be now formatted.</p>
         <p class="mt-2">From the list below, select a file system for the new partition.</p>
         <p>Use the UP and DOWN ARROW key to select the file system you want to use, then press ENTER.</p>
-        <ul class="ml-4 mt-4">
+        <ul class="ml-2 sm:ml-4 mt-3 sm:mt-4">
             {#each options as option, i}
                 <div>
                     <li class="inline-block px-1 cursor-pointer {current_option == i ? 'bg-slate-300 text-[rgb(2,7,176)]' : ''}"
-                        on:click={() => current_option = i}>{option}</li>
+                        on:click={() => current_option = i}
+                        on:touchend|preventDefault={() => current_option = i}>{option}</li>
                 </div>
             {/each}
         </ul>
-        <button class="mt-8 ml-4 px-4 py-1 bg-slate-300 text-[rgb(2,7,176)] font-bold sm:hidden"
+        <button class="mt-6 sm:mt-8 ml-2 sm:ml-4 px-4 py-1 bg-slate-300 text-[rgb(2,7,176)] font-bold sm:hidden"
             on:click={() => dispatcher('load_page', {url: './installation/dos/format.svelte'})}>
             Continue →
         </button>

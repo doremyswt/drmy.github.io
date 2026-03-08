@@ -33,21 +33,22 @@
     
 </script>
 
-<div class="absolute inset-0 bg-[rgb(2,7,176)] overflow-hidden font-Levi"
+<div class="absolute inset-0 bg-[rgb(2,7,176)] overflow-hidden font-Levi select-none"
     on:click={() => dispatcher('load_page', {url: './installation/dos/eula.svelte'})}>
-    <div class=" mt-4 text-xl font-bold text-slate-400 inline-block">
+    <div class="mt-2 sm:mt-4 text-base sm:text-xl font-bold text-slate-400 inline-block">
         <p class="px-2">Windows XP Professional Setup</p>
         <div class="w-full h-[1px] mb-1 bg-slate-400"></div>
         <div class="w-full h-[1px] bg-slate-400"></div>
     </div>
-    <div class="ml-12 mt-8 text-xl">
+    <div class="ml-4 sm:ml-12 mt-4 sm:mt-8 text-sm sm:text-xl">
         <p class="text-slate-50">Welcome to Setup.</p>
-        <p class="mt-3 text-slate-400">This portion of the Setup program prepares Microsoft(R) Windows(R) to run on your computer.</p>
-        <ul class="mt-6 ml-12 text-slate-400 list-disc">
-            <li class="mt-3">To setup Windows XP now, press ENTER.</li>
-            <li class="mt-3">To repaire a Windows installation using Recovery Console, press R.</li>
-            <li class="mt-3">To quite Setup without installing Windows XP, press ESC.</li>
+        <p class="mt-2 sm:mt-3 text-slate-400">This portion of the Setup program prepares Microsoft(R) Windows(R) to run on your computer.</p>
+        <ul class="mt-3 sm:mt-6 ml-6 sm:ml-12 text-slate-400 list-disc">
+            <li class="mt-1 sm:mt-3">To setup Windows XP now, press ENTER.</li>
+            <li class="mt-1 sm:mt-3">To repaire a Windows installation using Recovery Console, press R.</li>
+            <li class="mt-1 sm:mt-3">To quite Setup without installing Windows XP, press ESC.</li>
         </ul>
+        <p class="mt-4 text-slate-500 text-xs sm:hidden">Tap anywhere to continue</p>
     </div>
 </div>
 

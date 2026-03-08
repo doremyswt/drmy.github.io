@@ -50,26 +50,25 @@
 
 </script>
 
-<div class="absolute inset-0 bg-[rgb(2,7,176)] overflow-hidden font-Levi">
-    <div class=" mt-4 text-xl font-bold text-slate-400 inline-block">
+<div class="absolute inset-0 bg-[rgb(2,7,176)] overflow-hidden font-Levi select-none"
+    on:click={() => dispatcher('load_page', {url: './xp/starting.svelte'})}>
+    <div class="mt-2 sm:mt-4 text-base sm:text-xl font-bold text-slate-400 inline-block">
         <p class="px-2">Windows XP Professional Setup</p>
         <div class="w-full h-[1px] mb-1 bg-slate-400"></div>
         <div class="w-full h-[1px] bg-slate-400"></div>
     </div>
-    <div class="ml-8 mt-12 text-xl text-slate-400">
+    <div class="ml-4 sm:ml-8 mt-6 sm:mt-12 text-sm sm:text-xl text-slate-400">
         <p class="">This portion of Setup has completed successfully.</p>
         <p class="mt-2">If there is a floppy disk in drive A:, remove it.</p>
-        <p class="mt-2">To restart you computer, press ENTER.<br/>
+        <p class="mt-2">To restart your computer, press ENTER.<br/>
             When your computer restarts, Setup will continue.
         </p>
-        
-        
+        <p class="mt-4 text-slate-500 text-xs sm:hidden">Tap anywhere to restart now</p>
 
-        <div class="absolute bottom-[150px] left-0 right-0">
-            <div class="border-double border-4 border-slate-400 pt-8 mx-auto max-w-[700px]">
-                <p class="text-slate-400 ml-4 my-2"></p>
+        <div class="absolute bottom-[100px] sm:bottom-[150px] left-0 right-0 px-4">
+            <div class="border-double border-4 border-slate-400 pt-4 sm:pt-8 mx-auto max-w-[700px]">
                 <p class="my-2 text-center">Your computer will reboot in {time_left > 1 ? time_left + ' seconds' : time_left + ' second'}...</p>
-                <div class="mx-auto w-[500px] border-2 border-slate-400 h-[40px] mb-4 pt-[8px] pb-[4px] px-[4px]">
+                <div class="mx-auto w-[90%] max-w-[500px] border-2 border-slate-400 h-[30px] sm:h-[40px] mb-4 pt-[6px] sm:pt-[8px] pb-[4px] px-[4px]">
                     <div class="transition-all h-full bg-red-500" style:width="{100*(15-time_left)/15}%"></div>
                 </div>
             </div>

@@ -8,11 +8,14 @@
     onMount(() => {
     })
 
+    const _vw = window.innerWidth;
+    const _w = Math.min(600, _vw - 20);
+
     export let options = {
         title: 'Windows XP Professional Setup',
-        min_width: 600,
+        min_width: _w,
         min_height: 400,
-        width:600,
+        width: _w,
         height: 400,
         minimize_btn_disabled: true,
         maximize_btn_disabled: true,
@@ -58,20 +61,22 @@
         </div>
         <div class="p-2 py-4 shadow-sm grow">
             <p class="mb-2 text-black text-sm">Product Key:</p>
+            <div class="flex flex-row items-center flex-wrap gap-y-2">
             {#each [0,1,2,3,4] as index}
             <input style="background-color: #fff;
             box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
             box-sizing: border-box;
-            padding: 3px 4px;" type="text" class="h-6 w-[85px] text-center focus:outline-none text-black font-bold uppercase" maxlength="5" id="product_key_part_{index}"
+            padding: 3px 4px;" type="text" class="h-6 w-[60px] sm:w-[85px] text-center focus:outline-none text-black font-bold uppercase" maxlength="5" id="product_key_part_{index}"
             on:input={(event) => {
                 if(event.target.value.length == 5){
                     document.querySelector(`#product_key_part_${index+1}`).focus();
                 }
             }}>
             {#if index < 4}
-                <div class="w-6 text-center inline-block">-</div>
+                <div class="w-4 sm:w-6 text-center text-black">-</div>
             {/if}
             {/each}
+            </div>
         </div>
 
         <div class="p-8 pb-4 shadow-sm shrink-0 flex justify-end">

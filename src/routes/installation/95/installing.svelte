@@ -160,7 +160,7 @@
   <div class="h-[2px] bg-[linear-gradient(45deg,#466dcd,#c7ddff,#b0c9f7,#5a7edc)] shrink-0"></div>
   <div class="grow bg-[radial-gradient(circle_at_5%_5%,#91b1ef_0,#7698e6_6%,#5a7edc_12%)] flex flex-row overflow-hidden">
 
-    <div class="w-1/5 min-w-[300px] pt-12 pointer-events-none">
+    <div class="hidden sm:block w-1/5 min-w-[300px] pt-12 pointer-events-none">
       {#each steps as step, index}
       <div class="mb-4 ml-12 mr-20 text-white font-bold text-base">
           <RadioBtn checked={step[1] == 2} in_progress={step[1] == 1} size={20} label="{step[0]}"></RadioBtn>
@@ -176,11 +176,18 @@
         <div class="bg-green-600 h-full {0 < current_phase.progress && current_phase.progress < 100 ? 'transition-all': ''}" style:width="{current_phase.progress}%"></div>
       </div>
     </div>
-    
+
     <div class="grow bg-[linear-gradient(#5a7edc,#7698e6,#5a7edc)] relative" id="_95-installing-right-side">
-      <div class="p-8 pl-20 pr-24 ">
-        <p class="text-3xl text-white font-sans font-bold" style="text-shadow: 2px 2px #000;">{introductions[intro_index].heading}</p>
-        <p class="text-lg text-white mt-8  max-w-[700px] font-MSSS">{@html introductions[intro_index].text.split('\n').join('<br/><br/>')}</p>
+      <div class="p-4 sm:p-8 sm:pl-20 sm:pr-24">
+        <div class="sm:hidden mb-4">
+          <p class="text-sm text-white font-MSSS font-bold">{current_phase.t}</p>
+          <div class="mt-1 border-[#00309c] border h-4 bg-white p-[1px]">
+            <div class="bg-green-600 h-full {0 < current_phase.progress && current_phase.progress < 100 ? 'transition-all': ''}" style:width="{current_phase.progress}%"></div>
+          </div>
+          <p class="text-xs text-white font-MSSS mt-1">{time_left} {time_left > 1 ? 'minutes' : 'minute'} remaining</p>
+        </div>
+        <p class="text-xl sm:text-3xl text-white font-sans font-bold" style="text-shadow: 2px 2px #000;">{introductions[intro_index].heading}</p>
+        <p class="text-sm sm:text-lg text-white mt-4 sm:mt-8 max-w-[700px] font-MSSS">{@html introductions[intro_index].text.split('\n').join('<br/><br/>')}</p>
       </div>
     </div>
   </div>
