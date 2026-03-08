@@ -9,6 +9,12 @@
 
 > This is a refactored rewrite of the [original win32.run](https://github.com/ducbao414/win32.run), migrated to **Svelte 5** and deployed on **Cloudflare Pages** instead of a VPS. The entire refactor — migration, new features, and bug fixes — was done by [Claude Code](https://claude.ai/claude-code), Anthropic's AI coding assistant, with no manual code changes.
 
+
+
+https://github.com/user-attachments/assets/26cbd93d-b784-407b-bc0a-12e32afcb5e9
+
+
+
 ---
 
 ## What is this?
