@@ -74,6 +74,7 @@
     // Drag state for rubber-band select
     let _drag_start = null;
     let _drag_moved = false;
+    let _item_long_pressed = false;
     let rb_visible = false;
     let rb_left = 0, rb_top = 0, rb_width = 0, rb_height = 0;
 
@@ -301,7 +302,7 @@
     on:click={(e) => { if (!e.target.closest('.fs-item') && !_drag_moved) { $selectingItems = []; } }}>
     <div class="w-full min-h-[90%]" class:hidden={id == null}
         on:contextmenu|self={show_void_menu} on:click|self={() => { if (!_drag_moved) clear_selection(); }}
-        use:long_press on:long_press|self={(e) => show_void_menu({x: e.detail.x, y: e.detail.y})}>
+        use:long_press on:long_press|self={(e) => { if (!_item_long_pressed) show_void_menu({x: e.detail.x, y: e.detail.y}); }}>
         {#if sorted_items}
             {#each sorted_items as item (item.id)}
                 <div fs-id="{item.id}" class="fs-item w-[150px] overflow-hidden m-2 inline-flex flex-row items-center font-MSSS relative
@@ -309,7 +310,7 @@
                     on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
                     on:click={(e) => { if (_drag_moved) return; let fs_id = e.currentTarget.getAttribute('fs-id'); if (e.ctrlKey || e.metaKey) { $selectingItems = $selectingItems.includes(fs_id) ? $selectingItems.filter(id => id !== fs_id) : [...$selectingItems, fs_id]; } else { $selectingItems = [fs_id]; } }}
                     use:double_tap on:double_tap={() => open(item.id)}
-                    use:long_press on:long_press={(e) => on_rightclick({x: e.detail.x, y: e.detail.y}, item)}>
+                    use:long_press on:long_press={(e) => { _item_long_pressed = true; setTimeout(() => _item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}>
                     {#if previewable_exts.includes(item.ext)}
                         <Previewable default_icon={file_icon(item)} fs_id={item.id}></Previewable>
                     {:else}
@@ -349,7 +350,7 @@
             <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS"
                 on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
                 use:double_tap on:double_tap={() => open(item.id)}
-                use:long_press on:long_press={(e) => on_rightclick({x: e.detail.x, y: e.detail.y}, item)}>
+                use:long_press on:long_press={(e) => { _item_long_pressed = true; setTimeout(() => _item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}>
                 <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/FolderClosed.png)] bg-contain bg-no-repeat bg-center"
                     style:background-image="{item.icon == null ? '' : `url(${item.icon})`}">
                 </div>
@@ -365,7 +366,7 @@
             <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS"
                 on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
                 use:double_tap on:double_tap={() => open(item.id)}
-                use:long_press on:long_press={(e) => on_rightclick({x: e.detail.x, y: e.detail.y}, item)}>
+                use:long_press on:long_press={(e) => { _item_long_pressed = true; setTimeout(() => _item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}>
                 <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/LocalDisk.png)] bg-contain bg-no-repeat bg-center">
                 </div>
                 <div class="px-1 text-[11px] line-clamp-2 text-ellipsis leading-tight">
@@ -380,7 +381,7 @@
             <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS"
                 on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
                 use:double_tap on:double_tap={() => open(item.id)}
-                use:long_press on:long_press={(e) => on_rightclick({x: e.detail.x, y: e.detail.y}, item)}>
+                use:long_press on:long_press={(e) => { _item_long_pressed = true; setTimeout(() => _item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}>
                 <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/RemovableMedia.png)] bg-contain bg-no-repeat bg-center">
                 </div>
                 <div class="px-1 text-[11px] line-clamp-2 text-ellipsis leading-tight">
