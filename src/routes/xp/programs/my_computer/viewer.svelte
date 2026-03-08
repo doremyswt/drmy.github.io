@@ -275,7 +275,7 @@
     async function show_guide(){
         let read_transfer_guide = await get('my_computer::read_transfer_guide');
 
-        if(!read_transfer_guide && id != null){
+        if(!read_transfer_guide && id != null && window.innerWidth >= 640){
             const Dialog = (await import('../../../../lib/components/xp/Dialog.svelte')).default;
             let dialog;
             let buttons = [{name: 'OK', action: () => dialog.destroy(), focus: true}]
@@ -283,7 +283,7 @@
                 target: my_computer_instance.window.node_ref,
                 props:{
                     title: 'File Transfer',
-                    message: 'Drag & drop files from your computer to the blank space in a folder to transfer them into Windows XP',
+                    message: 'You can drag and drop files or folders from your computer into any folder here to copy them into Windows XP.',
                     buttons,
                     button_align: 'center',
                     get_self: () => dialog,
