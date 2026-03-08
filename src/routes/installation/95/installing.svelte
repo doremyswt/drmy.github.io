@@ -1,8 +1,10 @@
 <script>
 
   import * as utils from '../../../lib/utils';
-  import { onMount, createEventDispatcher, onDestroy, unmount, mount } from 'svelte';
+  import { onMount, createEventDispatcher, onDestroy } from 'svelte';
+  import { writable } from 'svelte/store';
   import RadioBtn from '../../../lib/components/xp/RadioBtn.svelte';
+  import ProductKeyWindows from './product_key_windows.svelte';
   
   let dispatcher = createEventDispatcher();
 
@@ -50,58 +52,63 @@
 
   let time_passed = 0;
   let phase_index = 0;
-  let current_phase = phases[phase_index];
-  current_phase.progress = 0;
-  $: time_left = Math.ceil(Math.max(total_duration - time_passed, 0)/(one_unit));
+  let current_phase = phases[0];
+  let progress = 0; // standalone so Svelte tracks mutations from setInterval
+  $: time_left = Math.ceil(Math.max(total_duration - time_passed, 0) / one_unit);
   let destroyed = false;
-  let paused = false;
+  let ticker = null;
+  const show_product_key = writable(false);
 
-  onMount(async () => {
+  function start_ticker() {
+    if (ticker) clearInterval(ticker);
+    ticker = setInterval(tick, current_phase.d / 100);
+  }
 
-    update_text();
+  function tick() {
+    progress = Math.min(100, progress + 1);
+    time_passed += current_phase.d / 100;
 
-    
+    if (time_passed >= total_duration) {
+      clearInterval(ticker);
+      utils.set_installing_windows(false);
+      dispatcher('load_page', {url: './xp/starting.svelte'});
+      return;
+    }
 
-
-    while(true){
-      if(destroyed) break;
-
-      await utils.sleep(current_phase.d/100);
-      if(paused) continue;
-
-      current_phase.progress = Math.min(100, current_phase.progress + 1);
-      time_passed += current_phase.d/100;
-      
-      if(time_passed >= total_duration){
-        console.log('Done');
-        utils.set_installing_windows(false);
-        dispatcher('load_page', {url: './xp/starting.svelte'});
-        break;
-      }
-
-      if(current_phase.progress >= 100 && phase_index < phases.length){
-
-        if(phase_index == 0){
-          //show product key windows at the end of phase 0
-          const ProductKeyWindows = (await import('./product_key_windows.svelte')).default;
-          let product_key_windows = mount(ProductKeyWindows, {target:document.querySelector('#_95-installing-right-side')});
-          product_key_windows.on_click_next = () => { paused = false; unmount(product_key_windows)}
-          paused = true;
-        }
-        phase_index++;
-        if(phase_index>=5){
-          steps[3][1] = 2;
-          steps[4][1] = 1;
-        }
-        current_phase.progress = 0;
-        current_phase = phases[phase_index];
-        current_phase.progress = 0;
+    if (progress >= 100 && phase_index < phases.length - 1) {
+      clearInterval(ticker);
+      if (phase_index === 0) {
+        show_product_key.set(true);
+      } else {
+        advance_phase();
       }
     }
-  })
+  }
+
+  function on_key_next() {
+    show_product_key.set(false);
+    advance_phase();
+  }
+
+  function advance_phase() {
+    phase_index++;
+    if (phase_index >= 5) {
+      steps[3][1] = 2;
+      steps[4][1] = 1;
+    }
+    progress = 0;
+    current_phase = phases[phase_index];
+    if (!destroyed) start_ticker();
+  }
+
+  onMount(() => {
+    update_text();
+    start_ticker();
+  });
 
   onDestroy(() => {
     destroyed = true;
+    if (ticker) clearInterval(ticker);
   })
 
   async function update_text(){
@@ -173,16 +180,17 @@
 
       <p class="mt-8 ml-8 text-sm text-white font-MSSS">{current_phase.t}</p>
       <div class="ml-8 mr-10 mt-1 border-[#00309c] border h-6 bg-white p-[1px]">
-        <div class="bg-green-600 h-full {0 < current_phase.progress && current_phase.progress < 100 ? 'transition-all': ''}" style:width="{current_phase.progress}%"></div>
+        <div class="bg-green-600 h-full {0 < progress && progress < 100 ? 'transition-all': ''}" style:width="{progress}%"></div>
       </div>
     </div>
 
     <div class="grow bg-[linear-gradient(#5a7edc,#7698e6,#5a7edc)] relative" id="_95-installing-right-side">
+      {#if $show_product_key}<ProductKeyWindows on_click_next={on_key_next} />{/if}
       <div class="p-4 sm:p-8 sm:pl-20 sm:pr-24">
         <div class="sm:hidden mb-4">
           <p class="text-sm text-white font-MSSS font-bold">{current_phase.t}</p>
           <div class="mt-1 border-[#00309c] border h-4 bg-white p-[1px]">
-            <div class="bg-green-600 h-full {0 < current_phase.progress && current_phase.progress < 100 ? 'transition-all': ''}" style:width="{current_phase.progress}%"></div>
+            <div class="bg-green-600 h-full {0 < progress && progress < 100 ? 'transition-all': ''}" style:width="{progress}%"></div>
           </div>
           <p class="text-xs text-white font-MSSS mt-1">{time_left} {time_left > 1 ? 'minutes' : 'minute'} remaining</p>
         </div>

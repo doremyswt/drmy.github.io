@@ -8,8 +8,7 @@
     onMount(() => {
     })
 
-    const _vw = window.innerWidth;
-    const _w = Math.min(600, _vw - 20);
+    const _w = typeof window !== 'undefined' ? Math.min(600, window.innerWidth - 20) : 600;
 
     export let options = {
         title: 'Windows XP Professional Setup',
