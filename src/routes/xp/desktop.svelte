@@ -10,6 +10,7 @@
         hardDrive,
         wallpaper,
         queueCommand,
+        crtEffect,
     } from "../../lib/store";
     import Welcome from "./welcome.svelte";
     import * as utils from "../../lib/utils";
@@ -54,6 +55,9 @@
     let show_welcome = true;
 
     onMount(async () => {
+        crtEffect.set(localStorage.getItem('crt_effect') === 'true');
+        unsubscribers.push(crtEffect.subscribe(v => localStorage.setItem('crt_effect', String(v))));
+
         //load other pure js lib
         loadjs([
             "https://www.gstatic.com/charts/loader.js",
@@ -81,3 +85,9 @@
 </div>
 
 {#if show_welcome}<Welcome on:done={() => show_welcome = false} />{/if}
+
+{#if $crtEffect}
+<div class="pointer-events-none fixed inset-0 z-[9999]" style="
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
+"></div>
+{/if}

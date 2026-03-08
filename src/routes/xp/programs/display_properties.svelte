@@ -2,8 +2,9 @@
     import Window from '../../../lib/components/xp/Window.svelte';
     import Button from '../../../lib/components/xp/Button.svelte';
     import Tab from '../../../lib/components/xp/Tab.svelte';
+    import CheckBox from '../../../lib/components/xp/CheckBox.svelte';
     import {onMount, unmount } from 'svelte';
-    import { runningPrograms, wallpaper, hardDrive } from '../../../lib/store';
+    import { runningPrograms, wallpaper, hardDrive, crtEffect } from '../../../lib/store';
     import {get, set} from 'idb-keyval';
     import _, { isEqual } from 'lodash';
     import { wallpapers_folder } from '../../../lib/system';
@@ -14,6 +15,7 @@
     export let exec_path;
 
     let preview = $wallpaper;
+    let crt_preview = $crtEffect;
     let wallpapers = $hardDrive[wallpapers_folder]
     .children
     .filter(el => $hardDrive[el].type == 'file');
@@ -29,6 +31,7 @@
 
     function apply(){
         wallpaper.set(preview);
+        crtEffect.set(crt_preview);
         destroy();
     }
 
@@ -101,6 +104,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="shrink-0 border-t border-slate-300 px-3 py-2 bg-[#fafaf9] text-slate-800">
+            <CheckBox bind:checked={crt_preview} label="Enable CRT monitor effect"></CheckBox>
         </div>
         <div class="shrink-0 flex flex-row justify-end items-center px-1 pt-2">
             <Button title="OK" style="margin-right:10px;" on_click={apply}></Button>
