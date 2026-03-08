@@ -300,7 +300,8 @@
     on:mousedown={on_mousedown}
     on:click={(e) => { if (!e.target.closest('.fs-item') && !_drag_moved) { $selectingItems = []; } }}>
     <div class="w-full min-h-[90%]" class:hidden={id == null}
-        on:contextmenu|self={show_void_menu} on:click|self={() => { if (!_drag_moved) clear_selection(); }}>
+        on:contextmenu|self={show_void_menu} on:click|self={() => { if (!_drag_moved) clear_selection(); }}
+        use:long_press on:long_press|self={(e) => show_void_menu({x: e.detail.x, y: e.detail.y})}>
         {#if sorted_items}
             {#each sorted_items as item (item.id)}
                 <div fs-id="{item.id}" class="fs-item w-[150px] overflow-hidden m-2 inline-flex flex-row items-center font-MSSS relative
