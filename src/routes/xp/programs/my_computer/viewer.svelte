@@ -145,7 +145,11 @@
 
 
 
+    let _last_open = 0;
     function open(id){
+        const now = Date.now();
+        if (now - _last_open < 400) return;
+        _last_open = now;
         clear_selection();
         let fs_item = $hardDrive[id];
         if(fs_item.parent == recycle_bin_id) return;

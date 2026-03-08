@@ -29,6 +29,7 @@
         height: 220,
         resizable: false,
         maximize_btn_disabled: true,
+        mobile_maximize: false,
         icon: '/images/xp/icons/RAR.png',
         id: id,
         exec_path

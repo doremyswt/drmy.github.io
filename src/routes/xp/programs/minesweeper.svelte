@@ -33,6 +33,7 @@
         icon: '/images/xp/icons/Minesweeper.png',
         resizable: false,
         maximize_btn_disabled: true,
+        mobile_maximize: false,
         id: id
     };
 

@@ -116,6 +116,7 @@
     }
 
     async function resolve_url(u) {
+        real_url = null; // reset so Svelte always re-mounts the iframe, even if URL is unchanged
         [real_url, frame_blocked] = await Promise.all([
             to_real_url(u),
             is_frame_blocked(u)
@@ -276,8 +277,7 @@
         <div class="shrink-0 w-full border-b border-stone-300 flex flex-row items-center justify-between">
             <Menu menu={menu}></Menu>
             <div class="w-[40px] h-full bg-slate-50 flex items-center justify-center overflow-hidden">
-                <div class="w-[20px] h-[20px] bg-[url(/images/xp/icons/InternetExplorer6.png)] bg-contain bg-center bg-no-repeat
-                    {loading ? 'animate-spin' : ''}">
+                <div class="w-[20px] h-[20px] bg-[url(/images/xp/icons/InternetExplorer6.png)] bg-contain bg-center bg-no-repeat">
                 </div>
             </div>
         </div>

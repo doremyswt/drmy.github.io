@@ -43,7 +43,7 @@
             }
         }
 
-        if(options.top == null && options.left == null && window.innerWidth < 640){
+        if(options.top == null && options.left == null && window.innerWidth < 640 && options.mobile_maximize !== false){
             // mobile: open maximized when no saved position
             options.top = 0;
             options.left = 0;

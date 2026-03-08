@@ -68,7 +68,11 @@
     }
 
 
+    let _last_open = 0;
     export function open(item_id){
+        const now = Date.now();
+        if (now - _last_open < 400) return;
+        _last_open = now;
         clear_selection();
         let fs_item = $hardDrive[item_id];
         if(fs_item?.type == 'file'){
