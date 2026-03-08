@@ -163,6 +163,7 @@
                 {is_desired(item) ? '' : 'opacity-50'}" 
                 on:dblclick={() => open(item.id)}
                 on:click={(e) => on_click(e, item)}
+                on:touchend={(e) => { e.preventDefault(); on_click(e, item); }}
                 use:double_tap on:double_tap={() => open(item.id)}>
                 {#if previewable_exts.includes(item.ext)}
                     <Previewable size={30} default_icon={file_icon(item)} fs_id={item.id}></Previewable>
