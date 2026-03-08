@@ -78,7 +78,12 @@
     if (progress >= 100 && phase_index < phases.length - 1) {
       clearInterval(ticker);
       if (phase_index === 0) {
-        show_product_key.set(true);
+        const is_mobile = typeof window !== 'undefined' && window.innerWidth < 640;
+        if (is_mobile) {
+          setTimeout(advance_phase, 800);
+        } else {
+          show_product_key.set(true);
+        }
       } else {
         advance_phase();
       }
