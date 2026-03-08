@@ -353,7 +353,7 @@
                     <br>
                     <p class="text-[12px] text-gray-600">Cannot find server or DNS Error<br><b>Internet Explorer</b></p>
                 </div>
-            {:else}
+            {:else if real_url}
                 <!-- svelte-ignore a11y-missing-attribute -->
                 <iframe bind:this={iframe}
                     class="w-full h-full bg-slate-50 {window?.z_index == $zIndex ? 'pointer-events-auto' : 'pointer-events-none'}"
