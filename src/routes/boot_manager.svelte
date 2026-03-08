@@ -4,11 +4,6 @@
     let dispatcher = createEventDispatcher();
 
     onMount(() => {
-        loadjs([
-            'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js',
-            'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js',
-            'https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css'
-        ], {async: false});
         utils.set_theme('none');
         run_post();
     })
