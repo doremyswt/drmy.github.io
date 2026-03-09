@@ -49,22 +49,21 @@
     async function fetch_webapp_info(){
         error = null;
         fetch_btn.disabled = true;
-        fetch_btn.title = 'Fetching'
+        fetch_btn.title = 'Fetching';
 
-        fetch('/api/webapp_info', {
-            method: 'GET',
-            headers: {webapp_url}
-        })
-        .then(res => res.json())
-        .then(data => {
-            console.log(data);
+        try {
+            const res = await fetch(`/api/webapp_info?url=${encodeURIComponent(webapp_url)}`);
+            const data = await res.json();
             webapp = data.webapp;
+            if (webapp == null) {
+                error = {message: 'This site cannot be embedded in win32.run (blocked by X-Frame-Options or Content-Security-Policy).'};
+            }
+        } catch {
+            error = {message: 'Failed to fetch webapp info. Please check the URL and try again.'};
+        } finally {
             fetch_btn.title = ' Fetch ';
             fetch_btn.disabled = false;
-            if(webapp == null){
-                error = {message: `The webapp you requested has the X-Frame-Options header value set, which prevents win32.run from loading it.`};
-            }
-        })
+        }
     }
 
     async function install(){

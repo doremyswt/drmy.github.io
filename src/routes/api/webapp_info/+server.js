@@ -1,5 +1,18 @@
 import { json } from '@sveltejs/kit';
 
+function is_embeddable(headers) {
+    const xfo = (headers.get('x-frame-options') ?? '').toUpperCase().trim();
+    if (xfo === 'DENY' || xfo === 'SAMEORIGIN') return false;
+
+    const csp = headers.get('content-security-policy') ?? '';
+    if (csp.includes('frame-ancestors')) {
+        const fa = csp.match(/frame-ancestors\s+([^;]+)/)?.[1]?.trim() ?? '';
+        if (!fa.includes('*') && !fa.includes('https:') && !fa.includes('http:')) return false;
+    }
+
+    return true;
+}
+
 async function crawl(webapp_url) {
     if (webapp_url == null) return null;
 
@@ -15,11 +28,16 @@ async function crawl(webapp_url) {
     };
 
     try {
-        const response = await fetch(webapp_url, { redirect: 'follow' });
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
 
-        if (response.headers.get('x-frame-options') != null) {
-            return null;
-        }
+        const response = await fetch(webapp_url, {
+            redirect: 'follow',
+            signal: controller.signal
+        });
+        clearTimeout(timeout);
+
+        if (!is_embeddable(response.headers)) return null;
 
         const html = await response.text();
         const finalUrl = response.url || webapp_url;
@@ -46,15 +64,15 @@ async function crawl(webapp_url) {
         } else {
             webapp.icon = new URL('/favicon.ico', finalUrl).href;
         }
-    } catch (error) {
+    } catch {
         // silently fail, return default webapp info
     }
 
     return webapp;
 }
 
-export async function GET({ request }) {
-    const webapp_url = request.headers.get('webapp_url');
+export async function GET({ url }) {
+    const webapp_url = url.searchParams.get('url');
     const webapp = await crawl(webapp_url);
     return json({ webapp });
 }
