@@ -58,11 +58,12 @@
     let selected = false;
     function boot() {
         if(selected) return;
-        selected = true;
         if(current_option == 0){
+            selected = true;
             utils.set_installing_windows(false);
             dispatcher('load_page', {url: './xp/starting.svelte'});
         } else if(current_option == 1){
+            selected = true;
             utils.set_installing_windows(true);
             dispatcher('load_page', {url: './installation/dos/starting.svelte'});
         }
