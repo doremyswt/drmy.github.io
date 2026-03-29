@@ -1,0 +1,46 @@
+name: Generate images.json
+on:
+  push:
+    paths:
+      - "arch/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - run: |
+          npm install axios
+          node <<'EOF'
+          const fs = require('fs');
+          const axios = require('axios');
+
+          const USER = 'doremyswt';
+          const REPO = 'drmy.github.io';
+          const FOLDER = 'arch';
+          const EXTENSIONS = ['.png', '.jpg', '.jpeg', '.webp'];
+
+          async function getFiles() {
+            const res = await axios.get(`https://api.github.com/repos/${USER}/${REPO}/contents/${FOLDER}`);
+            return res.data.filter(f => EXTENSIONS.some(ext => f.name.endsWith(ext)));
+          }
+
+          async function getCommitDate(path) {
+            const res = await axios.get(`https://api.github.com/repos/${USER}/${REPO}/commits?path=${path}&per_page=1`);
+            return new Date(res.data[0].commit.committer.date);
+          }
+
+          (async () => {
+            let files = await getFiles();
+            for (let f of files) {
+              f.date = await getCommitDate(`${FOLDER}/${f.name}`);
+            }
+            files.sort((a,b) => b.date - a.date);
+            const list = files.map(f => f.download_url);
+            fs.writeFileSync(`${FOLDER}/images.json`, JSON.stringify(list, null, 2));
+            console.log('images.json generated ✅');
+          })();
+          EOF
