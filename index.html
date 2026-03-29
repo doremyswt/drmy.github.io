@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Art Archive</title>
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: Arial;
+      margin: 0;
+    }
+
+    h1 {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: auto;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .gallery img:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>My Art</h1>
+
+  <div class="gallery">
+    <img src="images/art1.jpg">
+    <img src="images/art2.jpg">
+    <img src="images/art3.jpg">
+  </div>
+
+</body>
+</html>
