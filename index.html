@@ -8,15 +8,29 @@
 <style>
 body {
   margin: 0;
-  background: #0d0d0d;
   font-family: Arial, sans-serif;
   color: #eee;
+  /* warm coffee gradient */
+  background: radial-gradient(circle at top, #2a1f1a, #0d0d0d);
 }
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
 
+  opacity: 0.035; /* adjust intensity */
+
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+}
 /* HEADER */
 .top {
   padding: 60px 20px 30px;
-  border-bottom: 1px solid #222;
+  background: rgba(40, 28, 22, 0.55); /* warm glass */
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 .profile {
@@ -49,6 +63,7 @@ body {
 .gallery img:hover {
   transform: scale(1.02);
   opacity: 0.9;
+  box-shadow: 0 0 20px rgba(255,255,255,0.08);
 }
 
 /* ONLY avatar */
@@ -91,7 +106,8 @@ body {
 
 .info p {
   margin: 6px 0 14px;
-  opacity: 0.6;
+  opacity: 0.7;
+  color: #d6c2b8;
 }
 
 /* ICON LINKS */
@@ -106,7 +122,7 @@ body {
 }
 
 .links a:hover {
-  color: white;
+  color: #f2d2b6;
   transform: scale(1.15);
 }
 
@@ -146,7 +162,7 @@ body {
     <img src="me.png" class="avatar">
 
     <div class="info">
-      <h1>drmy archive</h1>
+      <h1>drmy</h1>
       <p>socials</p>
 
       <div class="links">
@@ -230,6 +246,7 @@ async function loadImages() {
 
     const img = document.createElement("img");
     img.src = file.download_url;
+    img.loading = "lazy";
 
     img.onclick = () => {
       lightbox.classList.add("active");
