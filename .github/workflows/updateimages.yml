@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: true  # allows git push
       - uses: actions/setup-node@v3
         with:
           node-version: 20
@@ -44,3 +46,10 @@ jobs:
             console.log('images.json generated ✅');
           })();
           EOF
+      - name: Commit and push JSON
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add arch/images.json
+          git commit -m "Update images.json"
+          git push
