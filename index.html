@@ -42,10 +42,12 @@ body::before {
   gap: 25px;
 }
 .gallery {
-  display: flex;
-  flex-wrap: wrap;       /* wrap to next line if too many images */
-  gap: 10px;             /* space between images */
-  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.item {
+  border-radius: 6px;
 }
 
 .item {
@@ -237,6 +239,17 @@ async function loadImages() {
 
     div.appendChild(img);
     gallery.appendChild(div);
+  });
+  // <-- Paste it here, after the images exist
+  const galleryItems = document.querySelectorAll('.gallery .item');
+  galleryItems.forEach(item => {
+    const img = item.querySelector('img');
+    img.onload = () => {
+      const rowHeight = parseInt(getComputedStyle(document.querySelector('.gallery')).getPropertyValue('grid-auto-rows'));
+      const rowGap = parseInt(getComputedStyle(document.querySelector('.gallery')).getPropertyValue('gap'));
+      const rowSpan = Math.ceil((img.getBoundingClientRect().height + rowGap) / (rowHeight + rowGap));
+      item.style.gridRowEnd = `span ${rowSpan}`;
+    };
   });
 }
 
