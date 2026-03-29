@@ -43,16 +43,16 @@ body::before {
 }
 .gallery {
   display: flex;
-  flex-wrap: wrap;       /* wrap to next line if too many images */
-  gap: 10px;             /* space between images */
+  flex-wrap: wrap;
+  gap: 10px;
   padding: 10px;
 }
 
 .item {
-  flex: 0 0 calc(25% - 10px); /* 4 items per row, minus gap */
+  flex: 0 0 25%;  /* simple 4 per row */
   margin-bottom: 10px;
 }
-  
+
 /* ONLY gallery images */
 .gallery img {
   width: 100%;
