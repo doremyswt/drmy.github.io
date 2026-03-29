@@ -3,7 +3,10 @@ on:
   push:
     paths:
       - "arch/**"
-
+      
+permissions:
+  contents: write
+  
 jobs:
   build:
     runs-on: ubuntu-latest
