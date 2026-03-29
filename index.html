@@ -90,22 +90,51 @@
 </div>
 
 <script>
-  const imageList = [
-    "1.png",
-    "2.png",
-    "3.png"
-  ];
+const gallery = document.getElementById("gallery");
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
 
-  const gallery = document.getElementById("gallery");
-  const lightbox = document.getElementById("lightbox");
-  const lightboxImg = document.getElementById("lightbox-img");
+// CHANGE THIS to your repo
+const USER = "doremyswt";
+const REPO = "drmy.github.io";
+const FOLDER = "arch";
 
-  imageList.forEach(file => {
+async function loadImages() {
+  // get file list
+  const res = await fetch(`https://api.github.com/repos/${USER}/${REPO}/contents/${FOLDER}`);
+  const files = await res.json();
+
+  // filter only images
+  const images = files.filter(f =>
+    f.name.endsWith(".png") ||
+    f.name.endsWith(".jpg") ||
+    f.name.endsWith(".jpeg") ||
+    f.name.endsWith(".webp")
+  );
+
+  // get commit dates for each file
+  const imagesWithDates = await Promise.all(images.map(async file => {
+    const commitRes = await fetch(
+      `https://api.github.com/repos/${USER}/${REPO}/commits?path=${FOLDER}/${file.name}&per_page=1`
+    );
+    const commitData = await commitRes.json();
+
+    return {
+      ...file,
+      date: new Date(commitData[0].commit.committer.date)
+    };
+  }));
+
+  // sort newest first
+  imagesWithDates.sort((a, b) => b.date - a.date);
+
+  // render
+  imagesWithDates.forEach(file => {
     const div = document.createElement("div");
     div.className = "item";
 
     const img = document.createElement("img");
-    img.src = "arch/" + file;
+    img.src = file.download_url;
 
     img.onclick = () => {
       lightbox.classList.add("active");
@@ -115,10 +144,13 @@
     div.appendChild(img);
     gallery.appendChild(div);
   });
+}
 
-  lightbox.onclick = () => {
-    lightbox.classList.remove("active");
-  };
+loadImages();
+
+lightbox.onclick = () => {
+  lightbox.classList.remove("active");
+};
 </script>
 
 </body>
