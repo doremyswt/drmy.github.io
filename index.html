@@ -6,85 +6,120 @@
 <title>drmy archive</title>
 
 <style>
-  body {
-    margin: 0;
-    background: #0d0d0d;
-    color: #eee;
-    font-family: Arial, sans-serif;
-  }
+body {
+  margin: 0;
+  background: #0d0d0d;
+  font-family: Arial, sans-serif;
+  color: #eee;
+}
 
-  header {
+/* HEADER */
+.top {
+  padding: 60px 20px 30px;
+  border-bottom: 1px solid #222;
+}
+
+.profile {
+  max-width: 900px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+/* AVATAR */
+.avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 20px rgba(255,255,255,0.08);
+}
+
+/* TEXT */
+.info h1 {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: 1px;
+}
+
+.info p {
+  margin: 6px 0 14px;
+  opacity: 0.6;
+}
+
+/* ICON LINKS */
+.links a {
+  margin-right: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  transition: 0.2s;
+  text-decoration: none;
+}
+
+.links a:hover {
+  color: white;
+  transform: scale(1.15);
+}
+
+.links svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .profile {
+    flex-direction: column;
     text-align: center;
-    padding: 40px 20px 10px;
-    font-size: 20px;
-    letter-spacing: 2px;
-    opacity: 0.7;
   }
-
-  .gallery {
-    column-count: 4;
-    column-gap: 10px;
-    padding: 10px;
-  }
-
-  .item {
-    break-inside: avoid;
-    margin-bottom: 10px;
-  }
-
-  img {
-    width: 100%;
-    display: block;
-    border-radius: 6px;
-    transition: transform 0.2s ease, opacity 0.2s;
-    cursor: pointer;
-  }
-
-  img:hover {
-    transform: scale(1.02);
-    opacity: 0.9;
-  }
-
-  /* Lightbox */
-  .lightbox {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.95);
-    display: none;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .lightbox.active {
-    display: flex;
-  }
-
-  .lightbox img {
-    max-width: 90vw;
-    max-height: 90vh;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-  }
-
-  /* Responsive */
-  @media (max-width: 1000px) {
-    .gallery { column-count: 3; }
-  }
-
-  @media (max-width: 700px) {
-    .gallery { column-count: 2; }
-  }
-
-  @media (max-width: 400px) {
-    .gallery { column-count: 1; }
-  }
+}
 </style>
 </head>
 
 <body>
 
-<header>drmy archive</header>
+<header class="top">
+  <div class="profile">
+    
+    <!-- YOUR IMAGE -->
+    <img src="me.png" class="avatar">
+
+    <div class="info">
+      <h1>drmy archive</h1>
+      <p>socials</p>
+
+      <div class="links">
+        
+        <!-- TWITTER -->
+        <a href="https://twitter.com/doremyswt" target="_blank">
+          <svg viewBox="0 0 24 24">
+            <path d="M22 5.8c-.7.3-1.5.6-2.3.7.8-.5 1.4-1.2 1.7-2.1-.8.5-1.7.8-2.6 1C18 4.5 17 4 16 4c-2 0-3.5 1.7-3.5 3.7 0 .3 0 .6.1.9-3-.2-5.6-1.6-7.3-3.8-.3.6-.5 1.2-.5 1.9 0 1.3.7 2.5 1.7 3.2-.6 0-1.2-.2-1.7-.5 0 1.8 1.3 3.3 3 3.6-.3.1-.7.1-1 .1-.2 0-.5 0-.7-.1.5 1.5 1.9 2.6 3.6 2.6-1.3 1-3 1.6-4.8 1.6H2c1.7 1.1 3.7 1.7 5.8 1.7 7 0 10.8-5.9 10.8-11v-.5c.7-.5 1.4-1.2 1.9-2z"/>
+          </svg>
+        </a>
+
+        <!-- PIXIV (custom icon substitute) -->
+        <a href="https://www.pixiv.net/en/users/105940981" target="_blank">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+          </svg>
+        </a>
+
+        <!-- INSTAGRAM -->
+        <a href="https://instagram.com/doremyswt" target="_blank">
+          <svg viewBox="0 0 24 24">
+            <path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 5a5 5 0 100 10 5 5 0 000-10zm6.5-1.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
+          </svg>
+        </a>
+
+      </div>
+    </div>
+
+  </div>
+</header>
 
 <div class="gallery" id="gallery"></div>
 
