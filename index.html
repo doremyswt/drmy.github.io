@@ -92,11 +92,43 @@
     text-transform: lowercase;
   }
 
-  .cup-icon {
-    margin-left: auto;
-    opacity: 0.35;
-    font-size: 22px;
-    line-height: 1;
+  .cup-icon { display: none; }
+  .socials { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .socials a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); transition: border-color .2s, transform .2s; text-decoration: none; color: var(--muted); flex-shrink: 0; }
+  .socials a:hover { border-color: var(--latte); color: var(--latte); transform: translateY(-2px); }
+  .socials a svg { width: 15px; height: 15px; fill: currentColor; display: block; }
+  .socials a img { width: 17px; height: 17px; object-fit: contain; display: block; }
+  .vgen-wrap { position: relative; display: flex; align-items: center; }
+  .comm-callout {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: -4px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    pointer-events: none;
+    animation: bob 1.8s ease-in-out infinite;
+    white-space: nowrap;
+  }
+  .comm-callout span {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    color: #d4f542;
+    text-shadow: 0 0 12px rgba(212,245,66,0.6);
+  }
+  .comm-arrow {
+    width: 40px;
+    height: 26px;
+    color: #d4f542;
+    filter: drop-shadow(0 0 4px rgba(212,245,66,0.5));
+    transform: scaleX(-1);
+  }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-4px); }
   }
 
   /* ── DIVIDER ── */
@@ -247,7 +279,29 @@
       <h1>drmy</h1>
       <p class="tagline">archive · est. always</p>
     </div>
-    <div class="cup-icon">☕</div>
+    <div class="socials">
+      <a href="https://twitter.com/doremyswt" target="_blank" title="Twitter / X">
+        <svg viewBox="0 0 24 24"><path d="M22 5.8c-.7.3-1.5.6-2.3.7.8-.5 1.4-1.2 1.7-2.1-.8.5-1.7.8-2.6 1C18 4.5 17 4 16 4c-2 0-3.5 1.7-3.5 3.7 0 .3 0 .6.1.9-3-.2-5.6-1.6-7.3-3.8-.3.6-.5 1.2-.5 1.9 0 1.3.7 2.5 1.7 3.2-.6 0-1.2-.2-1.7-.5 0 1.8 1.3 3.3 3 3.6-.3.1-.7.1-1 .1-.2 0-.5 0-.7-.1.5 1.5 1.9 2.6 3.6 2.6-1.3 1-3 1.6-4.8 1.6H2c1.7 1.1 3.7 1.7 5.8 1.7 7 0 10.8-5.9 10.8-11v-.5c.7-.5 1.4-1.2 1.9-2z"/></svg>
+      </a>
+      <a href="https://www.pixiv.net/en/users/105940981" target="_blank" title="Pixiv">
+        <svg viewBox="0 0 48 48"><path d="M 25 2 C 12.317 2 2 12.317 2 25 C 2 37.683 12.317 48 25 48 C 37.683 48 48 37.683 48 25 C 48 12.317 37.683 2 25 2 z M 26.300781 12.009766 C 35.827781 12.009766 39.291969 18.146531 39.292969 23.269531 C 39.292969 28.539531 34.961781 33.662109 26.300781 33.662109 C 23.332781 33.662109 20.992094 32.832375 19.371094 31.984375 L 19.371094 36.259766 L 20.238281 36.259766 L 20.238281 37.992188 L 15.041016 37.992188 L 15.041016 36.259766 L 15.90625 36.259766 L 15.90625 17.945312 C 14.85625 18.643313 13.308594 20.669922 13.308594 20.669922 L 13.308594 22.070312 L 12.443359 22.070312 L 10.710938 18.939453 C 10.710938 18.939453 16.773781 12.009766 26.300781 12.009766 z M 26.300781 14.164062 C 23.557781 14.164062 21.249094 14.824656 19.371094 15.722656 L 19.371094 29.779297 C 20.524094 30.293297 22.829781 31.064453 26.300781 31.064453 C 31.939781 31.064453 34.962891 26.733531 34.962891 23.269531 C 34.962891 18.920531 32.050781 14.164062 26.300781 14.164062 z"/></svg>
+      </a>
+      <a href="https://instagram.com/doremyswt" target="_blank" title="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 5a5 5 0 100 10 5 5 0 000-10zm6.5-1.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>
+      </a>
+      <div class="vgen-wrap">
+        <div class="comm-callout">
+          <span>COMMISSIONS</span>
+          <svg class="comm-arrow" viewBox="0 0 40 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 5 C12 5 22 20 35 20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M29 14 L35 20 L29 26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <a href="https://vgen.co/doremy" target="_blank" title="VGen">
+          <img src="vgen.png" alt="VGen" class="social-icon">
+        </a>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -325,7 +379,6 @@
     const res = await fetch("arch/images.json");
     images = await res.json();
 
-    let loaded = 0;
     images.forEach((url, i) => {
       const el  = document.createElement("div");
       el.className = "item";
@@ -334,16 +387,13 @@
       img.loading = "lazy";
       img.alt     = "";
       img.onclick = () => openLB(i);
-
-      img.onload = () => { loaded++; if (loaded === images.length) layout(); else layout(); };
-      img.onerror = () => { loaded++; layout(); };
+      img.onload  = () => layout();
+      img.onerror = () => layout();
 
       el.appendChild(img);
       galleryEl.appendChild(el);
       items.push({ el, img });
     });
-
-    layout();
   }
 
   window.addEventListener("resize", layout);
