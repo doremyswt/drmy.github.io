@@ -29,38 +29,87 @@
     min-height: 100vh;
   }
 
-  /* ── HEADER ── */
+  /* ── VHS LAYERS ── */
+  #vhs-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 500;
+    opacity: 0.55;
+    mix-blend-mode: screen;
+  }
+
+  #vhs-scanlines {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 501;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0,0,0,0.17) 3px,
+      rgba(0,0,0,0.17) 4px
+    );
+  }
+
+  #vhs-band {
+    position: fixed;
+    left: 0; right: 0;
+    height: 4px;
+    background: rgba(255,255,255,0.07);
+    pointer-events: none;
+    z-index: 502;
+    top: -10px;
+  }
+
+  /* ── HEADER ──
+     padding-top: 58px gives the floating callout (~48px tall)
+     room to breathe above the icon without clipping.
+  */
   header {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(16,13,10,0.88);
+    background: rgba(16,13,10,0.90);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--border);
+    overflow: visible;
+    padding-top: 58px;
   }
 
   .header-inner {
     max-width: 960px;
     margin: 0 auto;
-    padding: 22px 28px;
+    padding: 0 28px 22px;
     display: flex;
     align-items: center;
     gap: 22px;
+    overflow: visible;
   }
 
+  /* ── AVATAR ── */
   .avatar-wrap {
     position: relative;
     flex-shrink: 0;
+    cursor: pointer;
   }
 
   .avatar {
-    width: 72px;
-    height: 72px;
+    width: 72px; height: 72px;
     border-radius: 50%;
     object-fit: cover;
     border: 2.5px solid var(--latte);
     display: block;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .avatar-wrap:hover .avatar {
+    transform: scale(1.07);
+    box-shadow: 0 0 20px rgba(196,168,130,0.4);
   }
 
   .avatar-ring {
@@ -70,9 +119,19 @@
     border: 1px dashed var(--latte);
     opacity: 0.5;
     animation: spin 18s linear infinite;
+    pointer-events: none;
   }
 
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── HEADER TEXT ── */
+  .header-text { display: flex; flex-direction: column; gap: 5px; }
+
+  .header-name-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
 
   .header-text h1 {
     font-family: 'Lora', serif;
@@ -80,6 +139,7 @@
     font-weight: 600;
     color: var(--cream);
     letter-spacing: 0.02em;
+    line-height: 1;
   }
 
   .header-text .tagline {
@@ -87,66 +147,92 @@
     font-size: 11px;
     font-weight: 300;
     color: var(--muted);
-    margin-top: 4px;
     letter-spacing: 0.12em;
     text-transform: lowercase;
   }
 
-  .cup-icon { display: none; }
-  .socials { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-  .socials a { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); transition: border-color .2s, transform .2s; text-decoration: none; color: var(--muted); flex-shrink: 0; }
+  /* ── SOCIALS ── */
+  .socials {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: visible;
+  }
+
+  .socials a {
+    display: flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: border-color .2s, transform .2s;
+    text-decoration: none;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
   .socials a:hover { border-color: var(--latte); color: var(--latte); transform: translateY(-2px); }
   .socials a svg { width: 15px; height: 15px; fill: currentColor; display: block; }
   .socials a img { width: 17px; height: 17px; object-fit: contain; display: block; }
-  .vgen-wrap { position: relative; display: flex; align-items: center; }
+
+  /* ── COMMISSION CALLOUT ──
+     Absolutely positioned from .vgen-wrap.
+     bottom: calc(100% + 10px)  →  floats above the icon.
+     left: 50% + translateX(-50%)  →  horizontally centred on icon.
+     The header's padding-top (58px) ensures it never clips.
+  */
+  .vgen-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
   .comm-callout {
     position: absolute;
-    bottom: calc(100% + 6px);
-    right: -4px;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    gap: 2px;
+    align-items: center;
+    gap: 3px;
     pointer-events: none;
-    animation: bob 1.8s ease-in-out infinite;
+    animation: bob 1.9s ease-in-out infinite;
     white-space: nowrap;
+    z-index: 200;
   }
+
   .comm-callout span {
     font-family: 'DM Mono', monospace;
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 400;
     letter-spacing: 0.14em;
     color: #d4f542;
-    text-shadow: 0 0 12px rgba(212,245,66,0.6);
+    text-shadow: 0 0 10px rgba(212,245,66,0.7);
   }
+
   .comm-arrow {
-    width: 40px;
-    height: 26px;
+    width: 14px; height: 18px;
     color: #d4f542;
-    filter: drop-shadow(0 0 4px rgba(212,245,66,0.5));
-    transform: scaleX(-1);
+    filter: drop-shadow(0 0 4px rgba(212,245,66,0.6));
+    display: block;
   }
+
   @keyframes bob {
-    0%, 100% { transform: translateY(0); }
-    50%       { transform: translateY(-4px); }
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%       { transform: translateX(-50%) translateY(-5px); }
   }
 
   /* ── DIVIDER ── */
   .divider {
     max-width: 960px;
     margin: 0 auto 32px;
-    padding: 0 28px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding-top: 36px;
+    padding: 36px 28px 0;
+    display: flex; align-items: center; gap: 14px;
   }
 
-  .divider-line {
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
 
   .divider-label {
     font-family: 'DM Mono', monospace;
@@ -156,7 +242,7 @@
     text-transform: lowercase;
   }
 
-  /* ── GALLERY (js masonry) ── */
+  /* ── GALLERY ── */
   .gallery {
     max-width: 960px;
     margin: 0 auto 60px;
@@ -174,36 +260,23 @@
     transition: transform 0.22s ease, box-shadow 0.22s ease;
   }
 
-  .item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 28px rgba(0,0,0,0.45);
-  }
+  .item:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.45); }
+  .item img { width: 100%; height: auto; display: block; }
 
-  .item img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  /* ── LIGHTBOX ── */
+  /* ── LIGHTBOX z:9999 > VHS z:500 ── */
   .lightbox {
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background: rgba(42,29,18,0.96);
-    display: none;
-    justify-content: center;
-    align-items: center;
+    display: none; justify-content: center; align-items: center;
     z-index: 9999;
     animation: fadeIn 0.2s ease;
   }
 
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
   .lightbox.active { display: flex; }
 
   .lightbox img {
-    max-width: 88vw;
-    max-height: 85vh;
+    max-width: 88vw; max-height: 85vh;
     object-fit: contain;
     border-radius: 8px;
     border: 1px solid rgba(196,168,130,0.2);
@@ -217,50 +290,98 @@
     border: 1px solid rgba(196,168,130,0.2);
     color: var(--cream);
     border-radius: 50%;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 16px;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px;
     transition: background 0.18s ease;
     user-select: none;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 50%; transform: translateY(-50%);
   }
 
   .lb-btn:hover { background: rgba(245,240,232,0.16); }
   .lb-close { top: 24px; right: 24px; transform: none; font-size: 14px; }
-  .lb-prev { left: 20px; }
-  .lb-next { right: 20px; }
+  .lb-prev  { left: 20px; }
+  .lb-next  { right: 20px; }
 
   .lb-counter {
     position: absolute;
-    bottom: 24px;
-    left: 50%;
+    bottom: 24px; left: 50%;
     transform: translateX(-50%);
     font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--latte);
-    letter-spacing: 0.14em;
-    opacity: 0.75;
+    font-size: 11px; color: var(--latte);
+    letter-spacing: 0.14em; opacity: 0.75;
+  }
+
+  /* ── MINI-GAME MODAL z:8000 ── */
+  #game-modal {
+    position: fixed; inset: 0;
+    background: rgba(10,7,4,0.92);
+    display: none; justify-content: center; align-items: center;
+    z-index: 8000;
+    animation: fadeIn 0.2s ease;
+  }
+
+  #game-modal.active { display: flex; }
+
+  .game-box {
+    background: #0d0a07;
+    border: 1.5px solid var(--latte);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    position: relative;
+    box-shadow: 0 0 50px rgba(196,168,130,0.10);
+  }
+
+  .game-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.2em;
+    color: var(--latte); text-transform: lowercase;
+  }
+
+  #game-canvas {
+    display: block;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    image-rendering: pixelated;
+  }
+
+  .game-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--muted);
+    letter-spacing: 0.1em; text-align: center;
+  }
+
+  .game-close {
+    position: absolute; top: 12px; right: 14px;
+    background: none; border: none;
+    color: var(--muted); font-size: 13px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    transition: color 0.15s;
+    letter-spacing: 0.08em;
+  }
+
+  .game-close:hover { color: var(--cream); }
+
+  #game-score-display {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; color: var(--latte);
+    letter-spacing: 0.15em;
   }
 
   /* ── FOOTER ── */
   footer {
-    text-align: center;
-    padding: 28px;
+    text-align: center; padding: 28px;
     font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.14em;
+    font-size: 10px; letter-spacing: 0.14em;
     color: var(--muted);
     border-top: 1px solid var(--border);
   }
 
   @media (max-width: 600px) {
     .gallery { padding: 0 14px; }
-    .header-inner { padding: 16px 18px; }
+    .header-inner { padding: 0 18px 18px; }
     .divider { padding: 28px 16px 0; }
     .lb-btn.lb-prev { left: 8px; }
     .lb-btn.lb-next { right: 8px; }
@@ -269,39 +390,75 @@
 </head>
 <body>
 
+<!-- VHS canvas grain + scanlines + band -->
+<canvas id="vhs-canvas" aria-hidden="true"></canvas>
+<div id="vhs-scanlines" aria-hidden="true"></div>
+<div id="vhs-band" aria-hidden="true"></div>
+
 <header>
   <div class="header-inner">
-    <div class="avatar-wrap">
+
+    <div class="avatar-wrap" id="avatar-btn" title="click for a surprise ☕">
       <div class="avatar-ring"></div>
       <img src="me.png" class="avatar" alt="drmy">
     </div>
+
     <div class="header-text">
-      <h1>drmy</h1>
+      <div class="header-name-row">
+        <h1>drmy</h1>
+        <!-- animated coffee mug -->
+        <svg width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <!-- steam wisps -->
+          <path d="M11 8 Q12.5 5 11 2" stroke="#6b5a4e" stroke-width="1.7" stroke-linecap="round" fill="none">
+            <animate attributeName="opacity" values="0.2;1;0.2" dur="2.2s" repeatCount="indefinite"/>
+            <animate attributeName="d" values="M11 8 Q12.5 5 11 2;M11 8 Q9.5 5 11 2;M11 8 Q12.5 5 11 2" dur="2.2s" repeatCount="indefinite"/>
+          </path>
+          <path d="M17 8 Q18.5 5 17 2" stroke="#6b5a4e" stroke-width="1.7" stroke-linecap="round" fill="none">
+            <animate attributeName="opacity" values="1;0.2;1" dur="2.2s" repeatCount="indefinite"/>
+            <animate attributeName="d" values="M17 8 Q18.5 5 17 2;M17 8 Q15.5 5 17 2;M17 8 Q18.5 5 17 2" dur="2.2s" repeatCount="indefinite"/>
+          </path>
+          <!-- mug body -->
+          <rect x="5" y="10" width="20" height="18" rx="3.5" fill="#221810" stroke="#c4a882" stroke-width="1.5"/>
+          <!-- handle -->
+          <path d="M25 14 Q33 14 33 19 Q33 24 25 24" stroke="#c4a882" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <!-- coffee surface -->
+          <ellipse cx="15" cy="13" rx="8" ry="2.5" fill="#140c05" stroke="#6b5a4e" stroke-width="0.8"/>
+          <!-- latte art heart -->
+          <path d="M12 13.2 Q13.2 11.4 15 13.2 Q16.8 11.4 18 13.2 Q16.8 15.8 15 17.4 Q13.2 15.8 12 13.2Z" fill="#c4a882" opacity="0.4"/>
+          <!-- saucer -->
+          <rect x="3" y="28" width="24" height="2.2" rx="1.1" fill="#221810" stroke="#c4a882" stroke-width="1.2"/>
+        </svg>
+      </div>
       <p class="tagline">archive · est. always</p>
     </div>
+
     <div class="socials">
       <a href="https://twitter.com/doremyswt" target="_blank" title="Twitter / X">
         <svg viewBox="0 0 24 24"><path d="M22 5.8c-.7.3-1.5.6-2.3.7.8-.5 1.4-1.2 1.7-2.1-.8.5-1.7.8-2.6 1C18 4.5 17 4 16 4c-2 0-3.5 1.7-3.5 3.7 0 .3 0 .6.1.9-3-.2-5.6-1.6-7.3-3.8-.3.6-.5 1.2-.5 1.9 0 1.3.7 2.5 1.7 3.2-.6 0-1.2-.2-1.7-.5 0 1.8 1.3 3.3 3 3.6-.3.1-.7.1-1 .1-.2 0-.5 0-.7-.1.5 1.5 1.9 2.6 3.6 2.6-1.3 1-3 1.6-4.8 1.6H2c1.7 1.1 3.7 1.7 5.8 1.7 7 0 10.8-5.9 10.8-11v-.5c.7-.5 1.4-1.2 1.9-2z"/></svg>
       </a>
       <a href="https://www.pixiv.net/en/users/105940981" target="_blank" title="Pixiv">
-        <svg viewBox="0 0 48 48"><path d="M 25 2 C 12.317 2 2 12.317 2 25 C 2 37.683 12.317 48 25 48 C 37.683 48 48 37.683 48 25 C 48 12.317 37.683 2 25 2 z M 26.300781 12.009766 C 35.827781 12.009766 39.291969 18.146531 39.292969 23.269531 C 39.292969 28.539531 34.961781 33.662109 26.300781 33.662109 C 23.332781 33.662109 20.992094 32.832375 19.371094 31.984375 L 19.371094 36.259766 L 20.238281 36.259766 L 20.238281 37.992188 L 15.041016 37.992188 L 15.041016 36.259766 L 15.90625 36.259766 L 15.90625 17.945312 C 14.85625 18.643313 13.308594 20.669922 13.308594 20.669922 L 13.308594 22.070312 L 12.443359 22.070312 L 10.710938 18.939453 C 10.710938 18.939453 16.773781 12.009766 26.300781 12.009766 z M 26.300781 14.164062 C 23.557781 14.164062 21.249094 14.824656 19.371094 15.722656 L 19.371094 29.779297 C 20.524094 30.293297 22.829781 31.064453 26.300781 31.064453 C 31.939781 31.064453 34.962891 26.733531 34.962891 23.269531 C 34.962891 18.920531 32.050781 14.164062 26.300781 14.164062 z"/></svg>
+        <svg viewBox="0 0 48 48"><path d="M25 2C12.317 2 2 12.317 2 25c0 12.683 10.317 23 23 23s23-10.317 23-23C48 12.317 37.683 2 25 2zm1.3 10.01c9.527 0 12.991 6.137 12.992 11.26 0 5.27-4.331 10.393-12.992 10.393-2.968 0-5.309-.83-6.929-1.678v4.275h.867v1.732h-5.197v-1.732h.865V17.945c-1.05.698-2.598 2.725-2.598 2.725v1.4h-.865l-1.732-3.131s6.063-6.93 15.59-6.93zm0 2.154c-2.743 0-5.052.66-6.929 1.558v14.057c1.153.514 3.458 1.285 6.929 1.285 5.639 0 8.662-4.331 8.662-7.795 0-4.349-2.912-9.105-8.662-9.105z"/></svg>
       </a>
       <a href="https://instagram.com/doremyswt" target="_blank" title="Instagram">
         <svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 5a5 5 0 100 10 5 5 0 000-10zm6.5-1.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>
       </a>
+
+      <!-- VGen with commission callout -->
       <div class="vgen-wrap">
         <div class="comm-callout">
           <span>COMMISSIONS</span>
-          <svg class="comm-arrow" viewBox="0 0 40 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 5 C12 5 22 20 35 20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M29 14 L35 20 L29 26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- straight down arrow -->
+          <svg class="comm-arrow" viewBox="0 0 14 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="7" y1="1" x2="7" y2="13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            <polyline points="2,9 7,15 12,9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <a href="https://vgen.co/doremy" target="_blank" title="VGen">
-          <img src="vgen.png" alt="VGen" class="social-icon">
+          <img src="vgen.png" alt="VGen">
         </a>
       </div>
     </div>
+
   </div>
 </header>
 
@@ -315,6 +472,7 @@
 
 <footer>brewed with care &nbsp;·&nbsp; drmy archive</footer>
 
+<!-- Lightbox -->
 <div class="lightbox" id="lightbox">
   <div class="lb-btn lb-close" id="lb-close">✕</div>
   <div class="lb-btn lb-prev" id="lb-prev">‹</div>
@@ -323,125 +481,428 @@
   <div class="lb-counter" id="lb-counter"></div>
 </div>
 
+<!-- Mini-game modal -->
+<div id="game-modal">
+  <div class="game-box">
+    <button class="game-close" id="game-close-btn">✕ close</button>
+    <div class="game-title">☕ bean catcher</div>
+    <div id="game-score-display">score: 0 &nbsp;|&nbsp; lives: ♥♥♥</div>
+    <canvas id="game-canvas" width="320" height="260"></canvas>
+    <div class="game-hint">← → arrows to move &nbsp;·&nbsp; catch beans, dodge skulls</div>
+  </div>
+</div>
+
 <script>
-  const galleryEl = document.getElementById("gallery");
-  const lightbox  = document.getElementById("lightbox");
-  const lbImg     = document.getElementById("lightbox-img");
-  const lbCounter = document.getElementById("lb-counter");
+/* ─────────────────────────────────
+   VHS GRAIN  (canvas noise)
+───────────────────────────────── */
+(function () {
+  const canvas = document.getElementById('vhs-canvas');
+  const ctx    = canvas.getContext('2d');
+  const band   = document.getElementById('vhs-band');
+  let bandY    = -10;
+  let bandSpd  = 0.7;
 
-  let images = [];
-  let items  = [];
-  let currentIndex = 0;
-  let zoomed = false;
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
 
-  const GAP = 10;
+  function tick() {
+    const W = canvas.width, H = canvas.height;
+    const id = ctx.createImageData(W, H);
+    const d  = id.data;
 
-  function numCols() {
-    const w = galleryEl.clientWidth;
-    if (w < 480) return 2;
-    if (w < 720) return 3;
-    return 4;
+    for (let i = 0; i < d.length; i += 4) {
+      if (Math.random() < 0.10) {
+        const v = Math.random() * 220 | 0;
+        d[i]   = v * 0.6 | 0;   // warm tint
+        d[i+1] = v * 0.38 | 0;
+        d[i+2] = v * 0.22 | 0;
+        d[i+3] = Math.random() * 55 | 0;
+      }
+    }
+    ctx.putImageData(id, 0, 0);
+
+    // occasional horizontal static streak
+    if (Math.random() < 0.06) {
+      const ly = Math.random() * H | 0;
+      ctx.fillStyle = `rgba(255,240,210,${(Math.random() * 0.09).toFixed(3)})`;
+      ctx.fillRect(0, ly, W, Math.random() < 0.5 ? 1 : 2);
+    }
+
+    // glitch band drift
+    bandY += bandSpd;
+    if (bandY > window.innerHeight + 12) {
+      bandY   = -12;
+      bandSpd = 0.4 + Math.random() * 0.9;
+    }
+    band.style.top = bandY + 'px';
+
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+
+/* ─────────────────────────────────
+   GALLERY MASONRY
+───────────────────────────────── */
+const galleryEl = document.getElementById('gallery');
+const lightbox  = document.getElementById('lightbox');
+const lbImg     = document.getElementById('lightbox-img');
+const lbCounter = document.getElementById('lb-counter');
+
+let images = [], items = [], currentIndex = 0, zoomed = false;
+const GAP = 10;
+
+function numCols() {
+  const w = galleryEl.clientWidth;
+  if (w < 480) return 2;
+  if (w < 720) return 3;
+  return 4;
+}
+
+function layout() {
+  const W = galleryEl.clientWidth;
+  const cols = numCols();
+  const colW = (W - GAP * (cols - 1)) / cols;
+  const hs   = new Array(cols).fill(0);
+
+  items.forEach(({ el, img }) => {
+    const nH   = img.naturalHeight || 0;
+    const nW   = img.naturalWidth  || 1;
+    const itemH = nH ? Math.round(colW * nH / nW) : colW;
+
+    let col = 0;
+    for (let c = 1; c < cols; c++) if (hs[c] < hs[col]) col = c;
+
+    el.style.width = colW + 'px';
+    el.style.left  = col * (colW + GAP) + 'px';
+    el.style.top   = hs[col] + 'px';
+    hs[col] += itemH + GAP;
+  });
+
+  galleryEl.style.height = Math.max(...hs) - GAP + 'px';
+}
+
+async function loadImages() {
+  try {
+    const res = await fetch('arch/images.json');
+    images = await res.json();
+  } catch { images = []; }
+
+  images.forEach((url, i) => {
+    const el  = document.createElement('div');
+    el.className = 'item';
+    const img = document.createElement('img');
+    img.src     = url;
+    img.loading = 'lazy';
+    img.alt     = '';
+    img.onclick  = () => openLB(i);
+    img.onload   = layout;
+    img.onerror  = layout;
+    el.appendChild(img);
+    galleryEl.appendChild(el);
+    items.push({ el, img });
+  });
+}
+
+window.addEventListener('resize', layout);
+
+
+/* ─────────────────────────────────
+   LIGHTBOX
+───────────────────────────────── */
+function openLB(i) {
+  currentIndex = i;
+  lbImg.src = images[i];
+  lbCounter.textContent = (i + 1) + ' / ' + images.length;
+  lightbox.classList.add('active');
+  zoomed = false;
+  lbImg.style.transform = 'scale(1)';
+  lbImg.style.cursor    = 'zoom-in';
+}
+
+const closeLB = () => lightbox.classList.remove('active');
+const prevLB  = () => { if (currentIndex > 0)               openLB(currentIndex - 1); };
+const nextLB  = () => { if (currentIndex < images.length-1) openLB(currentIndex + 1); };
+
+document.getElementById('lb-close').onclick = closeLB;
+document.getElementById('lb-prev').onclick  = prevLB;
+document.getElementById('lb-next').onclick  = nextLB;
+
+lbImg.addEventListener('click', () => {
+  zoomed = !zoomed;
+  lbImg.style.transform = zoomed ? 'scale(1.9)' : 'scale(1)';
+  lbImg.style.cursor    = zoomed ? 'zoom-out'   : 'zoom-in';
+});
+
+lbImg.addEventListener('mousemove', e => {
+  if (!zoomed) return;
+  const r = lbImg.getBoundingClientRect();
+  const x = ((e.clientX - r.left) / r.width  - 0.5) * 2;
+  const y = ((e.clientY - r.top)  / r.height - 0.5) * 2;
+  lbImg.style.transform = `scale(2) translate(${-x*45}%,${-y*45}%)`;
+});
+
+lbImg.addEventListener('mouseleave', () => { if (zoomed) lbImg.style.transform = 'scale(1.9)'; });
+lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLB(); });
+
+/* touch swipe for mobile lightbox */
+let lbTouchStartX = null, lbTouchStartY = null;
+lightbox.addEventListener('touchstart', e => {
+  lbTouchStartX = e.touches[0].clientX;
+  lbTouchStartY = e.touches[0].clientY;
+}, { passive: true });
+lightbox.addEventListener('touchend', e => {
+  if (lbTouchStartX === null) return;
+  const dx = e.changedTouches[0].clientX - lbTouchStartX;
+  const dy = e.changedTouches[0].clientY - lbTouchStartY;
+  // only register as a swipe if horizontal movement dominates
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+    if (dx < 0) nextLB();
+    else         prevLB();
+  }
+  lbTouchStartX = null;
+  lbTouchStartY = null;
+}, { passive: true });
+
+document.addEventListener('keydown', e => {
+  if (!lightbox.classList.contains('active')) return;
+  if (e.key === 'ArrowRight') nextLB();
+  if (e.key === 'ArrowLeft')  prevLB();
+  if (e.key === 'Escape')     closeLB();
+});
+
+loadImages();
+
+
+/* ─────────────────────────────────
+   BEAN CATCHER MINI-GAME
+───────────────────────────────── */
+(function () {
+  const modal     = document.getElementById('game-modal');
+  const gc        = document.getElementById('game-canvas');
+  const ctx       = gc.getContext('2d');
+  const scoreEl   = document.getElementById('game-score-display');
+  const avatarBtn = document.getElementById('avatar-btn');
+  const closeBtn  = document.getElementById('game-close-btn');
+
+  const W = gc.width, H = gc.height;
+  let score, lives, falling, player, raf, running, spawnT, speed, keys;
+
+  const heart = n => '♥'.repeat(n) + '♡'.repeat(3 - n);
+
+  function updateHUD() {
+    scoreEl.textContent = `score: ${score}  |  lives: ${heart(lives)}`;
   }
 
-  function layout() {
-    const totalW = galleryEl.clientWidth;
-    const cols   = numCols();
-    const colW   = (totalW - GAP * (cols - 1)) / cols;
-    const heights = new Array(cols).fill(0);
+  function init() {
+    score   = 0;
+    lives   = 3;
+    speed   = 1.5;
+    running = true;
+    spawnT  = 0;
+    player  = { x: W / 2 - 20, y: H - 38, w: 40, h: 22 };
+    falling = [];
+    keys    = {};
+    updateHUD();
+    if (raf) cancelAnimationFrame(raf);
+    gc.onclick = null;
+    loop();
+  }
 
-    // Process images left-to-right: for each image pick the column
-    // that currently has the minimum height, left-biased on ties.
-    items.forEach(({ el, img }) => {
-      const naturalH = img.naturalHeight || 0;
-      const naturalW = img.naturalWidth  || 1;
-      const itemH    = naturalH ? Math.round(colW * naturalH / naturalW) : colW;
+  // keyboard
+  document.addEventListener('keydown', e => {
+    if (!modal.classList.contains('active')) return;
+    keys[e.key] = true;
+    if (['ArrowLeft','ArrowRight'].includes(e.key)) e.preventDefault();
+  });
+  document.addEventListener('keyup', e => { keys[e.key] = false; });
 
-      // Find shortest column (left-biased)
-      let col = 0;
-      for (let c = 1; c < cols; c++) {
-        if (heights[c] < heights[col]) col = c;
+  // touch drag
+  let tx = null;
+  gc.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  gc.addEventListener('touchmove', e => {
+    if (tx === null) return;
+    const dx = e.touches[0].clientX - tx;
+    player.x = Math.max(0, Math.min(W - player.w, player.x + dx));
+    tx = e.touches[0].clientX;
+  }, { passive: true });
+
+  function spawn() {
+    const bad = Math.random() < 0.24;
+    falling.push({
+      x:   8 + Math.random() * (W - 16) | 0,
+      y:   -18,
+      r:   bad ? 11 : 8,
+      bad,
+      vy:  speed * (0.75 + Math.random() * 0.7),
+      rot: Math.random() * Math.PI * 2,
+    });
+  }
+
+  function drawBg() {
+    ctx.fillStyle = '#0d0a07';
+    ctx.fillRect(0, 0, W, H);
+    // floor
+    ctx.strokeStyle = '#2e231a';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, H - 10); ctx.lineTo(W, H - 10); ctx.stroke();
+    // scattered pixels (stars)
+    ctx.fillStyle = '#221810';
+    for (let i = 0; i < 22; i++) {
+      ctx.fillRect(((i * 57 + 13) % (W - 4)), ((i * 41 + 9) % (H - 60)), 1, 1);
+    }
+  }
+
+  function drawCup() {
+    // cup body
+    ctx.fillStyle   = '#221810';
+    ctx.strokeStyle = '#c4a882';
+    ctx.lineWidth   = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(player.x, player.y, player.w, player.h, 4);
+    ctx.fill(); ctx.stroke();
+    // handle
+    ctx.beginPath();
+    ctx.arc(player.x + player.w + 7, player.y + player.h / 2, 7, -1.2, 1.2);
+    ctx.stroke();
+    // latte surface inside
+    ctx.fillStyle = '#6b5a4e';
+    ctx.fillRect(player.x + 5, player.y + 5, player.w - 10, 5);
+    // tiny heart in the surface
+    ctx.fillStyle = 'rgba(196,168,130,0.5)';
+    ctx.font = '7px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('♥', player.x + player.w / 2, player.y + 10);
+  }
+
+  function drawItem(it) {
+    ctx.save();
+    ctx.translate(it.x, it.y);
+    ctx.rotate(it.rot);
+
+    if (it.bad) {
+      ctx.font = '20px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('💀', 0, 0);
+    } else {
+      // coffee bean
+      ctx.fillStyle = '#7a4a1e';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, it.r, it.r * 1.45, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // crease
+      ctx.strokeStyle = '#3e1e06';
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.moveTo(0, -it.r * 1.3);
+      ctx.bezierCurveTo(it.r * 0.6, 0, -it.r * 0.6, 0, 0, it.r * 1.3);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  function gameOver() {
+    running = false;
+    ctx.fillStyle = 'rgba(13,10,7,0.80)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#c4a882';
+    ctx.font = '600 22px Lora, serif';
+    ctx.fillText('game over', W / 2, H / 2 - 16);
+    ctx.font = '13px "DM Mono", monospace';
+    ctx.fillStyle = '#7a6355';
+    ctx.fillText('final score: ' + score, W / 2, H / 2 + 12);
+    ctx.fillText('click to restart', W / 2, H / 2 + 36);
+    gc.onclick = () => init();
+  }
+
+  function loop() {
+    if (!running) return;
+    drawBg();
+
+    // player movement
+    const spd = 5;
+    if (keys['ArrowLeft']  || keys['a']) player.x -= spd;
+    if (keys['ArrowRight'] || keys['d']) player.x += spd;
+    player.x = Math.max(0, Math.min(W - player.w, player.x));
+
+    // spawn
+    spawnT++;
+    const interval = Math.max(25, 62 - score * 0.5);
+    if (spawnT >= interval) { spawnT = 0; spawn(); }
+    speed = 1.5 + score * 0.03;
+
+    // update items
+    for (let i = falling.length - 1; i >= 0; i--) {
+      const it = falling[i];
+      it.y   += it.vy;
+      it.rot += 0.05;
+
+      drawItem(it);
+
+      // catch (cup rim)
+      if (
+        it.y + it.r > player.y &&
+        it.y - it.r < player.y + 10 &&
+        it.x > player.x - 4 &&
+        it.x < player.x + player.w + 4
+      ) {
+        falling.splice(i, 1);
+        if (it.bad) {
+          lives--;
+          updateHUD();
+          ctx.fillStyle = 'rgba(160,20,20,0.20)';
+          ctx.fillRect(0, 0, W, H);
+          if (lives <= 0) { gameOver(); return; }
+        } else {
+          score++;
+          updateHUD();
+        }
+        continue;
       }
 
-      const x = col * (colW + GAP);
-      const y = heights[col];
+      // missed (fell off)
+      if (it.y > H + 20) {
+        falling.splice(i, 1);
+        if (!it.bad) {
+          lives--;
+          updateHUD();
+          if (lives <= 0) { gameOver(); return; }
+        }
+      }
+    }
 
-      el.style.width  = colW + "px";
-      el.style.left   = x + "px";
-      el.style.top    = y + "px";
-
-      heights[col] += itemH + GAP;
-    });
-
-    galleryEl.style.height = Math.max(...heights) - GAP + "px";
+    drawCup();
+    raf = requestAnimationFrame(loop);
   }
 
-  async function loadImages() {
-    const res = await fetch("arch/images.json");
-    images = await res.json();
+  // open
+  avatarBtn.addEventListener('click', () => {
+    modal.classList.add('active');
+    init();
+  });
 
-    images.forEach((url, i) => {
-      const el  = document.createElement("div");
-      el.className = "item";
-      const img = document.createElement("img");
-      img.src     = url;
-      img.loading = "lazy";
-      img.alt     = "";
-      img.onclick = () => openLB(i);
-      img.onload  = () => layout();
-      img.onerror = () => layout();
-
-      el.appendChild(img);
-      galleryEl.appendChild(el);
-      items.push({ el, img });
-    });
+  // close
+  function closeGame() {
+    modal.classList.remove('active');
+    running = false;
+    if (raf) cancelAnimationFrame(raf);
   }
 
-  window.addEventListener("resize", layout);
-
-  /* ── LIGHTBOX ── */
-  function openLB(i) {
-    currentIndex = i;
-    lbImg.src = images[i];
-    lbCounter.textContent = (i + 1) + " / " + images.length;
-    lightbox.classList.add("active");
-    zoomed = false;
-    lbImg.style.transform = "scale(1)";
-    lbImg.style.cursor    = "zoom-in";
-  }
-
-  function closeLB() { lightbox.classList.remove("active"); }
-  function prevLB()  { if (currentIndex > 0)               openLB(currentIndex - 1); }
-  function nextLB()  { if (currentIndex < images.length-1) openLB(currentIndex + 1); }
-
-  document.getElementById("lb-close").onclick = closeLB;
-  document.getElementById("lb-prev").onclick  = prevLB;
-  document.getElementById("lb-next").onclick  = nextLB;
-
-  lbImg.addEventListener("click", () => {
-    zoomed = !zoomed;
-    lbImg.style.transform = zoomed ? "scale(1.9)" : "scale(1)";
-    lbImg.style.cursor    = zoomed ? "zoom-out"   : "zoom-in";
+  closeBtn.addEventListener('click', closeGame);
+  modal.addEventListener('click', e => { if (e.target === modal) closeGame(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) closeGame();
   });
-
-  lbImg.addEventListener("mousemove", e => {
-    if (!zoomed) return;
-    const rect = lbImg.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width  - 0.5) * 2;
-    const y = ((e.clientY - rect.top)  / rect.height - 0.5) * 2;
-    lbImg.style.transform = `scale(2) translate(${-x*45}%,${-y*45}%)`;
-  });
-
-  lbImg.addEventListener("mouseleave", () => { if (zoomed) lbImg.style.transform = "scale(1.9)"; });
-  lightbox.addEventListener("click", e => { if (e.target === lightbox) closeLB(); });
-
-  document.addEventListener("keydown", e => {
-    if (!lightbox.classList.contains("active")) return;
-    if (e.key === "ArrowRight") nextLB();
-    if (e.key === "ArrowLeft")  prevLB();
-    if (e.key === "Escape")     closeLB();
-  });
-
-  loadImages();
+})();
 </script>
 </body>
 </html>
