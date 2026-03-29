@@ -42,13 +42,14 @@ body::before {
   gap: 25px;
 }
 .gallery {
-  column-count: 4;
-  column-gap: 10px;
+  display: flex;
+  flex-wrap: wrap;       /* wrap to next line if too many images */
+  gap: 10px;             /* space between images */
   padding: 10px;
 }
 
 .item {
-  break-inside: avoid;
+  flex: 0 0 calc(25% - 10px); /* 4 items per row, minus gap */
   margin-bottom: 10px;
 }
   
