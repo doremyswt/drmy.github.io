@@ -42,6 +42,13 @@ body {
   width: 100%;
   height: auto;
   display: block;
+  border-radius: 6px;
+  transition: transform 0.2s ease, opacity 0.2s;
+  cursor: pointer;
+}
+.gallery img:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
 }
 
 /* ONLY avatar */
@@ -51,8 +58,23 @@ body {
   border-radius: 50%;
   object-fit: cover;
 }
-  
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  cursor: zoom-out;
+}
+
+.lightbox.active {
+  display: flex;
+}
+
 .lightbox img {
+  border-radius: 6px;
   max-width: 90vw;
   max-height: 90vh;
   width: auto;
