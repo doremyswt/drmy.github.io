@@ -124,25 +124,22 @@
     text-transform: lowercase;
   }
 
-  /* ── GALLERY (masonry) ── */
+  /* ── GALLERY (js masonry) ── */
   .gallery {
     max-width: 960px;
     margin: 0 auto 60px;
     padding: 0 28px;
-    columns: 4 200px;
-    column-gap: 10px;
+    position: relative;
   }
 
   .item {
-    break-inside: avoid;
-    margin-bottom: 10px;
+    position: absolute;
     border-radius: 8px;
     overflow: hidden;
     background: var(--surface);
     border: 1px solid var(--border);
     cursor: pointer;
     transition: transform 0.22s ease, box-shadow 0.22s ease;
-    display: block;
   }
 
   .item:hover {
@@ -230,7 +227,7 @@
   }
 
   @media (max-width: 600px) {
-    .gallery { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; padding: 0 16px; }
+    .gallery { padding: 0 14px; }
     .header-inner { padding: 16px 18px; }
     .divider { padding: 28px 16px 0; }
     .lb-btn.lb-prev { left: 8px; }
@@ -273,76 +270,125 @@
 </div>
 
 <script>
-  const gallery = document.getElementById("gallery");
-  const lightbox = document.getElementById("lightbox");
-  const lbImg = document.getElementById("lightbox-img");
+  const galleryEl = document.getElementById("gallery");
+  const lightbox  = document.getElementById("lightbox");
+  const lbImg     = document.getElementById("lightbox-img");
   const lbCounter = document.getElementById("lb-counter");
 
   let images = [];
+  let items  = [];
   let currentIndex = 0;
   let zoomed = false;
+
+  const GAP = 10;
+
+  function numCols() {
+    const w = galleryEl.clientWidth;
+    if (w < 480) return 2;
+    if (w < 720) return 3;
+    return 4;
+  }
+
+  function layout() {
+    const totalW = galleryEl.clientWidth;
+    const cols   = numCols();
+    const colW   = (totalW - GAP * (cols - 1)) / cols;
+    const heights = new Array(cols).fill(0);
+
+    // Process images left-to-right: for each image pick the column
+    // that currently has the minimum height, left-biased on ties.
+    items.forEach(({ el, img }) => {
+      const naturalH = img.naturalHeight || 0;
+      const naturalW = img.naturalWidth  || 1;
+      const itemH    = naturalH ? Math.round(colW * naturalH / naturalW) : colW;
+
+      // Find shortest column (left-biased)
+      let col = 0;
+      for (let c = 1; c < cols; c++) {
+        if (heights[c] < heights[col]) col = c;
+      }
+
+      const x = col * (colW + GAP);
+      const y = heights[col];
+
+      el.style.width  = colW + "px";
+      el.style.left   = x + "px";
+      el.style.top    = y + "px";
+
+      heights[col] += itemH + GAP;
+    });
+
+    galleryEl.style.height = Math.max(...heights) - GAP + "px";
+  }
 
   async function loadImages() {
     const res = await fetch("arch/images.json");
     images = await res.json();
+
+    let loaded = 0;
     images.forEach((url, i) => {
-      const div = document.createElement("div");
-      div.className = "item";
+      const el  = document.createElement("div");
+      el.className = "item";
       const img = document.createElement("img");
-      img.src = url;
+      img.src     = url;
       img.loading = "lazy";
-      img.alt = "";
-      img.onclick = () => open(i);
-      div.appendChild(img);
-      gallery.appendChild(div);
+      img.alt     = "";
+      img.onclick = () => openLB(i);
+
+      img.onload = () => { loaded++; if (loaded === images.length) layout(); else layout(); };
+      img.onerror = () => { loaded++; layout(); };
+
+      el.appendChild(img);
+      galleryEl.appendChild(el);
+      items.push({ el, img });
     });
+
+    layout();
   }
 
-  function open(i) {
+  window.addEventListener("resize", layout);
+
+  /* ── LIGHTBOX ── */
+  function openLB(i) {
     currentIndex = i;
     lbImg.src = images[i];
     lbCounter.textContent = (i + 1) + " / " + images.length;
     lightbox.classList.add("active");
     zoomed = false;
     lbImg.style.transform = "scale(1)";
-    lbImg.style.cursor = "zoom-in";
+    lbImg.style.cursor    = "zoom-in";
   }
 
-  function close() { lightbox.classList.remove("active"); }
-  function prev() { if (currentIndex > 0) open(currentIndex - 1); }
-  function next() { if (currentIndex < images.length - 1) open(currentIndex + 1); }
+  function closeLB() { lightbox.classList.remove("active"); }
+  function prevLB()  { if (currentIndex > 0)               openLB(currentIndex - 1); }
+  function nextLB()  { if (currentIndex < images.length-1) openLB(currentIndex + 1); }
 
-  document.getElementById("lb-close").onclick = close;
-  document.getElementById("lb-prev").onclick = prev;
-  document.getElementById("lb-next").onclick = next;
+  document.getElementById("lb-close").onclick = closeLB;
+  document.getElementById("lb-prev").onclick  = prevLB;
+  document.getElementById("lb-next").onclick  = nextLB;
 
   lbImg.addEventListener("click", () => {
     zoomed = !zoomed;
     lbImg.style.transform = zoomed ? "scale(1.9)" : "scale(1)";
-    lbImg.style.cursor = zoomed ? "zoom-out" : "zoom-in";
+    lbImg.style.cursor    = zoomed ? "zoom-out"   : "zoom-in";
   });
 
   lbImg.addEventListener("mousemove", e => {
     if (!zoomed) return;
     const rect = lbImg.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-    lbImg.style.transform = `scale(2) translate(${-x * 45}%, ${-y * 45}%)`;
+    const x = ((e.clientX - rect.left) / rect.width  - 0.5) * 2;
+    const y = ((e.clientY - rect.top)  / rect.height - 0.5) * 2;
+    lbImg.style.transform = `scale(2) translate(${-x*45}%,${-y*45}%)`;
   });
 
-  lbImg.addEventListener("mouseleave", () => {
-    if (zoomed) lbImg.style.transform = "scale(1.9)";
-  });
-
-  lightbox.addEventListener("click", e => {
-    if (e.target === lightbox) close();
-  });
+  lbImg.addEventListener("mouseleave", () => { if (zoomed) lbImg.style.transform = "scale(1.9)"; });
+  lightbox.addEventListener("click", e => { if (e.target === lightbox) closeLB(); });
 
   document.addEventListener("keydown", e => {
     if (!lightbox.classList.contains("active")) return;
-    if (e.key === "ArrowRight") next();
-    if (e.key === "ArrowLeft") prev();
-    if (e.key === "Escape") close();
+    if (e.key === "ArrowRight") nextLB();
+    if (e.key === "ArrowLeft")  prevLB();
+    if (e.key === "Escape")     closeLB();
   });
 
   loadImages();
