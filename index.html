@@ -65,14 +65,14 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
 #game-modal{position:fixed;inset:0;background:rgba(2,1,0,.99);display:none;z-index:8000}
 #game-modal.active{display:block}
 #game-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-.game-topbar{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:linear-gradient(to bottom,rgba(2,1,0,.88) 0%,transparent 100%);pointer-events:none;}
+.game-topbar{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:linear-gradient(to bottom,rgba(2,1,0,.88) 0%,transparent 100%);pointer-events:none;}
 .game-topbar>*{pointer-events:all}
 .game-title{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.22em;color:rgba(196,168,130,.5);text-transform:lowercase;}
 .game-topbar-right{display:flex;align-items:center;gap:6px}
 .game-close,.game-credits{background:rgba(6,3,1,.88);border:1px solid rgba(46,28,12,.9);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.1em;padding:4px 11px;border-radius:4px;cursor:pointer;transition:border-color .15s,color .15s;text-decoration:none;display:inline-flex;align-items:center;backdrop-filter:blur(8px);}
 .game-close{color:var(--muted)}.game-close:hover{color:var(--cream);border-color:rgba(110,85,64,.6)}
 .game-credits{color:rgba(122,172,202,.65);border-color:rgba(122,172,202,.14)}.game-credits:hover{color:#b8e0f0;border-color:rgba(122,172,202,.38)}
-.game-bottom{position:absolute;bottom:0;left:0;right:0;z-index:10;padding:6px 22px 14px;background:linear-gradient(to top,rgba(2,1,0,.9) 0%,transparent 100%);pointer-events:none;display:flex;flex-direction:column;gap:4px;align-items:center;}
+.game-bottom{position:absolute;bottom:0;left:0;right:0;z-index:30;padding:6px 22px 14px;background:linear-gradient(to top,rgba(2,1,0,.9) 0%,transparent 100%);pointer-events:none;display:flex;flex-direction:column;gap:4px;align-items:center;}
 .game-bottom>*{pointer-events:all}
 .hp-bar-wrap{display:flex;align-items:center;gap:8px;width:100%;max-width:280px}
 .hp-bar-bg{flex:1;height:2px;background:rgba(255,255,255,.04);border-radius:1px;overflow:hidden}
@@ -81,13 +81,30 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
 .game-hud-row{display:flex;justify-content:space-between;align-items:center;font-family:'DM Mono',monospace;font-size:9px;color:rgba(110,85,64,.5);letter-spacing:.12em;width:100%;max-width:280px}
 .game-hud-row span{color:var(--latte2)}
 #game-feedback{font-family:'DM Mono',monospace;font-size:8px;color:rgba(110,85,64,.55);letter-spacing:.16em;text-align:center;height:11px}
-.bottom-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center}
-.ar-row{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:7px;color:rgba(110,85,64,.45);letter-spacing:.1em}
-.ar-row input[type=range]{-webkit-appearance:none;appearance:none;width:66px;height:2px;border-radius:1px;background:rgba(255,255,255,.06);outline:none;cursor:pointer}
-.ar-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:7px;height:7px;border-radius:50%;background:var(--latte);cursor:pointer;}
-.ar-val{color:rgba(244,237,226,.6);min-width:26px;text-align:right}
 .hint{font-family:'DM Mono',monospace;font-size:7px;color:rgba(62,40,18,.75);letter-spacing:.09em}
 .hint b{color:rgba(196,168,130,.5);font-weight:500}
+/* MENU OVERLAY */
+#game-menu{position:absolute;inset:0;z-index:25;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;transition:opacity .22s;}
+#game-menu.hidden{opacity:0;pointer-events:none;}
+.menu-card{background:rgba(8,4,1,.94);border:1px solid rgba(46,28,12,.9);border-radius:12px;padding:26px 28px 22px;display:flex;flex-direction:column;align-items:center;gap:16px;width:min(320px,86vw);backdrop-filter:blur(20px);pointer-events:all;box-shadow:0 30px 80px rgba(0,0,0,.9),0 0 0 1px rgba(196,168,130,.04);}
+.menu-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--latte2);letter-spacing:.08em;text-align:center;line-height:1.3;}
+.menu-sub{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.18em;color:var(--muted);margin-top:-8px;}
+.menu-result-box{width:100%;padding:9px 12px;border-radius:6px;border:1px solid rgba(196,168,130,.14);background:rgba(196,168,130,.04);display:flex;flex-direction:column;gap:4px;align-items:center;}
+.menu-result-title{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:300;color:var(--latte);}
+.menu-result-score{font-family:'DM Mono',monospace;font-size:10px;color:var(--cream);letter-spacing:.1em;}
+.menu-result-box.fail{border-color:rgba(196,152,168,.2);}.menu-result-box.fail .menu-result-title{color:#c498a8;}
+.menu-settings{width:100%;display:flex;flex-direction:column;gap:10px;}
+.setting-row{display:flex;align-items:center;gap:10px;}
+.setting-lbl{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.13em;color:var(--muted);text-transform:lowercase;min-width:54px;}
+.setting-row input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:2px;border-radius:1px;background:rgba(255,255,255,.07);outline:none;cursor:pointer;}
+.setting-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--latte);cursor:pointer;border:2px solid rgba(8,4,1,.8);}
+.setting-val{font-family:'DM Mono',monospace;font-size:9px;color:var(--cream);min-width:40px;text-align:right;}
+.btn-play{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;color:#080401;background:linear-gradient(135deg,#d8c4a0,#c4a882);border:none;border-radius:7px;padding:13px 0;cursor:pointer;transition:transform .14s,box-shadow .14s,filter .14s;text-transform:lowercase;width:100%;box-shadow:0 4px 22px rgba(196,168,130,.3);font-weight:500;}
+.btn-play:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(196,168,130,.45);filter:brightness(1.07);}
+.btn-play:active{transform:none;box-shadow:0 2px 10px rgba(196,168,130,.2);}
+.btn-retry{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--latte);background:rgba(196,168,130,.07);border:1px solid rgba(196,168,130,.22);border-radius:7px;padding:10px 0;cursor:pointer;transition:all .14s;text-transform:lowercase;width:100%;}
+.btn-retry:hover{background:rgba(196,168,130,.14);border-color:rgba(196,168,130,.42);}
+.menu-hint{font-family:'DM Mono',monospace;font-size:7px;color:rgba(62,40,18,.55);letter-spacing:.08em;text-align:center;}
 @media(max-width:680px){.gallery,.section-divider{padding-left:18px;padding-right:18px}.header-inner{padding:14px 18px}}
 </style>
 </head>
@@ -163,6 +180,37 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
 <!-- GAME -->
 <div id="game-modal">
   <canvas id="game-canvas"></canvas>
+
+  <!-- MENU OVERLAY: shown when idle or after results -->
+  <div id="game-menu">
+    <div class="menu-card" id="menu-card">
+      <!-- idle title / result summary injected by JS -->
+      <div id="menu-header">
+        <div class="menu-title">勘冴えて悔しいわ</div>
+        <div class="menu-sub">shield</div>
+      </div>
+      <div id="menu-result-box" class="menu-result-box" style="display:none"></div>
+
+      <div class="menu-settings">
+        <div class="setting-row">
+          <span class="setting-lbl">approach</span>
+          <input type="range" id="ar-slider" min="0.2" max="3" step="0.05" value="0.5">
+          <span class="setting-val" id="ar-val">0.50s</span>
+        </div>
+        <div class="setting-row">
+          <span class="setting-lbl">offset</span>
+          <input type="range" id="offset-slider" min="-0.5" max="0.5" step="0.01" value="0">
+          <span class="setting-val" id="offset-val">0.00s</span>
+        </div>
+      </div>
+
+      <button class="btn-play" id="btn-play">▶ play</button>
+      <button class="btn-retry" id="btn-retry" style="display:none">↺ retry</button>
+
+      <div class="menu-hint"><b>← ↑ → ↓</b> or <b>WASD</b> — rotate shield · <b>esc</b> close</div>
+    </div>
+  </div>
+
   <div class="game-topbar">
     <div class="game-title">勘冴えて悔しいわ · shield</div>
     <div class="game-topbar-right">
@@ -180,14 +228,7 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
       <div id="game-feedback"></div>
       <div>combo &nbsp;<span id="hud-combo">0</span></div>
     </div>
-    <div class="bottom-row">
-      <div class="ar-row">
-        <span>AR</span>
-        <input type="range" id="ar-slider" min="0.2" max="4" step="0.05" value="0.4">
-        <span class="ar-val" id="ar-val">0.40s</span>
-      </div>
-      <div class="hint"><b>← ↑ → ↓</b> / <b>AWDS</b> — rotate shield</div>
-    </div>
+    <div class="hint" style="font-size:7px;color:rgba(62,40,18,.6);letter-spacing:.09em;"><b>← ↑ → ↓</b> / <b>WASD</b> — rotate shield</div>
   </div>
 </div>
 
@@ -263,24 +304,31 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
 
 /* SHIELD GAME */
 (function(){
-  const modal=document.getElementById('game-modal');
-  const gc=document.getElementById('game-canvas');
-  const ctx=gc.getContext('2d');
-  const avatarBtn=document.getElementById('avatar-btn');
-  const closeBtn=document.getElementById('game-close-btn');
-  const hudScore=document.getElementById('hud-score');
-  const hudCombo=document.getElementById('hud-combo');
-  const hpLabel=document.getElementById('hud-hp-label');
-  const hpFill=document.getElementById('hp-bar-fill');
-  const feedback=document.getElementById('game-feedback');
-  const arSlider=document.getElementById('ar-slider');
-  const arVal=document.getElementById('ar-val');
+  const modal    = document.getElementById('game-modal');
+  const gc       = document.getElementById('game-canvas');
+  const ctx      = gc.getContext('2d');
+  const avatarBtn= document.getElementById('avatar-btn');
+  const closeBtn = document.getElementById('game-close-btn');
+  const hudScore = document.getElementById('hud-score');
+  const hudCombo = document.getElementById('hud-combo');
+  const hpLabel  = document.getElementById('hud-hp-label');
+  const hpFill   = document.getElementById('hp-bar-fill');
+  const feedback = document.getElementById('game-feedback');
+  const gameMenu = document.getElementById('game-menu');
+  const menuResultBox = document.getElementById('menu-result-box');
+  const btnPlay  = document.getElementById('btn-play');
+  const btnRetry = document.getElementById('btn-retry');
+  const arSlider = document.getElementById('ar-slider');
+  const arVal    = document.getElementById('ar-val');
+  const offsetSlider = document.getElementById('offset-slider');
+  const offsetVal    = document.getElementById('offset-val');
 
-  const leadIn=3;
-  const BEATMAP_RAW=[[3.100,0],[3.500,0],[3.700,0],[3.900,0],[4.200,0],[4.500,0],[5.500,0],[5.800,3],[6.100,3],[6.300,3],[6.500,0],[6.700,0],[6.900,0],[7.130,3],[7.443,3],[7.700,3],[8.000,0],[8.100,3],[8.200,3],[8.300,1],[8.400,1],[8.500,2],[8.600,2],[8.700,1],[8.800,1],[8.900,3],[9.000,3],[9.100,0],[9.200,0],[9.300,2],[9.400,2],[9.500,2],[9.700,0],[9.900,0],[10.100,0],[10.300,0],[10.600,0],[10.900,2],[11.300,1],[11.500,0],[11.700,3],[11.900,2],[12.200,0],[12.500,0],[12.900,0],[13.100,2],[13.500,3],[13.800,0],[14.100,2],[14.500,3],[14.700,2],[14.900,1],[15.100,0],[15.400,3],[15.700,2],[16.100,1],[16.300,2],[16.500,0],[16.700,1],[17.000,0],[17.300,1],[17.700,3],[17.900,0],[18.100,1],[18.300,0],[18.600,0],[18.900,2],[19.300,0],[19.500,3],[19.700,2],[20.100,1],[20.300,0],[20.500,1],[20.900,1],[21.100,0],[21.300,1],[21.500,0],[21.800,1],[22.100,3],[22.300,3],[22.500,1],[22.600,1],[22.700,0],[22.800,3],[22.900,2],[23.000,1],[23.100,0],[23.400,1],[23.700,0],[24.100,0],[24.200,1],[24.300,2],[24.500,1],[24.700,1],[25.000,2],[25.300,3],[25.700,0],[25.800,3],[25.900,3],[26.100,2],[26.200,1],[26.300,1],[26.500,0],[26.700,3],[26.900,2],[27.100,1],[27.300,3],[27.500,1],[27.700,0],[27.900,3],[28.100,2],[28.500,0],[28.900,1],[29.000,0],[29.100,1],[29.300,0],[29.500,1],[29.800,0],[30.100,3],[30.500,2],[30.600,3],[30.700,0],[30.800,1],[30.900,0],[31.000,3],[31.100,2],[31.400,3],[31.700,0],[32.100,1],[32.200,0],[32.300,3],[32.500,2],[32.700,1],[32.900,0],[33.100,3],[33.300,1],[33.500,0],[33.700,3],[33.900,1],[34.100,0],[34.300,0],[34.502,2],[34.700,0],[34.800,0],[34.900,0],[35.000,0],[35.100,0],[35.300,0],[35.405,1],[35.505,0],[35.599,1],[35.686,0],[35.891,0],[36.200,3],[36.500,3],[36.900,2],[37.000,0],[37.100,2],[37.200,1],[37.300,3],[37.400,1],[37.500,0],[37.800,0],[38.100,3],[38.500,0],[38.600,0],[38.700,0],[38.900,3],[39.100,1],[39.300,3],[39.500,1],[39.600,0],[39.900,2],[40.100,3],[40.300,1],[40.500,0],[40.700,3],[40.900,1],[41.000,1],[41.300,0],[41.700,2],[41.800,0],[41.900,2],[42.100,0],[42.300,1],[42.600,3],[42.900,1],[43.300,0],[43.400,2],[43.500,0],[43.600,2],[43.700,0],[43.800,1],[44.200,0],[44.500,1],[44.900,0],[45.100,2],[45.300,0],[45.500,1],[45.700,3],[45.900,1],[46.100,3],[46.300,0],[46.500,2],[46.700,1],[46.900,3],[47.100,2],[47.300,2],[47.500,0],[47.700,0],[47.900,0],[48.100,0],[48.300,0],[48.700,0],[48.900,0],[49.100,0],[49.500,0],[49.700,3],[49.900,2],[50.100,3],[50.300,1],[50.600,3],[50.900,1],[51.300,0],[51.400,0],[51.500,0],[51.600,0],[51.700,0],[51.800,0],[51.900,0],[52.000,0],[52.100,0],[52.200,0],[52.300,0],[52.400,1],[52.600,0],[52.700,1],[53.100,0],[53.500,1],[53.900,0],[54.300,3],[54.700,3],[55.100,3],[55.500,3],[55.900,0],[56.100,1],[56.300,0],[56.500,3],[56.700,2],[57.009,1],[57.307,3],[58.500,1],[58.700,0],[58.900,1],[59.100,0],[59.200,0],[59.300,0],[59.400,0],[59.500,0],[59.600,0],[59.700,0],[59.800,0],[59.900,0],[60.300,2],[60.700,0],[61.100,0],[61.500,3],[61.800,1],[62.100,3],[62.500,1],[62.700,1],[63.100,1],[63.496,3],[63.900,3],[64.100,0],[64.206,0],[64.411,0],[64.700,0],[64.900,0],[65.100,2],[65.300,3],[65.500,1],[65.700,0],[65.900,3],[66.100,2],[66.300,1],[67.100,2],[67.500,2],[67.900,2],[68.200,2],[68.500,0],[68.700,0],[68.900,3],[69.100,1],[69.233,0],[69.367,2],[69.500,2],[69.900,3],[70.100,2],[70.300,1],[70.500,0],[70.700,3],[71.100,2],[71.200,0],[71.400,1],[71.500,0],[71.900,1],[72.300,2],[72.700,0],[73.100,2],[73.500,0],[73.700,0],[73.900,0],[74.100,0],[74.300,0],[74.500,0],[74.700,0],[74.900,3],[75.100,1],[75.200,3],[75.300,3],[75.500,0],[75.700,0],[75.900,2],[76.300,3],[76.500,2],[76.700,0],[76.900,2],[77.100,3],[77.300,0],[77.500,2],[77.700,3],[77.900,1],[78.100,3],[78.300,1],[78.500,0],[78.700,1],[79.100,1],[79.900,0],[80.100,0],[80.300,0],[80.500,0],[80.700,0],[80.900,0],[81.100,1],[81.300,0],[81.500,0],[81.700,0],[81.900,1],[82.100,3],[82.300,1],[82.700,1],[82.900,0],[83.100,1],[83.300,0],[83.500,1],[83.700,0],[83.800,0],[83.900,3],[84.000,0],[84.100,0],[84.200,0],[84.300,0],[84.500,2],[84.700,3],[85.100,1],[85.300,0],[85.500,3],[85.700,2],[85.900,0],[86.300,3],[86.499,3],[86.700,0],[86.805,0],[86.900,2],[86.998,0],[87.100,0],[87.400,1],[87.700,2],[88.100,2],[88.200,3],[88.300,0],[88.506,0],[88.700,1],[89.000,2],[89.301,0],[89.500,0],[89.600,0],[89.700,0],[89.800,0],[89.900,0],[90.000,0],[90.100,0],[90.200,0],[90.300,0],[90.400,0],[90.500,0],[90.600,0],[90.700,0],[90.800,0],[90.900,0],[91.000,0],[91.100,0],[91.200,0],[91.300,0],[91.400,0],[91.500,0],[91.600,0],[91.700,0],[91.800,0],[91.900,0],[92.000,0],[92.100,0],[92.200,0],[92.300,0],[92.400,0],[92.500,2],[92.900,0],[93.000,2],[93.100,0],[93.500,0],[93.700,0],[94.000,0],[94.500,0],[94.600,0],[95.000,0],[95.300,0],[95.800,0],[95.900,0],[96.000,0],[96.100,0],[96.200,2],[96.300,0],[96.400,2],[96.500,0],[96.600,2],[96.700,0],[96.800,2],[96.900,0],[97.000,0],[97.100,0],[97.200,0],[97.300,0],[97.400,0],[97.500,0],[97.600,0],[97.700,0],[97.800,0],[97.900,0],[98.000,0],[98.100,0],[98.200,0],[98.300,0],[98.600,2],[98.900,2],[99.100,0],[99.200,0],[99.400,0],[99.600,0],[99.800,0],[99.900,0],[100.000,0],[100.100,0],[100.200,0],[100.300,0],[100.400,0],[100.595,0],[100.693,0],[100.900,0],[101.000,0],[101.100,0],[101.200,0],[101.300,0],[101.400,0],[101.500,0],[101.800,2],[102.100,2],[102.500,0],[102.600,2],[102.700,0],[102.800,2],[102.900,0],[103.000,2],[103.100,3],[103.400,1],[103.700,1],[103.900,0],[104.100,1],[104.300,1],[104.500,1],[104.700,2],[104.900,1],[105.100,2],[105.300,3],[105.500,0],[105.700,2],[105.900,1],[106.100,2],[106.200,2],[106.300,2],[106.500,0],[106.700,2],[106.900,1],[107.300,3],[107.400,2],[107.500,3],[107.600,2],[107.700,0],[107.800,3],[107.900,0],[108.200,3],[108.500,3],[108.900,3],[109.000,2],[109.100,3],[109.200,2],[109.300,0],[109.400,0],[109.500,0],[109.800,0],[110.100,0],[110.500,0],[110.700,0],[110.900,0],[111.100,2],[111.300,2],[111.700,0],[111.900,2],[112.300,2],[112.700,2],[113.100,2],[113.500,2],[113.700,2],[113.900,2],[114.300,2],[114.500,2],[114.700,2],[115.100,2],[115.300,3],[115.500,2],[115.700,1],[115.900,2],[116.200,2],[116.500,2],[116.900,2],[117.100,3],[117.300,2],[117.500,3],[117.700,0],[117.800,0],[117.900,0],[118.000,0],[118.100,0],[118.200,0],[118.300,0],[118.700,3],[119.100,0],[119.300,1],[119.500,3],[119.900,0],[120.000,0],[120.100,0],[120.200,0],[120.300,0],[120.700,2],[120.800,1],[120.900,1],[121.000,3],[121.100,3],[121.400,3],[121.500,3],[121.700,2],[121.800,0],[121.900,3],[122.100,2],[122.200,1],[122.400,2],[122.600,2],[122.900,2],[124.200,0],[124.300,3],[124.400,0],[124.700,3],[125.900,1],[126.300,2],[126.700,2],[127.100,2],[127.400,3],[127.700,1],[128.100,2],[128.342,3],[128.475,0],[128.609,1],[128.742,2],[129.200,0],[129.500,0],[129.700,0],[129.800,0],[130.000,0],[130.200,2],[130.500,1],[130.700,2],[130.900,3],[131.100,2],[131.300,0],[131.500,1],[131.700,1],[131.900,2],[132.700,2],[133.100,0],[133.500,1],[133.800,0],[134.100,3],[134.500,1],[134.700,1],[134.900,0],[135.000,3],[135.100,1],[135.500,0],[135.600,0],[135.700,0],[135.800,0],[135.900,1],[136.000,3],[136.100,0],[136.200,2],[136.300,0],[136.400,0],[136.500,0],[136.700,0],[136.900,1],[137.100,0],[137.500,3],[137.900,1],[138.300,0],[138.700,0],[139.100,0],[139.300,0],[139.500,0],[139.700,0],[139.900,0],[140.100,0],[140.300,0],[140.500,0],[140.700,0],[140.900,0],[141.000,0],[141.100,0],[141.300,1],[141.500,1],[141.900,3],[142.100,0],[142.300,1],[142.500,3],[142.700,1],[142.900,3],[143.100,1],[143.300,0],[143.500,1],[143.700,0],[143.900,3],[144.000,0],[144.100,0],[144.300,3],[144.700,0],[145.500,2],[145.700,0],[145.900,2],[146.100,0],[146.300,2],[146.500,0],[146.700,2],[146.900,0],[147.100,0],[147.300,2],[147.500,0],[147.700,3],[147.900,2],[148.300,0],[148.500,1],[148.600,0],[148.700,0],[148.800,0],[148.900,3],[149.000,0],[149.100,0],[149.200,2],[149.300,0],[149.400,1],[149.500,0],[149.600,0],[149.700,0],[149.800,0],[149.900,0],[150.000,0],[150.100,0],[150.200,2],[150.300,0],[150.394,0],[150.700,2],[150.900,3],[151.100,2],[151.300,1],[151.500,2],[151.700,0],[151.900,2],[152.102,3],[152.200,2],[152.400,3],[152.500,2],[152.700,3],[152.800,2],[153.000,3],[153.100,2],[153.300,3],[153.502,2],[153.700,3],[153.800,2],[154.000,3],[154.100,2],[154.300,3],[154.400,2],[154.600,3],[154.700,2],[154.900,3],[155.100,2],[155.300,3],[155.400,2],[155.600,3],[155.700,2],[155.900,3],[156.000,2],[156.200,3],[156.300,2],[156.500,3],[156.700,2],[156.900,3],[157.000,2],[157.200,3],[157.300,2],[157.500,3],[157.600,2],[157.800,3],[157.904,2],[158.100,3],[158.300,2],[158.700,3],[159.100,0],[159.500,0],[159.900,1],[160.300,1],[160.700,3],[161.100,2],[161.300,3],[161.500,0],[162.100,2],[162.300,0],[162.700,3],[162.900,1],[163.100,1],[163.300,0],[163.400,3],[163.500,0],[163.600,2],[163.700,3],[163.800,0],[163.900,1],[164.000,3],[164.100,2],[164.200,0],[164.300,3],[164.400,0],[164.500,3],[164.700,0],[165.100,3],[165.500,2],[165.900,3],[166.300,2],[166.700,3],[167.100,2],[167.500,3],[167.900,2],[168.500,2],[168.700,2],[169.500,2],[170.100,2],[170.300,0],[170.700,1],[171.100,0],[171.300,0],[171.500,3],[171.700,0],[171.900,1],[172.100,0],[172.299,0],[172.500,0],[172.700,1],[172.900,0],[173.100,0],[173.300,0],[173.500,1],[173.700,0],[173.900,0],[174.100,1],[174.300,0],[174.500,0],[174.700,3],[174.900,0],[175.100,0],[175.300,0],[175.500,2],[175.700,2],[175.800,2],[175.900,2],[176.000,2],[176.100,0],[176.200,2],[176.300,2],[176.400,2],[176.500,2],[176.600,2],[176.700,0],[176.800,2],[176.900,2],[177.000,2],[177.100,2],[177.200,2],[177.300,2],[177.400,3],[177.500,3],[177.900,2],[178.300,1],[178.600,2],[178.900,0],[179.100,2],[179.500,0],[179.900,2],[180.200,3],[180.500,1],[180.700,2],[181.100,0],[181.500,1],[181.800,0],[182.097,0],[182.297,2],[182.700,0],[182.900,3],[183.100,2],[183.300,1],[183.500,2],[183.900,2],[184.700,2],[184.900,0],[185.100,2],[185.300,3],[185.500,1],[187.100,3],[187.200,2],[187.400,3],[187.600,1],[187.800,1],[187.900,0],[188.300,0],[188.700,2],[189.100,2],[189.500,2],[189.800,2],[190.100,2],[190.500,2],[190.700,0],[190.900,2],[191.100,1],[191.500,0],[191.900,1],[192.100,0],[192.200,1],[192.400,0],[192.700,3],[192.900,1],[193.100,0],[193.300,3],[193.500,1],[193.700,0],[193.900,2],[194.100,3],[194.300,1],[194.900,3],[195.100,0],[195.500,0],[195.900,0],[196.200,1],[196.500,0],[196.900,1],[197.100,0],[197.300,3],[197.500,1],[197.900,1],[198.100,0],[198.300,3],[198.500,2],[198.700,1],[199.100,0],[199.300,0],[199.500,0],[199.700,0],[199.900,0],[200.000,0],[200.100,0],[200.200,0],[200.304,1],[200.400,0],[200.500,0],[200.600,0],[200.693,0],[200.800,0],[200.900,0],[201.000,0],[201.115,1],[201.200,0],[201.300,0],[201.400,0],[201.500,1],[201.700,0],[201.900,1],[202.005,0],[202.100,1],[202.200,0],[202.300,1],[202.500,2],[202.700,0],[202.900,0],[203.100,0],[203.300,0],[203.500,0],[203.700,0],[203.900,0],[204.300,0],[204.500,0],[204.700,0],[204.900,1],[205.100,0],[205.200,0],[205.300,3],[205.500,1],[205.700,3],[205.900,1],[206.100,0],[206.300,3],[206.500,2],[206.700,1],[207.100,0],[207.900,0],[208.100,1],[208.300,2],[208.500,3],[208.700,0],[208.900,1],[209.100,2],[209.300,3],[209.500,0],[209.700,1],[209.900,2],[210.100,3],[210.300,0],[210.700,2],[210.900,0],[211.100,1],[211.300,3],[211.500,1],[211.700,0],[211.900,1],[212.300,1],[212.500,0],[212.700,2],[213.100,0],[213.300,1],[213.500,3],[213.700,1],[213.900,0],[214.100,2],[214.500,1],[214.700,3],[214.900,1],[215.100,0],[215.300,1],[215.500,1],[215.700,0],[216.100,2],[216.300,3],[217.700,0],[218.100,0],[218.300,0],[218.500,0],[218.700,0],[218.900,0],[219.100,0],[219.500,0],[219.900,0],[220.300,1],[220.500,1],[220.900,0],[221.100,1],[221.300,0],[221.500,3],[221.900,1],[222.100,0],[222.500,2],[222.700,3],[224.100,0],[224.293,1],[224.500,3],[224.693,1],[224.900,0],[225.100,1],[225.500,1],[225.600,3],[225.700,0],[225.800,2],[225.900,1],[226.000,3],[226.100,0],[226.200,2],[226.300,1],[226.400,3],[226.500,0],[226.600,2],[226.700,1],[226.800,3],[226.900,0],[227.000,2],[227.100,1],[227.300,2],[227.500,0],[227.700,0],[227.900,0],[228.100,2],[228.300,1],[228.500,2],[228.700,3],[228.900,2],[229.100,1],[229.300,2],[229.400,3],[229.500,0],[229.600,1],[229.700,0],[229.800,2],[229.900,1],[230.000,3],[230.100,2],[230.200,0],[230.300,3],[230.500,1],[230.700,0],[230.900,1],[231.100,3],[231.300,2],[231.500,0],[231.700,2],[231.900,3],[232.300,3],[232.700,3],[233.100,3],[233.500,3],[233.900,3],[234.300,3],[234.700,1],[234.900,0]];
-  const BEATMAP=BEATMAP_RAW.map(([time,dir])=>({time,dir}));
+  /* BEATMAP — times already include leadIn (3s) */
+  const leadIn = 3;
+  const BEATMAP_RAW=[[3.1,0],[3.5,0],[3.7,0],[3.9,0],[4.2,0],[4.5,0],[5.5,0],[5.8,3],[6.1,3],[6.3,3],[6.5,0],[6.7,0],[6.9,0],[7.13,3],[7.443,3],[7.7,3],[8.0,0],[8.1,3],[8.2,3],[8.3,1],[8.4,1],[8.5,2],[8.6,2],[8.7,1],[8.8,1],[8.9,3],[9.0,3],[9.1,0],[9.2,0],[9.3,2],[9.4,2],[9.5,2],[9.7,0],[9.9,0],[10.1,0],[10.3,0],[10.6,0],[10.9,2],[11.3,1],[11.5,0],[11.7,3],[11.9,2],[12.2,0],[12.5,0],[12.9,0],[13.1,2],[13.5,3],[13.8,0],[14.1,2],[14.5,3],[14.7,2],[14.9,1],[15.1,0],[15.4,3],[15.7,2],[16.1,1],[16.3,2],[16.5,0],[16.7,1],[17.0,0],[17.3,1],[17.7,3],[17.9,0],[18.1,1],[18.3,0],[18.6,0],[18.9,2],[19.3,0],[19.5,3],[19.7,2],[20.1,1],[20.3,0],[20.5,1],[20.9,1],[21.1,0],[21.3,1],[21.5,0],[21.8,1],[22.1,3],[22.3,3],[22.5,1],[22.6,1],[22.7,0],[22.8,3],[22.9,2],[23.0,1],[23.1,0],[23.4,1],[23.7,0],[24.1,0],[24.2,1],[24.3,2],[24.5,1],[24.7,1],[25.0,2],[25.3,3],[25.7,0],[25.8,3],[25.9,3],[26.1,2],[26.2,1],[26.3,1],[26.5,0],[26.7,3],[26.9,2],[27.1,1],[27.3,3],[27.5,1],[27.7,0],[27.9,3],[28.1,2],[28.5,0],[28.9,1],[29.0,0],[29.1,1],[29.3,0],[29.5,1],[29.8,0],[30.1,3],[30.5,2],[30.6,3],[30.7,0],[30.8,1],[30.9,0],[31.0,3],[31.1,2],[31.4,3],[31.7,0],[32.1,1],[32.2,0],[32.3,3],[32.5,2],[32.7,1],[32.9,0],[33.1,3],[33.3,1],[33.5,0],[33.7,3],[33.9,1],[34.1,0],[34.3,0],[34.5,2],[34.7,0],[35.0,0],[35.3,0],[35.4,1],[35.5,0],[35.6,1],[35.7,0],[35.9,0],[36.2,3],[36.5,3],[36.9,2],[37.0,0],[37.1,2],[37.2,1],[37.3,3],[37.4,1],[37.5,0],[37.8,0],[38.1,3],[38.5,0],[38.7,0],[38.9,3],[39.1,1],[39.3,3],[39.5,1],[39.6,0],[39.9,2],[40.1,3],[40.3,1],[40.5,0],[40.7,3],[40.9,1],[41.0,1],[41.3,0],[41.7,2],[41.9,2],[42.1,0],[42.3,1],[42.6,3],[42.9,1],[43.3,0],[43.4,2],[43.5,0],[43.6,2],[43.7,0],[43.8,1],[44.2,0],[44.5,1],[44.9,0],[45.1,2],[45.3,0],[45.5,1],[45.7,3],[45.9,1],[46.1,3],[46.3,0],[46.5,2],[46.7,1],[46.9,3],[47.1,2],[47.3,2],[47.5,0],[47.7,0],[47.9,0],[48.1,0],[48.3,0],[48.7,0],[48.9,0],[49.1,0],[49.5,0],[49.7,3],[49.9,2],[50.1,3],[50.3,1],[50.6,3],[50.9,1],[51.3,0],[52.4,1],[52.6,0],[52.7,1],[53.1,0],[53.5,1],[53.9,0],[54.3,3],[54.7,3],[55.1,3],[55.5,3],[55.9,0],[56.1,1],[56.3,0],[56.5,3],[56.7,2],[57.0,1],[57.3,3],[58.5,1],[58.7,0],[58.9,1],[59.1,0],[60.3,2],[60.7,0],[61.1,0],[61.5,3],[61.8,1],[62.1,3],[62.5,1],[62.7,1],[63.1,1],[63.5,3],[63.9,3],[64.1,0],[64.7,0],[64.9,0],[65.1,2],[65.3,3],[65.5,1],[65.7,0],[65.9,3],[66.1,2],[66.3,1],[67.1,2],[67.5,2],[67.9,2],[68.2,2],[68.5,0],[68.7,0],[68.9,3],[69.1,1],[69.2,0],[69.4,2],[69.5,2],[69.9,3],[70.1,2],[70.3,1],[70.5,0],[70.7,3],[71.1,2],[71.2,0],[71.4,1],[71.5,0],[71.9,1],[72.3,2],[72.7,0],[73.1,2],[73.5,0],[74.9,3],[75.1,1],[75.2,3],[75.3,3],[75.5,0],[75.7,0],[75.9,2],[76.3,3],[76.5,2],[76.7,0],[76.9,2],[77.1,3],[77.3,0],[77.5,2],[77.7,3],[77.9,1],[78.1,3],[78.3,1],[78.5,0],[78.7,1],[79.1,1],[79.9,0],[81.1,1],[81.9,1],[82.1,3],[82.3,1],[82.7,1],[82.9,0],[83.1,1],[83.3,0],[83.5,1],[83.7,0],[83.9,3],[84.5,2],[84.7,3],[85.1,1],[85.3,0],[85.5,3],[85.7,2],[85.9,0],[86.3,3],[86.7,0],[86.9,2],[87.4,1],[87.7,2],[88.1,2],[88.2,3],[88.7,1],[89.0,2],[92.5,2],[92.9,0],[93.0,2],[93.5,0],[94.0,0],[94.5,0],[95.0,0],[95.8,0],[96.2,2],[96.4,2],[96.6,2],[96.8,2],[98.6,2],[98.9,2],[101.8,2],[102.1,2],[102.6,2],[102.8,2],[103.0,2],[103.1,3],[103.4,1],[103.7,1],[103.9,0],[104.1,1],[104.3,1],[104.5,1],[104.7,2],[104.9,1],[105.1,2],[105.3,3],[105.5,0],[105.7,2],[105.9,1],[106.1,2],[106.5,0],[106.7,2],[106.9,1],[107.3,3],[107.5,3],[107.7,0],[107.8,3],[108.2,3],[108.5,3],[108.9,3],[109.0,2],[109.1,3],[109.2,2],[111.1,2],[111.3,2],[111.7,0],[111.9,2],[112.3,2],[112.7,2],[113.1,2],[113.5,2],[113.7,2],[113.9,2],[114.3,2],[114.5,2],[114.7,2],[115.1,2],[115.3,3],[115.5,2],[115.7,1],[115.9,2],[116.2,2],[116.5,2],[116.9,2],[117.1,3],[117.3,2],[117.5,3],[117.7,0],[118.7,3],[119.1,0],[119.3,1],[119.5,3],[119.9,0],[120.7,2],[120.8,1],[120.9,1],[121.0,3],[121.1,3],[121.4,3],[121.5,3],[121.7,2],[121.8,0],[121.9,3],[122.1,2],[122.2,1],[122.4,2],[122.6,2],[122.9,2],[124.2,0],[124.3,3],[124.4,0],[124.7,3],[125.9,1],[126.3,2],[126.7,2],[127.1,2],[127.4,3],[127.7,1],[128.1,2],[128.3,3],[128.5,0],[128.6,1],[128.7,2],[129.2,0],[130.2,2],[130.5,1],[130.7,2],[130.9,3],[131.1,2],[131.3,0],[131.5,1],[131.7,1],[131.9,2],[132.7,2],[133.1,0],[133.5,1],[133.8,0],[134.1,3],[134.5,1],[134.7,1],[134.9,0],[135.0,3],[135.1,1],[135.5,0],[135.9,1],[136.0,3],[136.2,0],[136.9,1],[137.1,0],[137.5,3],[137.9,1],[138.3,0],[141.3,1],[141.5,1],[141.9,3],[142.1,0],[142.3,1],[142.5,3],[142.7,1],[142.9,3],[143.1,1],[143.3,0],[143.5,1],[143.7,0],[143.9,3],[144.0,0],[144.3,3],[145.5,2],[145.7,0],[145.9,2],[146.1,0],[146.3,2],[146.5,0],[146.7,2],[146.9,0],[147.3,2],[147.5,0],[147.7,3],[147.9,2],[148.3,0],[148.5,1],[148.9,3],[149.2,2],[149.4,1],[150.2,2],[150.7,2],[150.9,3],[151.1,2],[151.3,1],[151.5,2],[151.7,0],[151.9,2],[152.1,3],[152.2,2],[152.4,3],[152.5,2],[152.7,3],[152.8,2],[153.0,3],[153.1,2],[153.3,3],[153.5,2],[153.7,3],[153.8,2],[154.0,3],[154.1,2],[154.3,3],[154.4,2],[154.6,3],[154.7,2],[154.9,3],[155.1,2],[155.3,3],[155.4,2],[155.6,3],[155.7,2],[155.9,3],[156.0,2],[156.2,3],[156.3,2],[156.5,3],[156.7,2],[156.9,3],[157.0,2],[157.2,3],[157.3,2],[157.5,3],[157.6,2],[157.8,3],[157.9,2],[158.1,3],[158.3,2],[158.7,3],[159.1,0],[159.5,0],[159.9,1],[160.3,1],[160.7,3],[161.1,2],[161.3,3],[161.5,0],[162.1,2],[162.3,0],[162.7,3],[162.9,1],[163.1,1],[163.3,0],[163.4,3],[163.5,0],[163.6,2],[163.7,3],[163.8,0],[163.9,1],[164.0,3],[164.1,2],[164.2,0],[164.3,3],[164.4,0],[164.5,3],[164.7,0],[165.1,3],[165.5,2],[165.9,3],[166.3,2],[166.7,3],[167.1,2],[167.5,3],[167.9,2],[168.5,2],[168.7,2],[169.5,2],[170.1,2],[170.3,0],[170.7,1],[171.1,0],[171.5,3],[171.7,0],[171.9,1],[172.1,0],[172.5,0],[172.7,1],[172.9,0],[173.5,1],[173.7,0],[174.1,1],[174.7,3],[175.5,2],[175.7,2],[175.8,2],[175.9,2],[176.0,2],[176.2,2],[176.3,2],[176.4,2],[176.5,2],[176.6,2],[176.8,2],[176.9,2],[177.0,2],[177.1,2],[177.2,2],[177.3,2],[177.4,3],[177.5,3],[177.9,2],[178.3,1],[178.6,2],[178.9,0],[179.1,2],[179.5,0],[179.9,2],[180.2,3],[180.5,1],[180.7,2],[181.1,0],[181.5,1],[181.8,0],[182.3,2],[182.7,0],[182.9,3],[183.1,2],[183.3,1],[183.5,2],[183.9,2],[184.7,2],[184.9,0],[185.1,2],[185.3,3],[185.5,1],[187.1,3],[187.2,2],[187.4,3],[187.6,1],[187.8,1],[187.9,0],[188.3,0],[188.7,2],[189.1,2],[189.5,2],[189.8,2],[190.1,2],[190.5,2],[190.7,0],[190.9,2],[191.1,1],[191.5,0],[191.9,1],[192.1,0],[192.2,1],[192.4,0],[192.7,3],[192.9,1],[193.1,0],[193.3,3],[193.5,1],[193.7,0],[193.9,2],[194.1,3],[194.3,1],[194.9,3],[195.1,0],[196.2,1],[196.5,0],[196.9,1],[197.1,0],[197.3,3],[197.5,1],[197.9,1],[198.1,0],[198.3,3],[198.5,2],[198.7,1],[200.3,1],[201.5,1],[201.9,1],[202.1,1],[202.3,1],[202.5,2],[204.9,1],[205.3,3],[205.5,1],[205.7,3],[205.9,1],[206.1,0],[206.3,3],[206.5,2],[206.7,1],[208.1,1],[208.3,2],[208.5,3],[208.7,0],[208.9,1],[209.1,2],[209.3,3],[209.5,0],[209.7,1],[209.9,2],[210.1,3],[210.3,0],[210.7,2],[210.9,0],[211.1,1],[211.3,3],[211.5,1],[211.7,0],[211.9,1],[212.3,1],[212.5,0],[212.7,2],[213.1,0],[213.3,1],[213.5,3],[213.7,1],[213.9,0],[214.1,2],[214.5,1],[214.7,3],[214.9,1],[215.1,0],[215.3,1],[215.5,1],[215.7,0],[216.1,2],[216.3,3],[220.3,1],[220.5,1],[220.9,0],[221.1,1],[221.3,0],[221.5,3],[221.9,1],[222.1,0],[222.5,2],[222.7,3],[224.1,0],[224.3,1],[224.5,3],[224.7,1],[224.9,0],[225.1,1],[225.5,1],[225.6,3],[225.7,0],[225.8,2],[225.9,1],[226.0,3],[226.1,0],[226.2,2],[226.3,1],[226.4,3],[226.5,0],[226.6,2],[226.7,1],[226.8,3],[226.9,0],[227.0,2],[227.1,1],[227.3,2],[227.5,0],[228.1,2],[228.3,1],[228.5,2],[228.7,3],[228.9,2],[229.1,1],[229.3,2],[229.4,3],[229.5,0],[229.6,1],[229.7,0],[229.8,2],[229.9,1],[230.0,3],[230.1,2],[230.2,0],[230.3,3],[230.5,1],[230.7,0],[230.9,1],[231.1,3],[231.3,2],[231.5,0],[231.7,2],[231.9,3],[232.3,3],[232.7,3],[233.1,3],[233.5,3],[233.9,3],[234.3,3],[234.7,1],[234.9,0]];
+  const BEATMAP = BEATMAP_RAW.map(([time,dir])=>({time,dir}));
 
-  /* AUDIO — fetch + decode (no <audio> element needed) */
+  /* AUDIO */
   let audioCtx=null,gainNode=null,sourceNode=null,audioBuffer=null;
   let audioLoaded=false,audioLoading=false,songStartAudioTime=0;
 
@@ -298,10 +346,30 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
     if(!audioCtx||!audioBuffer)return;stopAudio();
     sourceNode=audioCtx.createBufferSource();sourceNode.buffer=audioBuffer;sourceNode.connect(gainNode);
     sourceNode.start(0);songStartAudioTime=audioCtx.currentTime;
-    sourceNode.onended=()=>{sourceNode=null;if(phase==='playing')phase='results';};
+    sourceNode.onended=()=>{sourceNode=null;if(phase==='playing')phase='results';showMenu();};
   }
-  function stopAudio(){if(sourceNode){sourceNode.onended=null;try{sourceNode.stop();}catch{}try{sourceNode.disconnect();}catch{}sourceNode=null;}}
-  function gameTime(){if(!audioCtx||!sourceNode)return 0;return(audioCtx.currentTime-songStartAudioTime)+leadIn;}
+  function stopAudio(){
+    if(sourceNode){sourceNode.onended=null;try{sourceNode.stop();}catch{}try{sourceNode.disconnect();}catch{}sourceNode=null;}
+  }
+  /* gameTime: song time in seconds, offset by leadIn so first note at leadIn=3s */
+  function gameTime(){
+    if(!audioCtx||!sourceNode)return 0;
+    return (audioCtx.currentTime-songStartAudioTime) + leadIn + userOffset;
+  }
+
+  /* SETTINGS */
+  let approachRate = 0.5;
+  let userOffset   = 0.0; // seconds — positive = notes come earlier
+
+  arSlider.value = approachRate;
+  arSlider.addEventListener('input',()=>{
+    approachRate=parseFloat(arSlider.value);
+    arVal.textContent=approachRate.toFixed(2)+'s';
+  });
+  offsetSlider.addEventListener('input',()=>{
+    userOffset=parseFloat(offsetSlider.value);
+    offsetVal.textContent=(userOffset>=0?'+':'')+userOffset.toFixed(2)+'s';
+  });
 
   /* HITSOUND */
   function blip(ok){
@@ -332,13 +400,10 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
     ctx.setTransform(DPR,0,0,DPR,0,0);W=nw;H=nh;calcSizes();
   }
 
-  let approachRate=0.4;
-  arSlider.addEventListener('input',()=>{approachRate=parseFloat(arSlider.value);arVal.textContent=approachRate.toFixed(2)+'s';});
-
   /* SHIELD */
   const GRACE=0.12;
   const COLS=['#e8c49a','#9ab8e8','#c498a8','#8ac49a'];
-  const LABELS=['←','↑','→','↓'];
+  const LABELS=['\u2190','\u2191','\u2192','\u2193'];
   const DIR_KEYS={'arrowleft':0,'a':0,'arrowup':1,'w':1,'arrowright':2,'d':2,'arrowdown':3,'s':3};
   const SHIELD_ARC=[[Math.PI*.58,Math.PI*1.42],[Math.PI*1.08,Math.PI*1.92],[-Math.PI*.42,Math.PI*.42],[Math.PI*.08,Math.PI*.92]];
   let shieldDir=0,prevDir=-1,prevAt=-999;
@@ -348,7 +413,12 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   /* STATE */
   const MAX_HP=10;
   let score,combo,hp,phase='idle',raf=null,arrows=[],particles=[],bmIdx=0;
-  function resetState(){score=0;combo=0;hp=MAX_HP;arrows=[];particles=[];bmIdx=0;shieldDir=0;prevDir=-1;prevAt=-999;songStartAudioTime=0;updateHUD();feedback.textContent='';}
+
+  function resetState(){
+    score=0;combo=0;hp=MAX_HP;arrows=[];particles=[];
+    bmIdx=0;shieldDir=0;prevDir=-1;prevAt=-999;songStartAudioTime=0;
+    updateHUD();feedback.textContent='';
+  }
   function updateHUD(){
     hudScore.textContent=score;hudCombo.textContent=combo;
     const p=Math.max(0,hp/MAX_HP*100);hpFill.style.width=p+'%';
@@ -356,8 +426,37 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
     hpLabel.textContent='hp '+hp+'/'+MAX_HP;
   }
 
-  /* SPAWN */
-  function spawnPos(dir){switch(dir){case 0:return{x:0,y:CY,nx:1,ny:0};case 1:return{x:CX,y:0,nx:0,ny:1};case 2:return{x:W,y:CY,nx:-1,ny:0};case 3:return{x:CX,y:H,nx:0,ny:-1};}}
+  /* MENU SHOW/HIDE */
+  function showMenu(isResult){
+    gameMenu.classList.remove('hidden');
+    if(isResult){
+      const won=hp>0;
+      menuResultBox.className='menu-result-box'+(won?'':' fail');
+      menuResultBox.innerHTML=
+        '<div class="menu-result-title">'+(won?'coffee safe \u2615':'the coffee spilled\u2026')+'</div>'+
+        '<div class="menu-result-score">score '+score+'&nbsp;&nbsp;&middot;&nbsp;&nbsp;'+(score>5000?'perfect guard \u2726':score>2000?'well done~':'try again \u2661')+'</div>';
+      menuResultBox.style.display='flex';
+      btnRetry.style.display='block';
+      btnPlay.textContent='\u25b6 play again';
+    } else {
+      menuResultBox.style.display='none';
+      btnRetry.style.display='none';
+      btnPlay.textContent='\u25b6 play';
+    }
+  }
+  function hideMenu(){
+    gameMenu.classList.add('hidden');
+  }
+
+  /* SPAWN — arrow reaches SHIELD_R in exactly approachRate seconds */
+  function spawnPos(dir){
+    switch(dir){
+      case 0:return{x:0,   y:CY, nx:1, ny:0};
+      case 1:return{x:CX,  y:0,  nx:0, ny:1};
+      case 2:return{x:W,   y:CY, nx:-1,ny:0};
+      case 3:return{x:CX,  y:H,  nx:0, ny:-1};
+    }
+  }
   function spawnArrow(dir){
     const p=spawnPos(dir);
     const distToShield=Math.hypot(p.x-CX,p.y-CY)-SHIELD_R;
@@ -374,15 +473,17 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
         if(dist<=SHIELD_R+1){
           if(shieldCovers(a.dir)){
             a.dead=true;combo++;score+=100+combo*10;burst(a.x,a.y,a.color,10);blip(true);
-            feedback.textContent=combo>=10?combo+'× COMBO!! ☕':combo>=5?combo+'× combo!':'parried!';
+            feedback.textContent=combo>=10?combo+'\xd7 COMBO!! \u2615':combo>=5?combo+'\xd7 combo!':'parried!';
             feedback.style.color='#8ac49a';updateHUD();
           } else {a.pastShield=true;}
         }
       } else {
         if(dist<=SHIELD_R-16){
           a.dead=true;hp=Math.max(0,hp-1);combo=0;burst(a.x,a.y,'#c498a8',10);blip(false);
-          feedback.textContent=hp<=0?'the coffee!! 😱':hp<=2?'careful!!':'ouch!';
-          feedback.style.color='#c498a8';if(hp<=0){phase='results';stopAudio();}updateHUD();
+          feedback.textContent=hp<=0?'the coffee!! \ud83d\ude31':hp<=2?'careful!!':'ouch!';
+          feedback.style.color='#c498a8';
+          if(hp<=0){phase='results';stopAudio();showMenu(true);}
+          updateHUD();
         }
         if(dist>Math.hypot(W,H))a.dead=true;
       }
@@ -394,41 +495,20 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   let _bgGrad=null,_bgGradW=0,_bgGradH=0;
   function drawBg(){
     ctx.clearRect(0,0,W,H);
-    if(_bgGradW!==W||_bgGradH!==H){
-      _bgGrad=ctx.createRadialGradient(CX,CY,0,CX,CY,Math.hypot(W,H)/1.5);
-      _bgGrad.addColorStop(0,'rgba(22,12,4,.97)');_bgGrad.addColorStop(1,'rgba(3,1,0,1)');
-      _bgGradW=W;_bgGradH=H;
-    }
+    if(_bgGradW!==W||_bgGradH!==H){_bgGrad=ctx.createRadialGradient(CX,CY,0,CX,CY,Math.hypot(W,H)/1.5);_bgGrad.addColorStop(0,'rgba(22,12,4,.97)');_bgGrad.addColorStop(1,'rgba(3,1,0,1)');_bgGradW=W;_bgGradH=H;}
     ctx.fillStyle=_bgGrad;ctx.fillRect(0,0,W,H);
     const S=Math.min(W,H),maxR=Math.max(W,H)*.9;
-    for(let r=S*.05;r<maxR;r+=S*.07){
-      const a=Math.max(0,.06*(1-r/maxR));
-      ctx.strokeStyle='rgba(50,22,5,'+a+')';ctx.lineWidth=4+r/maxR*5;
-      ctx.beginPath();ctx.arc(CX,CY,r,0,Math.PI*2);ctx.stroke();
-    }
-    const vg=ctx.createRadialGradient(CX,CY,Math.min(W,H)*.22,CX,CY,Math.max(W,H)*.78);
-    vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.68)');
-    ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
-    ctx.strokeStyle='rgba(196,168,130,.04)';ctx.lineWidth=1;ctx.setLineDash([2,9]);
-    ctx.beginPath();ctx.arc(CX,CY,SHIELD_R,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+    for(let r=S*.05;r<maxR;r+=S*.07){const a=Math.max(0,.06*(1-r/maxR));ctx.strokeStyle='rgba(50,22,5,'+a+')';ctx.lineWidth=4+r/maxR*5;ctx.beginPath();ctx.arc(CX,CY,r,0,Math.PI*2);ctx.stroke();}
+    const vg=ctx.createRadialGradient(CX,CY,Math.min(W,H)*.22,CX,CY,Math.max(W,H)*.78);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.68)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(196,168,130,.04)';ctx.lineWidth=1;ctx.setLineDash([2,9]);ctx.beginPath();ctx.arc(CX,CY,SHIELD_R,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
   }
-
   function drawShield(nowSec){
     const S=Math.min(W,H),lw=S*.013;
     const[a0,a1]=SHIELD_ARC[shieldDir],col=COLS[shieldDir];
-    ctx.save();
-    ctx.strokeStyle=col+'22';ctx.lineWidth=lw*3.5;ctx.lineCap='round';ctx.shadowColor=col;ctx.shadowBlur=S*.05;
-    ctx.beginPath();ctx.arc(CX,CY,SHIELD_R,a0,a1);ctx.stroke();
-    ctx.strokeStyle=col+'cc';ctx.lineWidth=lw;ctx.shadowBlur=S*.02;
-    ctx.beginPath();ctx.arc(CX,CY,SHIELD_R,a0,a1);ctx.stroke();
-    ctx.restore();
+    ctx.save();ctx.strokeStyle=col+'22';ctx.lineWidth=lw*3.5;ctx.lineCap='round';ctx.shadowColor=col;ctx.shadowBlur=S*.05;ctx.beginPath();ctx.arc(CX,CY,SHIELD_R,a0,a1);ctx.stroke();
+    ctx.strokeStyle=col+'cc';ctx.lineWidth=lw;ctx.shadowBlur=S*.02;ctx.beginPath();ctx.arc(CX,CY,SHIELD_R,a0,a1);ctx.stroke();ctx.restore();
     const grace=Math.max(0,1-(nowSec-prevAt)/GRACE);
-    if(prevDir>=0&&grace>0){
-      const[ga0,ga1]=SHIELD_ARC[prevDir];
-      ctx.save();ctx.strokeStyle=COLS[prevDir]+(Math.round(grace*40).toString(16).padStart(2,'0'));
-      ctx.lineWidth=lw*.45;ctx.lineCap='round';ctx.setLineDash([3,7]);
-      ctx.beginPath();ctx.arc(CX,CY,SHIELD_R,ga0,ga1);ctx.stroke();ctx.setLineDash([]);ctx.restore();
-    }
+    if(prevDir>=0&&grace>0){const[ga0,ga1]=SHIELD_ARC[prevDir];ctx.save();ctx.strokeStyle=COLS[prevDir]+(Math.round(grace*40).toString(16).padStart(2,'0'));ctx.lineWidth=lw*.45;ctx.lineCap='round';ctx.setLineDash([3,7]);ctx.beginPath();ctx.arc(CX,CY,SHIELD_R,ga0,ga1);ctx.stroke();ctx.setLineDash([]);ctx.restore();}
     const D=SHIELD_R*1.52,fs=Math.max(10,Math.min(W,H)*.016);
     [{dir:0,x:CX-D,y:CY},{dir:1,x:CX,y:CY-D},{dir:2,x:CX+D,y:CY},{dir:3,x:CX,y:CY+D}].forEach(({dir,x,y})=>{
       const active=dir===shieldDir,inGrace=dir===prevDir&&grace>0;
@@ -439,7 +519,6 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
       ctx.fillText(LABELS[dir],x,y);ctx.restore();
     });
   }
-
   function drawCup(){
     const r=CUP_R,bw=r*2.5,bh=r*2.2;
     ctx.save();ctx.shadowColor='rgba(196,168,130,.2)';ctx.shadowBlur=8;
@@ -452,7 +531,6 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
     const t=performance.now()/1000;
     for(let i=0;i<2;i++){const sx=CX+(i===0?-r*.44:r*.38),wv=Math.sin(t*1.4+i*2)*r*.15;ctx.save();ctx.strokeStyle='rgba(107,86,68,.35)';ctx.lineWidth=.8;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(sx,CY-bh*.52);ctx.quadraticCurveTo(sx+wv,CY-bh*.84,sx-wv,CY-bh*1.16);ctx.stroke();ctx.restore();}
   }
-
   function drawArrows(dt){
     const S=Math.min(W,H),sz=S*.016,trail=sz*3.6;
     for(const a of arrows){
@@ -463,26 +541,21 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
       const angle=Math.atan2(a.vy,a.vx);
       ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,alpha));ctx.translate(a.x,a.y);ctx.rotate(angle);
       ctx.shadowColor=a.pastShield?'#c498a8':a.color;ctx.shadowBlur=a.pastShield?sz*1.8:sz*.6;
-      const tg=ctx.createLinearGradient(-trail,0,0,0);
-      tg.addColorStop(0,'transparent');tg.addColorStop(1,a.color+(a.pastShield?'99':'32'));
-      ctx.strokeStyle=tg;ctx.lineWidth=a.pastShield?sz*.5:sz*.34;ctx.lineCap='round';
-      ctx.beginPath();ctx.moveTo(-trail,0);ctx.lineTo(-sz*.1,0);ctx.stroke();
+      const tg=ctx.createLinearGradient(-trail,0,0,0);tg.addColorStop(0,'transparent');tg.addColorStop(1,a.color+(a.pastShield?'99':'32'));
+      ctx.strokeStyle=tg;ctx.lineWidth=a.pastShield?sz*.5:sz*.34;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(-trail,0);ctx.lineTo(-sz*.1,0);ctx.stroke();
       ctx.fillStyle=a.color;ctx.beginPath();ctx.moveTo(sz,0);ctx.lineTo(-sz*.4,-sz*.56);ctx.lineTo(-sz*.1,0);ctx.lineTo(-sz*.4,sz*.56);ctx.closePath();ctx.fill();
       ctx.restore();
       ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,alpha))*.68;ctx.font='bold '+(sz*.78)+'px "DM Mono",monospace';ctx.fillStyle=a.color;ctx.textAlign='center';ctx.textBaseline='middle';
       ctx.fillText(a.label,a.x+Math.cos(angle+Math.PI/2)*sz,a.y+Math.sin(angle+Math.PI/2)*sz);ctx.restore();
     }
   }
-
   function drawParticles(nowSec){
     for(let i=particles.length-1;i>=0;i--){
       const p=particles[i],age=nowSec-p.born;if(age>.5){particles.splice(i,1);continue;}
-      ctx.save();ctx.globalAlpha=(1-age/.5)*.85;ctx.fillStyle=p.color;
-      ctx.beginPath();ctx.arc(p.x+p.vx*age*75,p.y+p.vy*age*75,p.r*(1-age*.5),0,Math.PI*2);ctx.fill();ctx.restore();
+      ctx.save();ctx.globalAlpha=(1-age/.5)*.85;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x+p.vx*age*75,p.y+p.vy*age*75,p.r*(1-age*.5),0,Math.PI*2);ctx.fill();ctx.restore();
     }
   }
   function burst(x,y,color,n){const now=performance.now()/1000;for(let i=0;i<n;i++){const a=Math.PI*2*i/n+Math.random()*.4;particles.push({x,y,vx:Math.cos(a),vy:Math.sin(a),r:1.5+Math.random()*2.5,color,born:now});}}
-
   function overlayDark(a){const vg=ctx.createRadialGradient(CX,CY,0,CX,CY,Math.max(W,H)*.65);vg.addColorStop(0,'rgba(10,5,2,'+a*.82+')');vg.addColorStop(1,'rgba(2,1,0,'+a+')');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);}
   function txt(str,x,y,font,color,blur){ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=color;ctx.font=font;if(blur){ctx.shadowColor=color;ctx.shadowBlur=blur;}ctx.fillText(str,x,y);ctx.restore();}
 
@@ -492,48 +565,57 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
     const nowMs=performance.now(),nowSec=nowMs/1000;
     const dt=lastT!==null?Math.min(nowSec-lastT,.05):0;lastT=nowSec;
     resizeCanvas();
+
     if(phase==='playing'){
       const gt=gameTime();
-      while(bmIdx<BEATMAP.length&&gt>=BEATMAP[bmIdx].time-approachRate){spawnArrow(BEATMAP[bmIdx].dir);bmIdx++;}
+      /* Spawn: arrow must arrive at shield in approachRate seconds.
+         Beat times include leadIn offset. userOffset shifts when notes appear. */
+      while(bmIdx<BEATMAP.length&&gt>=BEATMAP[bmIdx].time-approachRate){
+        spawnArrow(BEATMAP[bmIdx].dir);bmIdx++;
+      }
       drawBg();checkCollisions();drawShield(nowSec);drawArrows(dt);drawParticles(nowSec);drawCup();
-      if(combo>=3){ctx.save();ctx.font='bold '+(10+Math.min(combo,20)*.28)+'px "DM Mono",monospace';ctx.fillStyle=combo>=10?'#d4f030':'#c4a882';ctx.textAlign='center';ctx.textBaseline='middle';ctx.globalAlpha=.32;ctx.fillText(combo+'×',CX,CY+SHIELD_R*1.55);ctx.restore();}
-      if(!sourceNode&&bmIdx>=BEATMAP.length&&arrows.length===0)phase='results';
-    } else if(phase==='results'){
-      drawBg();drawCup();overlayDark(.88);
-      txt('結果',CX,CY-52,'300 28px "Cormorant Garamond",serif','#c4a882',20);
-      txt('score  '+score,CX,CY-14,'13px "DM Mono",monospace','#d4be98',0);
-      txt(hp>0?'coffee safe ☕':'the coffee spilled…',CX,CY+13,'11px "DM Mono",monospace',hp>0?'#8ac49a':'#c498a8',0);
-      txt('press any key · tap to retry',CX,CY+42,'10px "DM Mono",monospace','#503c2c',0);
-      if(!feedback.textContent){feedback.textContent=score>5000?'perfect guard ✦':score>2000?'well done~':'try again ♡';feedback.style.color='#c4a882';}
+      if(combo>=3){ctx.save();ctx.font='bold '+(10+Math.min(combo,20)*.28)+'px "DM Mono",monospace';ctx.fillStyle=combo>=10?'#d4f030':'#c4a882';ctx.textAlign='center';ctx.textBaseline='middle';ctx.globalAlpha=.32;ctx.fillText(combo+'\xd7',CX,CY+SHIELD_R*1.55);ctx.restore();}
+      if(!sourceNode&&bmIdx>=BEATMAP.length&&arrows.length===0){phase='results';showMenu(true);}
     } else {
-      drawBg();drawShield(nowSec);drawCup();overlayDark(.72);
-      txt('勘冴えて悔しいわ',CX,CY-SHIELD_R*1.65,'300 22px "Cormorant Garamond",serif','#c4a882',18);
-      txt('press any arrow key to start',CX,CY-SHIELD_R*1.12,'11px "DM Mono",monospace','#7a6050',0);
-      txt('rotate shield · protect the coffee ☕',CX,CY-SHIELD_R*.72,'9.5px "DM Mono",monospace','#3a2818',0);
+      /* idle or results — draw background + shield decoratively */
+      drawBg();drawShield(nowSec);drawCup();overlayDark(.55);
     }
     raf=requestAnimationFrame(loop);
   }
 
-  /* INPUT */
-  function onDir(dir){if(phase==='idle'||phase==='results'){startGame();return;}rotateShield(dir);}
+  /* INPUT — only shield rotation during play, never starts game */
+  function onDir(dir){
+    if(phase==='playing')rotateShield(dir);
+  }
   document.addEventListener('keydown',e=>{
     if(!modal.classList.contains('active'))return;
-    if(e.target===arSlider)return;
-    e.preventDefault();
+    /* Don't consume events when focus is on a slider */
+    if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='BUTTON')return;
     const k=e.key.toLowerCase();
-    if(k in DIR_KEYS){onDir(DIR_KEYS[k]);return;}
-    if(e.key==='Escape')closeGame();
+    if(k in DIR_KEYS){e.preventDefault();onDir(DIR_KEYS[k]);return;}
+    if(e.key==='Escape'){e.preventDefault();closeGame();}
   });
   function quadrant(x,y){const dx=x-CX,dy=y-CY;return Math.abs(dx)>Math.abs(dy)?(dx<0?0:2):(dy<0?1:3);}
-  gc.addEventListener('touchstart',e=>{e.preventDefault();const r=gc.getBoundingClientRect();for(const t of e.changedTouches)onDir(quadrant(t.clientX-r.left,t.clientY-r.top));},{passive:false});
-  gc.addEventListener('click',e=>{const r=gc.getBoundingClientRect();onDir(quadrant(e.clientX-r.left,e.clientY-r.top));});
+  gc.addEventListener('touchstart',e=>{
+    e.preventDefault();
+    const r=gc.getBoundingClientRect();
+    for(const t of e.changedTouches)onDir(quadrant(t.clientX-r.left,t.clientY-r.top));
+  },{passive:false});
+  gc.addEventListener('click',e=>{
+    if(phase==='playing'){const r=gc.getBoundingClientRect();onDir(quadrant(e.clientX-r.left,e.clientY-r.top));}
+  });
 
-  /* START / CLOSE */
+  /* PLAY / RETRY BUTTONS */
   async function startGame(){
     initAudio();if(audioCtx.state==='suspended')await audioCtx.resume();
     if(!audioLoaded)await loadAudio();
-    resetState();phase='playing';lastT=null;startAudio();
+    hideMenu();
+    resetState();phase='playing';lastT=null;
+    startAudio();
   }
+  btnPlay.addEventListener('click',startGame);
+  btnRetry.addEventListener('click',startGame);
+
   function closeGame(){
     stopAudio();phase='idle';modal.classList.remove('active');
     if(raf){cancelAnimationFrame(raf);raf=null;}
@@ -544,6 +626,7 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
     modal.classList.add('active');W=window.innerWidth;H=window.innerHeight;
     resizeCanvas();calcSizes();initAudio();loadAudio();
     phase='idle';resetState();lastT=null;
+    showMenu(false);
     if(raf)cancelAnimationFrame(raf);
     raf=requestAnimationFrame(loop);
   });
@@ -552,5 +635,3 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   window.addEventListener('resize',()=>{if(modal.classList.contains('active')){W=window.innerWidth;H=window.innerHeight;calcSizes();}},{passive:true});
 })();
 </script>
-</body>
-</html>
