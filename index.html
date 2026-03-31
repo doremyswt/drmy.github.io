@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 <meta property="og:title" content="drmy's homepage">
-<meta property="og:description" content="☕ art page · commissions on VGen · ZUTOMAYO fan">
+<meta property="og:description" content="☕ art archive">
 <meta property="og:image" content="https://drmy.art/banner.png">
 <meta property="og:url" content="https://drmy.art/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="drmy's homepage">
-<meta name="twitter:description" content="☕ art page · commissions on VGen · ZUTOMAYO fan">
+<meta name="twitter:description" content="☕ art archive">
 <meta name="twitter:image" content="https://drmy.art/banner.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -527,6 +527,79 @@ a:hover{color:var(--red);text-decoration:none}
 .btn-viz-close:hover{background:rgba(255,215,0,.16)}
 .viz-hint{font-family:'VT323',monospace;font-size:12px;color:#555;letter-spacing:1px;text-align:center}
 
+/* ═══ AD COLUMNS ═══ */
+.site-layout{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  gap:0;
+  position:relative;
+}
+.ad-col{
+  width:120px;
+  flex-shrink:0;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding-top:12px;
+  position:sticky;
+  top:56px;
+  max-height:calc(100vh - 60px);
+  overflow:hidden;
+}
+.ad-col.left{margin-right:6px}
+.ad-col.right{margin-left:6px}
+.ad-banner{
+  width:120px;
+  border:2px solid;
+  font-family:'VT323',monospace;
+  font-size:11px;
+  text-align:center;
+  cursor:pointer;
+  overflow:hidden;
+  position:relative;
+  image-rendering:pixelated;
+  flex-shrink:0;
+}
+.ad-banner:hover{filter:brightness(1.1);}
+.ad-blink{animation:ad-blink-anim .6s step-end infinite}
+.ad-blink2{animation:ad-blink-anim .9s step-end infinite}
+@keyframes ad-blink-anim{0%,100%{opacity:1}50%{opacity:0}}
+.ad-scroll{
+  display:inline-block;
+  animation:ad-scroll-x 6s linear infinite;
+  white-space:nowrap;
+}
+@keyframes ad-scroll-x{0%{transform:translateX(100%)}100%{transform:translateX(-100%)};}
+
+/* ad: netscape */
+.ad-netscape{height:60px;background:#000080;border-color:#0000cc;color:#fff;padding:4px 3px;line-height:1.3;}
+/* ad: download */
+.ad-download{height:60px;background:#003300;border-color:#00aa00;color:#00ff00;padding:4px 3px;line-height:1.4;}
+/* ad: bonzi */
+.ad-bonzi{height:80px;background:linear-gradient(180deg,#6600cc,#330066);border-color:#aa00ff;color:#fff;padding:6px 3px;}
+/* ad: virus */
+.ad-virus{height:70px;background:#000;border-color:#ff0000;color:#ff0000;padding:4px 3px;line-height:1.4;}
+/* ad: dating */
+.ad-dating{height:80px;background:linear-gradient(180deg,#ff0066,#cc0044);border-color:#ff66aa;color:#fff;padding:6px 3px;}
+/* ad: casino */
+.ad-casino{height:90px;background:linear-gradient(180deg,#003300,#001100);border-color:#ffd700;color:#ffd700;padding:6px 3px;}
+/* ad: toolbar */
+.ad-toolbar{height:60px;background:linear-gradient(180deg,#ccccff,#8888ff);border-color:#4444cc;color:#000033;padding:4px 3px;line-height:1.3;}
+/* ad: popup */
+.ad-popup{height:80px;background:#c0c0c0;border-color:#808080;border-style:outset;color:#000;padding:4px 3px;font-family:'VT323',monospace;}
+/* ad: cursor */
+.ad-cursor{height:70px;background:linear-gradient(180deg,#000033,#000066);border-color:#3366ff;color:#66aaff;padding:5px 3px;line-height:1.4;}
+/* ad: webring */
+.ad-webring{height:50px;background:#fffff0;border-color:#8b6914;color:#333;padding:4px 3px;line-height:1.3;}
+
+@media(max-width:1100px){
+  .ad-col.right{display:none}
+}
+@media(max-width:920px){
+  .ad-col{display:none}
+}
+
 /* ═══ RESPONSIVE ═══ */
 @media(max-width:680px){
   .page-wrap{padding:8px}
@@ -555,6 +628,50 @@ a:hover{color:var(--red);text-decoration:none}
   <a href="#">TOP</a><span class="nav-sep">|</span>
   <a href="#gallery-section">GALLERY</a><span class="nav-sep">|</span>
   <a href="https://vgen.co/doremy" target="_blank">COMMISSIONS</a><span class="nav-sep">|</span>
+</div>
+
+<div class="site-layout">
+
+<!-- ═══ LEFT ADS ═══ -->
+<div class="ad-col left">
+
+  <div class="ad-banner ad-netscape" onclick="alert('Your browser is NOT Netscape Navigator 4.0!')">
+    <div style="font-size:16px;font-weight:bold;color:#ffff00" class="ad-blink">!</div>
+    <div style="font-size:10px">Best viewed in</div>
+    <div style="font-size:13px;color:#ffff00">NETSCAPE</div>
+    <div style="font-size:10px">Navigator 4.0</div>
+    <div style="font-size:9px;color:#aaaaff">800×600 res</div>
+  </div>
+
+  <div class="ad-banner ad-download" onclick="alert('Starting download... just kidding :)')">
+    <div style="font-size:13px;color:#00ff00" class="ad-blink2">▼ DOWNLOAD ▼</div>
+    <div style="font-size:10px;margin:2px 0">FREE screensaver</div>
+    <div style="font-size:9px">dolphins.exe</div>
+    <div style="font-size:10px;color:#88ff88">100% FREE!!</div>
+    <div style="font-size:9px;color:#00ff00" class="ad-blink">CLICK NOW</div>
+  </div>
+
+  <div class="ad-banner ad-bonzi" onclick="alert('BonziBUDDY wants to be your friend!!')">
+    <div style="font-size:24px">🦊</div>
+    <div style="font-size:12px;color:#ff88ff">BonziBUDDY</div>
+    <div style="font-size:9px;margin:2px 0">Your FREE internet</div>
+    <div style="font-size:9px">companion!!</div>
+    <div style="font-size:10px;color:#ffff00" class="ad-blink">GET HIM FREE</div>
+  </div>
+
+  <div class="ad-banner ad-virus" onclick="alert('VIRUS DETECTED... just kidding. maybe.')">
+    <div style="font-size:11px" class="ad-blink">⚠ WARNING ⚠</div>
+    <div style="font-size:9px;margin:2px 0;color:#ff6666">VIRUS DETECTED</div>
+    <div style="font-size:9px">on your computer!</div>
+    <div style="font-size:10px;margin-top:3px;color:#ff0000" class="ad-blink2">CLICK TO FIX NOW</div>
+  </div>
+
+  <div class="ad-banner ad-webring" onclick="alert('♻ WebRing: connecting the internet since 1994')">
+    <div style="font-size:10px;color:#8b6914">✦ WebRing ✦</div>
+    <div style="font-size:9px">[prev] · [next]</div>
+    <div style="font-size:9px;color:#0033cc">art sites ring</div>
+  </div>
+
 </div>
 
 <div class="page-wrap">
@@ -633,9 +750,53 @@ a:hover{color:var(--red);text-decoration:none}
       <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="88" height="31" alt="" style="border:1px solid #ccc;background:linear-gradient(90deg,#003,#006);opacity:.3" title="placeholder badge">
     </div>
   </div>
-</div>
+</div><!-- end page-wrap -->
 
-<!-- ═══ LIGHTBOX ═══ -->
+<!-- ═══ RIGHT ADS ═══ -->
+<div class="ad-col right">
+
+  <div class="ad-banner ad-dating" onclick="alert('Singles in YOUR area!! (your area = the internet)')">
+    <div style="font-size:14px">💌</div>
+    <div style="font-size:12px;color:#ffccdd" class="ad-blink">HOT SINGLES</div>
+    <div style="font-size:9px;margin:2px 0">in your area</div>
+    <div style="font-size:9px">want to meet YOU</div>
+    <div style="font-size:10px;color:#ffff00" class="ad-blink2">CLICK HERE</div>
+  </div>
+
+  <div class="ad-banner ad-casino" onclick="alert('You have been PRE-SELECTED to win $1,000,000!!')">
+    <div style="font-size:14px" class="ad-blink">🎰</div>
+    <div style="font-size:12px;color:#ffd700">YOU WON!!</div>
+    <div style="font-size:9px;margin:2px 0">Claim your</div>
+    <div style="font-size:11px;color:#00ff00">$1,000,000</div>
+    <div style="font-size:9px">prize NOW!!</div>
+    <div style="font-size:10px" class="ad-blink2">→ CLICK ←</div>
+  </div>
+
+  <div class="ad-banner ad-toolbar" onclick="alert('CoolBar 2.0 will definitely not slow down your browser!')">
+    <div style="font-size:11px;color:#000066">Install</div>
+    <div style="font-size:13px;color:#000099;font-weight:bold">CoolBar 2.0</div>
+    <div style="font-size:9px;color:#000033">FREE toolbar!!</div>
+    <div style="font-size:9px;color:#cc0000" class="ad-blink">LIMITED TIME</div>
+  </div>
+
+  <div class="ad-banner ad-popup" onclick="alert('Congratulations!! You are the 1,000,000th visitor!!')">
+    <div style="background:#000080;color:#fff;font-size:10px;padding:2px;margin-bottom:3px;display:flex;justify-content:space-between"><span>Internet Explorer</span><span>✕</span></div>
+    <div style="font-size:10px;color:#000080">🎉 Congrats!!</div>
+    <div style="font-size:9px">You are visitor</div>
+    <div style="font-size:12px;color:#cc0000" class="ad-blink">#1,000,000</div>
+  </div>
+
+  <div class="ad-banner ad-cursor" onclick="alert('FREE cursors!! sparkles, cats, swords...')">
+    <div style="font-size:18px">✨</div>
+    <div style="font-size:11px;color:#88ccff">FREE cursors!</div>
+    <div style="font-size:9px;margin:2px 0">sparkles · cats</div>
+    <div style="font-size:9px">swords · anime</div>
+    <div style="font-size:10px;color:#ffff88" class="ad-blink2">DOWNLOAD</div>
+  </div>
+
+</div><!-- end ad-col right -->
+
+</div><!-- end site-layout -->
 <div class="lightbox" id="lightbox">
   <div class="lb-btn lb-close" id="lb-close">✕</div>
   <div class="lb-btn lb-prev" id="lb-prev">‹</div>
