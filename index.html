@@ -624,7 +624,14 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   let vizSrcNode=null,vizDragging=false,vizDragStartX=0,vizDragStartClock=0;
   const VIZ_WINDOW=4,VIZ_COLS=['#e8c49a','#9ab8e8','#c498a8','#8ac49a'],VIZ_LBL=['\u2190','\u2191','\u2192','\u2193'];
 
-  function syncVizSpeed(val){vizSpeed=Math.max(0.1,Math.min(2,parseFloat(val)||1));vizSpeedSlider.value=vizSpeed;vizSpeedInput.value=vizSpeed.toFixed(2);if(vizPlaying)vizStartAudio(vizClock);}
+  function syncVizSpeed(val){
+    vizSpeed=Math.max(0.1,Math.min(2,parseFloat(val)||1));
+    vizSpeedSlider.value=vizSpeed;vizSpeedInput.value=vizSpeed.toFixed(2);
+    if(vizPlaying){
+      _vizPlayStartMs=performance.now();_vizClockAtPlay=vizClock;
+      vizStartAudio(vizClock,0);
+    }
+  }
   vizSpeedSlider.addEventListener('input',()=>syncVizSpeed(vizSpeedSlider.value));
   vizSpeedInput.addEventListener('change',()=>syncVizSpeed(vizSpeedInput.value));
   vizSpeedInput.addEventListener('keydown',e=>{if(e.key==='Enter')syncVizSpeed(vizSpeedInput.value);});
@@ -650,34 +657,47 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   // and audio is delayed by bmLeadIn to compensate for the approach-rate window.
   // The visualizer doesn't need that — it's a pure preview tool.
   // ────────────────────────────────────────────────────────────────────────
-  function vizStartAudio(fromVizClock){
+  // Schedule audio at a future AC time, anchored so vizAudioPos() stays accurate
+  function vizStartAudio(fromVizClock, acDelay){
     if(!audioCtx||!audioBuffer)return;
     vizStopAudio();
-    // Play audio file from position = vizClock, immediately, at vizSpeed
+    acDelay=acDelay||0;
+    // Audio file position 0 = vizClock 0 (they share the same timeline)
     const filePos=Math.max(0,Math.min(fromVizClock,audioBuffer.duration));
     vizSrcNode=audioCtx.createBufferSource();
     vizSrcNode.buffer=audioBuffer;
     vizSrcNode.playbackRate.value=vizSpeed;
     vizSrcNode.connect(gainNode);
-    vizSrcNode.start(0,filePos); // start NOW, no delay
-    // Anchor for clock sync: at AC "now", vizClock = fromVizClock
-    _vizACAnchor=audioCtx.currentTime;
+    const startAt=audioCtx.currentTime+acDelay;
+    vizSrcNode.start(startAt,filePos);
+    // Anchor: at AC time startAt, vizClock = fromVizClock
+    _vizACAnchor=startAt;
     _vizPosAnchor=fromVizClock;
     vizSrcNode.onended=()=>{vizSrcNode=null;};
   }
   let _vizACAnchor=0,_vizPosAnchor=0;
-  // Returns current vizClock derived from audio position (accurate, no drift)
+  // Returns vizClock derived from audio position — only valid once audio is playing
   function vizAudioPos(){
     if(!vizSrcNode||!audioCtx)return vizClock;
     return _vizPosAnchor+(audioCtx.currentTime-_vizACAnchor)*vizSpeed;
   }
+
+  // When play is pressed, vizClock advances from its current position.
+  // Audio is delayed by bmLeadIn only when starting from vizClock=0 (the very
+  // beginning). If scrubbing mid-song (vizClock > 0), audio starts immediately.
+  let _vizPlayStartMs=0; // wall time when play was last pressed
+  let _vizClockAtPlay=0; // vizClock value at that moment
 
   function vizSetPlaying(playing){
     vizPlaying=playing;
     vizPlayBtn.textContent=playing?'⏸':'▶';
     vizPlayBtn.classList.toggle('active-btn',playing);
     if(playing){
-      if(audioCtx&&audioLoaded)vizStartAudio(vizClock);
+      _vizPlayStartMs=performance.now();
+      _vizClockAtPlay=vizClock;
+      // Delay audio by bmLeadIn only when starting from the very beginning
+      const audioDelay=vizClock===0?bmLeadIn:0;
+      if(audioCtx&&audioLoaded)vizStartAudio(vizClock,audioDelay);
       vizLastMs=performance.now();
     }else{
       vizStopAudio();
@@ -706,7 +726,10 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   function vizEndDrag(){
     if(!vizDragging)return;
     vizDragging=false;
-    if(vizPlaying)vizStartAudio(vizClock);
+    if(vizPlaying){
+      _vizPlayStartMs=performance.now();_vizClockAtPlay=vizClock;
+      vizStartAudio(vizClock,0); // resume immediately after scrub
+    }
   }
   vizWrap.addEventListener('mousedown',e=>vizStartDrag(e.clientX));
   window.addEventListener('mousemove',e=>{if(vizDragging)vizMoveDrag(e.clientX);});
@@ -805,15 +828,22 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   function vizLoop(){
     vizAnimRaf=requestAnimationFrame(vizLoop);
     if(vizPlaying&&!vizDragging){
-      if(vizSrcNode&&audioCtx){
-        // Keep vizClock locked to actual audio position — no drift
+      const now=performance.now();
+      const wallElapsed=(now-_vizPlayStartMs)*.001; // seconds since play pressed
+      const audioDelay=_vizClockAtPlay===0?bmLeadIn:0;
+
+      if(wallElapsed<audioDelay){
+        // Still in lead-in: advance clock by wall time, audio not started yet
+        vizClock=_vizClockAtPlay+wallElapsed*vizSpeed;
+      }else if(vizSrcNode&&audioCtx){
+        // Audio is playing: lock vizClock to actual audio position (no drift)
         vizClock=vizAudioPos();
       }else{
-        // Audio not loaded: advance by wall time
-        const now=performance.now();
+        // Audio ended or not loaded: wall-clock fallback
         if(vizLastMs!==null)vizClock+=((now-vizLastMs)*.001)*vizSpeed;
-        vizLastMs=performance.now();
       }
+      vizLastMs=now;
+
       if(audioBuffer&&vizClock>=audioBuffer.duration){
         vizClock=audioBuffer.duration;vizSetPlaying(false);
       }
