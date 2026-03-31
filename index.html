@@ -346,12 +346,12 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
      lead_in=3 is already baked in: first note at 3.1s means it hits the shield
      3.1 seconds after audio starts. No extra offset needed.
   */
-  let BEATMAP=[],bmApproachRate=0.8;
+  let BEATMAP=[],bmApproachRate=0.8,bmLeadIn=3;
   async function loadBeatmap(){
     try{
       const r=await fetch('beatmap.txt');const text=await r.text();
       const notes=[],lines=text.split(/\r?\n/);
-      for(const raw of lines){const line=raw.trim();if(!line)continue;const hm=line.match(/^#\s*(\w+):\s*([\d.+-]+)/);if(hm){if(hm[1]==='approach_rate')bmApproachRate=parseFloat(hm[2]);continue;}if(line.startsWith('#'))continue;const m=line.match(/^([\d.]+)\s+(\d)/);if(m)notes.push({time:parseFloat(m[1]),dir:parseInt(m[2])});}
+      for(const raw of lines){const line=raw.trim();if(!line)continue;const hm=line.match(/^#\s*(\w+):\s*([\d.+-]+)/);if(hm){if(hm[1]==='approach_rate')bmApproachRate=parseFloat(hm[2]);if(hm[1]==='lead_in')bmLeadIn=parseFloat(hm[2]);continue;}if(line.startsWith('#'))continue;const m=line.match(/^([\d.]+)\s+(\d)/);if(m)notes.push({time:parseFloat(m[1]),dir:parseInt(m[2])});}
       BEATMAP=notes;approachRate=bmApproachRate;arSlider.value=approachRate;arInput.value=approachRate.toFixed(2);
     }catch(e){console.warn('beatmap.txt not found',e);BEATMAP=[];}
   }
@@ -361,23 +361,31 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   let _audioStartAC=0,_audioStartPos=0,_audioRate=1;
   function initAudio(){if(audioCtx)return;audioCtx=new(window.AudioContext||window.webkitAudioContext)();gainNode=audioCtx.createGain();gainNode.gain.value=0.22;gainNode.connect(audioCtx.destination);}
   async function loadAudio(){if(audioLoaded||audioLoading)return;audioLoading=true;try{const resp=await fetch('kan_saete.mp3');const ab=await resp.arrayBuffer();audioBuffer=await audioCtx.decodeAudioData(ab);audioLoaded=true;}catch(e){console.warn('Audio failed',e);}audioLoading=false;}
-  function startAudioFrom(pos,rate){
+  // startAudioFrom(pos, rate, acDelay):
+  //   pos     = file position to start from (seconds)
+  //   rate    = playback rate
+  //   acDelay = seconds in the future (from now) before audio begins playing
+  function startAudioFrom(pos,rate,acDelay){
     if(!audioCtx||!audioBuffer)return;stopAudio();
+    acDelay=acDelay||0;
     sourceNode=audioCtx.createBufferSource();sourceNode.buffer=audioBuffer;sourceNode.playbackRate.value=rate;sourceNode.connect(gainNode);
     const p=Math.max(0,Math.min(pos,audioBuffer.duration));
-    sourceNode.start(0,p);
-    _audioStartAC=audioCtx.currentTime;_audioStartPos=p;_audioRate=rate;
+    const startAt=audioCtx.currentTime+acDelay;
+    sourceNode.start(startAt,p);
+    _audioStartAC=startAt;_audioStartPos=p;_audioRate=rate;
     sourceNode.onended=()=>{sourceNode=null;if(phase==='playing'){phase='results';showMenu(true);}};
   }
   function stopAudio(){if(sourceNode){sourceNode.onended=null;try{sourceNode.stop();}catch{}try{sourceNode.disconnect();}catch{}sourceNode=null;}}
   function audioSongPos(){if(!sourceNode)return _audioStartPos+(audioCtx?audioCtx.currentTime-_audioStartAC:0)*_audioRate;return _audioStartPos+(audioCtx.currentTime-_audioStartAC)*_audioRate;}
 
   /* GAME TIMING
-     Audio starts at position 0 immediately when play is pressed.
-     gameClock() = wall time since play was pressed (seconds).
-     Beatmap time T = audio time T = gameClock() T when note hits shield.
-     Arrow spawns at gameClock() = T - approachRate - offsetSec
-     Positive offsetMs = notes spawn earlier = appear to come sooner vs audio
+     gameClock() = wall-clock seconds since play was pressed. Starts at 0.
+     Audio starts bmLeadIn seconds after gameClock=0 (scheduled via Web Audio).
+     Beatmap times already include lead_in: first note at ~3.1s.
+     A note at beatmap time T hits the shield when gameClock()==T.
+     At that moment, audio position = gameClock - bmLeadIn = T - bmLeadIn (correct).
+     Spawn formula: spawnAt = T - approachRate - offsetSec
+     Positive offsetMs shifts notes earlier (they arrive sooner relative to audio).
   */
   let gameStartMs=0,phase='idle',raf=null;
   function gameClock(){return(performance.now()-gameStartMs)*.001;}
@@ -444,14 +452,19 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   gc.addEventListener('click',e=>{if(phase==='playing'){const r=gc.getBoundingClientRect();onDir(quadrant(e.clientX-r.left,e.clientY-r.top));}});
 
   /* START GAME
-     Audio starts at position 0 simultaneously with gameClock.
-     Note at beatmap time T hits shield when gameClock()==T (both count from 0).
+     gameClock starts at 0 immediately (gameStartMs = now).
+     Audio is scheduled to start bmLeadIn seconds later via Web Audio scheduler.
+     Beatmap times already include the lead_in offset (first note at ~3.1s),
+     so a note at time T hits the shield when gameClock() == T.
+     Audio position at that moment = T - bmLeadIn = the correct song position.
+     No double-offset, no dependency on audio clock for note spawning.
   */
   async function startGame(){
     initAudio();if(audioCtx.state==='suspended')await audioCtx.resume();if(!audioLoaded)await loadAudio();
     hideMenu();resetState();phase='playing';lastT=null;
     gameStartMs=performance.now();
-    startAudioFrom(0,1);
+    // Delay audio by lead_in so audio t=0 aligns with gameClock=bmLeadIn
+    startAudioFrom(0,1,bmLeadIn);
   }
   btnPlay.addEventListener('click',startGame);btnRetry.addEventListener('click',startGame);
 
