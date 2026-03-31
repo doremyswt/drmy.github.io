@@ -7,31 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#080604;--surface:#0f0a06;--border:#1e1208;--border2:#2e1c0c;
-  --latte:#c4a882;--latte2:#d8c4a0;--cream:#f4ede2;
-  --muted:#6e5540;--muted2:#3e2812;--gold:#ddb84a;
-  --sage:#7ab88a;--rose:#c08898;--sky:#7aaccA;--accent:#cfe03c;
-}
+:root{--bg:#080604;--surface:#0f0a06;--border:#1e1208;--border2:#2e1c0c;--latte:#c4a882;--latte2:#d8c4a0;--cream:#f4ede2;--muted:#6e5540;--muted2:#3e2812;--gold:#ddb84a;--sky:#7aaccA;--accent:#cfe03c;}
 html{scroll-behavior:smooth}
 body{background-color:var(--bg);background-image:radial-gradient(ellipse 110% 60% at 8% -5%,rgba(110,68,26,.22) 0%,transparent 52%),radial-gradient(ellipse 80% 55% at 92% 105%,rgba(72,40,10,.28) 0%,transparent 48%);color:var(--cream);font-family:'Cormorant Garamond','Georgia',serif;min-height:100vh;overflow-x:hidden;}
 #vhs-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:500;opacity:.28;mix-blend-mode:screen;will-change:contents;}
 #vhs-scanlines{position:fixed;inset:0;pointer-events:none;z-index:501;background:repeating-linear-gradient(to bottom,transparent 0,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 3px)}
 #vhs-band{position:fixed;left:0;right:0;height:2px;background:rgba(255,255,255,.04);pointer-events:none;z-index:502;top:-6px}
-
-/* Header: overflow visible + extra top padding so commission callout is never clipped */
-header{
-  position:sticky;top:0;z-index:100;overflow:visible;
-  background:rgba(8,6,4,.92);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-bottom:1px solid rgba(48,28,10,.8);
-}
+header{position:sticky;top:0;z-index:100;overflow:visible;background:rgba(8,6,4,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(48,28,10,.8);}
 header::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(196,168,130,.3) 50%,transparent);}
-.header-inner{
-  max-width:1020px;margin:0 auto;
-  padding:38px 40px 18px;
-  display:flex;align-items:center;gap:20px;overflow:visible;
-}
+.header-inner{max-width:1020px;margin:0 auto;padding:38px 40px 18px;display:flex;align-items:center;gap:20px;overflow:visible;}
 .avatar-wrap{position:relative;flex-shrink:0;cursor:pointer;user-select:none}
 .avatar{width:58px;height:58px;border-radius:50%;object-fit:cover;border:1px solid rgba(196,168,130,.3);display:block;transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s,filter .3s;filter:sepia(.1) brightness(.95);}
 .avatar-wrap:hover .avatar{transform:scale(1.08) rotate(-1deg);filter:sepia(.04) brightness(1.05);box-shadow:0 0 0 2px rgba(196,168,130,.12),0 6px 28px rgba(0,0,0,.7);}
@@ -44,21 +28,12 @@ header::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 .socials{margin-left:auto;display:flex;align-items:center;gap:6px;overflow:visible;}
 .socials a{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:1px solid var(--border2);background:rgba(20,12,6,.8);transition:border-color .2s,color .2s,transform .2s,box-shadow .2s;text-decoration:none;color:var(--muted);flex-shrink:0;}
 .socials a:hover{border-color:rgba(196,168,130,.45);color:var(--latte2);transform:translateY(-4px) scale(1.08);box-shadow:0 6px 18px rgba(0,0,0,.5);}
-.socials a svg{width:12px;height:12px;fill:currentColor;display:block}
-.socials a img{width:13px;height:13px;object-fit:contain;display:block;filter:brightness(.7);transition:filter .2s}
-.socials a:hover img{filter:brightness(.95)}
+.socials a svg{width:12px;height:12px;fill:currentColor;display:block}.socials a img{width:13px;height:13px;object-fit:contain;display:block;filter:brightness(.7);transition:filter .2s}.socials a:hover img{filter:brightness(.95)}
 .vgen-wrap{position:relative;display:flex;align-items:center}
-.comm-callout{
-  position:absolute;bottom:calc(100% + 6px);left:50%;
-  transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-  pointer-events:none;animation:bob 2.4s ease-in-out infinite;
-  white-space:nowrap;z-index:200;
-}
+.comm-callout{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;animation:bob 2.4s ease-in-out infinite;white-space:nowrap;z-index:200;}
 .comm-callout span{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.2em;color:var(--accent);text-shadow:0 0 12px rgba(207,224,60,.8);}
 .comm-arrow{width:9px;height:13px;color:var(--accent);filter:drop-shadow(0 0 5px rgba(207,224,60,.7));display:block}
 @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-5px)}}
-
 .zt-egg{position:fixed;pointer-events:none;z-index:2;user-select:none;opacity:0;animation:egg-float linear infinite;}
 @keyframes egg-float{0%{opacity:0;transform:translateY(0) rotate(0deg);}8%{opacity:.55;}92%{opacity:.55;}100%{opacity:0;transform:translateY(-120px) rotate(var(--rot,8deg));}}
 .kanji-stamp{position:absolute;font-family:'Cormorant Garamond',serif;pointer-events:none;user-select:none;color:rgba(196,168,130,.045);font-weight:600;letter-spacing:.05em;line-height:1;z-index:1;}
@@ -83,7 +58,7 @@ header::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 footer{text-align:center;padding:38px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.22em;color:var(--muted2);border-top:1px solid var(--border);position:relative;}
 footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(196,168,130,.12),transparent);}
 
-/* ===== GAME ===== */
+/* GAME */
 #game-modal{position:fixed;inset:0;background:rgba(2,1,0,.99);display:none;z-index:8000}
 #game-modal.active{display:block}
 #game-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;}
@@ -159,10 +134,7 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
 .btn-viz-close:hover{background:rgba(196,168,130,.18);}
 .viz-hint{font-family:'DM Mono',monospace;font-size:9px;color:rgba(62,40,18,.5);letter-spacing:.08em;text-align:center;}
 
-@media(max-width:680px){
-  .gallery,.section-divider{padding-left:18px;padding-right:18px}
-  .header-inner{padding:34px 18px 14px;}
-}
+@media(max-width:680px){.gallery,.section-divider{padding-left:18px;padding-right:18px}.header-inner{padding:34px 18px 14px;}}
 </style>
 </head>
 <body>
@@ -199,10 +171,7 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
       <a href="https://www.pixiv.net/en/users/105940981" target="_blank" title="Pixiv"><svg viewBox="0 0 48 48"><path d="M25 2C12.317 2 2 12.317 2 25c0 12.683 10.317 23 23 23s23-10.317 23-23C48 12.317 37.683 2 25 2zm1.3 10.01c9.527 0 12.991 6.137 12.992 11.26 0 5.27-4.331 10.393-12.992 10.393-2.968 0-5.309-.83-6.929-1.678v4.275h.867v1.732h-5.197v-1.732h.865V17.945c-1.05.698-2.598 2.725-2.598 2.725v1.4h-.865l-1.732-3.131s6.063-6.93 15.59-6.93zm0 2.154c-2.743 0-5.052.66-6.929 1.558v14.057c1.153.514 3.458 1.285 6.929 1.285 5.639 0 8.662-4.331 8.662-7.795 0-4.349-2.912-9.105-8.662-9.105z"/></svg></a>
       <a href="https://instagram.com/doremyswt" target="_blank" title="Instagram"><svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 5a5 5 0 100 10 5 5 0 000-10zm6.5-1.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg></a>
       <div class="vgen-wrap">
-        <div class="comm-callout">
-          <span>COMMISSIONS</span>
-          <svg class="comm-arrow" viewBox="0 0 11 15" fill="none"><line x1="5.5" y1="1" x2="5.5" y2="10.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="2,7.5 5.5,12 9,7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
+        <div class="comm-callout"><span>COMMISSIONS</span><svg class="comm-arrow" viewBox="0 0 11 15" fill="none"><line x1="5.5" y1="1" x2="5.5" y2="10.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="2,7.5 5.5,12 9,7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <a href="https://vgen.co/doremy" target="_blank" title="VGen"><img src="vgen.png" alt="VGen"></a>
       </div>
     </div>
@@ -215,11 +184,9 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   <div class="lb-btn lb-close" id="lb-close">✕</div>
   <div class="lb-btn lb-prev" id="lb-prev">‹</div>
   <div class="lb-btn lb-next" id="lb-next">›</div>
-  <img id="lightbox-img" alt="">
-  <div class="lb-counter" id="lb-counter"></div>
+  <img id="lightbox-img" alt=""><div class="lb-counter" id="lb-counter"></div>
 </div>
 
-<!-- GAME -->
 <div id="game-modal">
   <canvas id="game-canvas"></canvas>
   <div id="game-menu">
@@ -227,34 +194,14 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
       <div><div class="menu-title">勘冴えて悔しいわ</div><div class="menu-sub">shield</div></div>
       <div id="menu-result-box" class="menu-result-box" style="display:none"></div>
       <div class="menu-settings">
-        <div class="setting-row">
-          <span class="setting-lbl">approach</span>
-          <input type="range" id="ar-slider" min="0.2" max="3" step="0.05" value="0.8">
-          <input type="number" class="setting-val-input" id="ar-input" min="0.2" max="3" step="0.05" value="0.8">
-          <span class="setting-unit">s</span>
-        </div>
-        <div class="setting-row">
-          <span class="setting-lbl">offset</span>
-          <input type="range" id="offset-slider" min="-500" max="500" step="1" value="0">
-          <input type="number" class="setting-val-input" id="offset-input" min="-500" max="500" step="1" value="0">
-          <span class="setting-unit">ms</span>
-        </div>
+        <div class="setting-row"><span class="setting-lbl">approach</span><input type="range" id="ar-slider" min="0.2" max="3" step="0.05" value="0.8"><input type="number" class="setting-val-input" id="ar-input" min="0.2" max="3" step="0.05" value="0.8"><span class="setting-unit">s</span></div>
+        <div class="setting-row"><span class="setting-lbl">offset</span><input type="range" id="offset-slider" min="-500" max="500" step="1" value="0"><input type="number" class="setting-val-input" id="offset-input" min="-500" max="500" step="1" value="0"><span class="setting-unit">ms</span></div>
       </div>
       <div class="setting-divider"></div>
       <div class="setting-section-lbl">volume</div>
       <div class="menu-settings">
-        <div class="setting-row">
-          <span class="setting-lbl">music</span>
-          <input type="range" id="vol-music-slider" min="0" max="1" step="0.01" value="0.12">
-          <input type="number" class="setting-val-input" id="vol-music-input" min="0" max="100" step="1" value="12">
-          <span class="setting-unit">%</span>
-        </div>
-        <div class="setting-row">
-          <span class="setting-lbl">hitsound</span>
-          <input type="range" id="vol-hit-slider" min="0" max="1" step="0.01" value="0.55">
-          <input type="number" class="setting-val-input" id="vol-hit-input" min="0" max="100" step="1" value="55">
-          <span class="setting-unit">%</span>
-        </div>
+        <div class="setting-row"><span class="setting-lbl">music</span><input type="range" id="vol-music-slider" min="0" max="1" step="0.01" value="0.12"><input type="number" class="setting-val-input" id="vol-music-input" min="0" max="100" step="1" value="12"><span class="setting-unit">%</span></div>
+        <div class="setting-row"><span class="setting-lbl">hitsound</span><input type="range" id="vol-hit-slider" min="0" max="1" step="0.01" value="0.55"><input type="number" class="setting-val-input" id="vol-hit-input" min="0" max="100" step="1" value="55"><span class="setting-unit">%</span></div>
       </div>
       <button class="btn-offset-viz" id="btn-open-viz">⊞ visualize &amp; adjust offset</button>
       <button class="btn-play" id="btn-play">▶  play</button>
@@ -262,10 +209,8 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
       <div class="menu-hint"><b>← ↑ → ↓</b> or <b>WASD</b> — rotate shield &nbsp;·&nbsp; <b>esc</b> close</div>
     </div>
   </div>
-
-  <!-- OFFSET VISUALIZER -->
   <div id="offset-viz">
-    <div class="viz-header">offset visualizer — drag to scrub, press ▶ to preview with audio</div>
+    <div class="viz-header">offset visualizer — drag to scrub · playhead marks when notes arrive at shield</div>
     <div class="viz-canvas-wrap" id="viz-wrap"><canvas id="viz-canvas"></canvas></div>
     <div class="viz-transport">
       <button class="viz-btn" id="viz-play-btn">▶</button>
@@ -284,10 +229,9 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
       <input type="number" class="viz-num" id="viz-offset-input" min="-500" max="500" step="1" value="0">
       <span class="viz-unit">ms</span>
     </div>
-    <div class="viz-hint">drag timeline to scrub · playhead = when notes hit shield · adjust offset until notes align with beats</div>
+    <div class="viz-hint">dashed line = song start (after 3s lead-in) · adjust offset until notes align with beats you hear</div>
     <button class="btn-viz-close" id="btn-viz-close">✓ apply &amp; close</button>
   </div>
-
   <div class="game-topbar">
     <div class="game-title">勘冴えて悔しいわ · shield</div>
     <div class="game-topbar-right">
@@ -296,58 +240,21 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
     </div>
   </div>
   <div class="game-bottom">
-    <div class="hp-bar-wrap">
-      <span class="hp-label" id="hud-hp-label">hp 10/10</span>
-      <div class="hp-bar-bg"><div class="hp-bar-fill" id="hp-bar-fill" style="width:100%"></div></div>
-    </div>
-    <div class="game-hud-row">
-      <div>score &nbsp;<span id="hud-score">0</span></div>
-      <div id="game-feedback"></div>
-      <div>combo &nbsp;<span id="hud-combo">0</span></div>
-    </div>
-    <div class="game-hud-row" style="max-width:320px;margin-top:2px;">
-      <div>pp &nbsp;<span id="hud-pp">0</span></div>
-      <div id="hud-acc">acc 100%</div>
-      <div>miss &nbsp;<span id="hud-miss">0</span></div>
-    </div>
+    <div class="hp-bar-wrap"><span class="hp-label" id="hud-hp-label">hp 10/10</span><div class="hp-bar-bg"><div class="hp-bar-fill" id="hp-bar-fill" style="width:100%"></div></div></div>
+    <div class="game-hud-row"><div>score &nbsp;<span id="hud-score">0</span></div><div id="game-feedback"></div><div>combo &nbsp;<span id="hud-combo">0</span></div></div>
+    <div class="game-hud-row" style="max-width:320px;margin-top:2px;"><div>pp &nbsp;<span id="hud-pp">0</span></div><div id="hud-acc">acc 100%</div><div>miss &nbsp;<span id="hud-miss">0</span></div></div>
     <div class="hint"><b>← ↑ → ↓</b> / <b>WASD</b> — rotate shield</div>
   </div>
 </div>
 
 <script>
 /* VHS */
-(function(){
-  const cv=document.getElementById('vhs-canvas'),bd=document.getElementById('vhs-band');
-  let W=0,H=0,cx=null,by=-10,bs=0.55,last=0;
-  function resize(){W=window.innerWidth;H=window.innerHeight;cv.width=W;cv.height=H;cx=cv.getContext('2d');}
-  resize();window.addEventListener('resize',resize,{passive:true});
-  function tick(ts){requestAnimationFrame(tick);if(document.hidden||ts-last<50)return;last=ts;if(!cx)return;const id=cx.createImageData(W,H),d=id.data;for(let i=0;i<d.length;i+=4)if(Math.random()<.04){const v=Math.random()*180|0;d[i]=v*.65|0;d[i+1]=v*.38|0;d[i+2]=v*.18|0;d[i+3]=Math.random()*28|0;}cx.putImageData(id,0,0);if(Math.random()<.025){cx.fillStyle='rgba(255,238,190,'+(Math.random()*.04).toFixed(3)+')';cx.fillRect(0,Math.random()*H|0,W,1);}by+=bs;if(by>H+10){by=-10;bs=.3+Math.random()*.65;}bd.style.top=by+'px';}
-  requestAnimationFrame(tick);
-})();
+(function(){const cv=document.getElementById('vhs-canvas'),bd=document.getElementById('vhs-band');let W=0,H=0,cx=null,by=-10,bs=0.55,last=0;function resize(){W=window.innerWidth;H=window.innerHeight;cv.width=W;cv.height=H;cx=cv.getContext('2d');}resize();window.addEventListener('resize',resize,{passive:true});function tick(ts){requestAnimationFrame(tick);if(document.hidden||ts-last<50)return;last=ts;if(!cx)return;const id=cx.createImageData(W,H),d=id.data;for(let i=0;i<d.length;i+=4)if(Math.random()<.04){const v=Math.random()*180|0;d[i]=v*.65|0;d[i+1]=v*.38|0;d[i+2]=v*.18|0;d[i+3]=Math.random()*28|0;}cx.putImageData(id,0,0);if(Math.random()<.025){cx.fillStyle='rgba(255,238,190,'+(Math.random()*.04).toFixed(3)+')';cx.fillRect(0,Math.random()*H|0,W,1);}by+=bs;if(by>H+10){by=-10;bs=.3+Math.random()*.65;}bd.style.top=by+'px';}requestAnimationFrame(tick);})();
 
 /* GALLERY */
-(function(){
-  const galleryEl=document.getElementById('gallery'),lightbox=document.getElementById('lightbox'),lbImg=document.getElementById('lightbox-img'),lbCounter=document.getElementById('lb-counter');
-  let images=[],items=[],currentIndex=0;const GAP=10;
-  const isMobile=()=>window.matchMedia('(hover:none) and (pointer:coarse)').matches;
-  let zoomed=false;
-  function numCols(){const w=galleryEl.clientWidth;return w<480?2:w<720?3:4;}
-  function layout(){const W=galleryEl.clientWidth,cols=numCols(),colW=(W-GAP*(cols-1))/cols,hs=new Array(cols).fill(0);items.forEach(({el,img})=>{const nH=img.naturalHeight||0,nW=img.naturalWidth||1,iH=nH?Math.round(colW*nH/nW):colW;let col=0;for(let c=1;c<cols;c++)if(hs[c]<hs[col])col=c;el.style.width=colW+'px';el.style.left=col*(colW+GAP)+'px';el.style.top=hs[col]+'px';hs[col]+=iH+GAP;});galleryEl.style.height=Math.max(...hs)-GAP+'px';}
-  async function loadImages(){try{const r=await fetch('arch/images.json');images=await r.json();}catch{images=[];}images.forEach((url,i)=>{const el=document.createElement('div');el.className='item';const img=document.createElement('img');img.src=url;img.loading='lazy';img.alt='';img.onclick=()=>openLB(i);img.onload=layout;img.onerror=layout;el.appendChild(img);galleryEl.appendChild(el);items.push({el,img});});}
-  window.addEventListener('resize',layout,{passive:true});
-  function resetZoom(){zoomed=false;lbImg.style.transform='scale(1)';lbImg.style.transformOrigin='center center';lbImg.classList.remove('zoomed');}
-  function openLB(i){currentIndex=i;lbImg.src=images[i];lbCounter.textContent=(i+1)+' / '+images.length;lightbox.classList.add('active');resetZoom();}
-  const closeLB=()=>{lightbox.classList.remove('active');resetZoom();};
-  const prevLB=()=>{if(currentIndex>0)openLB(currentIndex-1);};
-  const nextLB=()=>{if(currentIndex<images.length-1)openLB(currentIndex+1);};
-  document.getElementById('lb-close').onclick=closeLB;document.getElementById('lb-prev').onclick=prevLB;document.getElementById('lb-next').onclick=nextLB;
-  lbImg.addEventListener('click',e=>{if(isMobile())return;if(!zoomed){zoomed=true;lbImg.classList.add('zoomed');const r=lbImg.getBoundingClientRect();lbImg.style.transformOrigin=((e.clientX-r.left)/r.width*100).toFixed(1)+'% '+((e.clientY-r.top)/r.height*100).toFixed(1)+'%';lbImg.style.transform='scale(2.2)';}else{resetZoom();}});
-  lbImg.addEventListener('mousemove',e=>{if(!zoomed||isMobile())return;const r=lbImg.getBoundingClientRect();lbImg.style.transformOrigin=((e.clientX-r.left)/r.width*100).toFixed(1)+'% '+((e.clientY-r.top)/r.height*100).toFixed(1)+'%';});
-  lightbox.addEventListener('click',e=>{if(e.target===lightbox)closeLB();});
-  let lbTX=null;lightbox.addEventListener('touchstart',e=>{lbTX=e.touches[0].clientX;},{passive:true});lightbox.addEventListener('touchend',e=>{if(lbTX===null)return;const dx=e.changedTouches[0].clientX-lbTX;if(Math.abs(dx)>40){dx<0?nextLB():prevLB();}lbTX=null;},{passive:true});
-  document.addEventListener('keydown',e=>{if(!lightbox.classList.contains('active'))return;if(e.key==='ArrowRight')nextLB();else if(e.key==='ArrowLeft')prevLB();else if(e.key==='Escape')closeLB();});
-  loadImages();
-})();
+(function(){const galleryEl=document.getElementById('gallery'),lightbox=document.getElementById('lightbox'),lbImg=document.getElementById('lightbox-img'),lbCounter=document.getElementById('lb-counter');let images=[],items=[],currentIndex=0;const GAP=10,isMobile=()=>window.matchMedia('(hover:none) and (pointer:coarse)').matches;let zoomed=false;function numCols(){const w=galleryEl.clientWidth;return w<480?2:w<720?3:4;}function layout(){const W=galleryEl.clientWidth,cols=numCols(),colW=(W-GAP*(cols-1))/cols,hs=new Array(cols).fill(0);items.forEach(({el,img})=>{const nH=img.naturalHeight||0,nW=img.naturalWidth||1,iH=nH?Math.round(colW*nH/nW):colW;let col=0;for(let c=1;c<cols;c++)if(hs[c]<hs[col])col=c;el.style.width=colW+'px';el.style.left=col*(colW+GAP)+'px';el.style.top=hs[col]+'px';hs[col]+=iH+GAP;});galleryEl.style.height=Math.max(...hs)-GAP+'px';}
+async function loadImages(){try{const r=await fetch('arch/images.json');images=await r.json();}catch{images=[];}images.forEach((url,i)=>{const el=document.createElement('div');el.className='item';const img=document.createElement('img');img.src=url;img.loading='lazy';img.alt='';img.onclick=()=>openLB(i);img.onload=layout;img.onerror=layout;el.appendChild(img);galleryEl.appendChild(el);items.push({el,img});});}
+window.addEventListener('resize',layout,{passive:true});function resetZoom(){zoomed=false;lbImg.style.transform='scale(1)';lbImg.style.transformOrigin='center center';lbImg.classList.remove('zoomed');}function openLB(i){currentIndex=i;lbImg.src=images[i];lbCounter.textContent=(i+1)+' / '+images.length;lightbox.classList.add('active');resetZoom();}const closeLB=()=>{lightbox.classList.remove('active');resetZoom();};const prevLB=()=>{if(currentIndex>0)openLB(currentIndex-1);};const nextLB=()=>{if(currentIndex<images.length-1)openLB(currentIndex+1);};document.getElementById('lb-close').onclick=closeLB;document.getElementById('lb-prev').onclick=prevLB;document.getElementById('lb-next').onclick=nextLB;lbImg.addEventListener('click',e=>{if(isMobile())return;if(!zoomed){zoomed=true;lbImg.classList.add('zoomed');const r=lbImg.getBoundingClientRect();lbImg.style.transformOrigin=((e.clientX-r.left)/r.width*100).toFixed(1)+'% '+((e.clientY-r.top)/r.height*100).toFixed(1)+'%';lbImg.style.transform='scale(2.2)';}else{resetZoom();}});lbImg.addEventListener('mousemove',e=>{if(!zoomed||isMobile())return;const r=lbImg.getBoundingClientRect();lbImg.style.transformOrigin=((e.clientX-r.left)/r.width*100).toFixed(1)+'% '+((e.clientY-r.top)/r.height*100).toFixed(1)+'%';});lightbox.addEventListener('click',e=>{if(e.target===lightbox)closeLB();});let lbTX=null;lightbox.addEventListener('touchstart',e=>{lbTX=e.touches[0].clientX;},{passive:true});lightbox.addEventListener('touchend',e=>{if(lbTX===null)return;const dx=e.changedTouches[0].clientX-lbTX;if(Math.abs(dx)>40){dx<0?nextLB():prevLB();}lbTX=null;},{passive:true});document.addEventListener('keydown',e=>{if(!lightbox.classList.contains('active'))return;if(e.key==='ArrowRight')nextLB();else if(e.key==='ArrowLeft')prevLB();else if(e.key==='Escape')closeLB();});loadImages();})();
 
 /* EASTER EGGS */
 (function(){const chars=['⚗','☽','✦','勘','冴','悔','♩','☕','✧','⌖','彡','幻','夜'],cols=['#c4a882','#9ab8c4','#c49bb8','#b8c49b','#ddb84a','#cfe03c'];let pool=[];function spawn(){if(document.hidden||pool.length>=8)return;const el=document.createElement('div');el.className='zt-egg';el.textContent=chars[Math.random()*chars.length|0];const dur=8+Math.random()*14,x=5+Math.random()*90,rot=(Math.random()*30-15).toFixed(1)+'deg';el.style.cssText=`left:${x}vw;top:${20+Math.random()*65}vh;font-family:'Cormorant Garamond',serif;font-size:${10+Math.random()*16}px;color:${cols[Math.random()*cols.length|0]};--rot:${rot};animation-duration:${dur}s;animation-delay:${Math.random()*4}s;text-shadow:0 0 8px currentColor;`;document.body.appendChild(el);pool.push(el);setTimeout(()=>{el.remove();pool=pool.filter(e=>e!==el);},(dur+4)*1000);}for(let i=0;i<4;i++)setTimeout(spawn,i*1800);setInterval(()=>{if(pool.length<8)spawn();},3200);})();
@@ -364,64 +271,19 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   const vizOffsetSlider=document.getElementById('viz-offset-slider'),vizOffsetInput=document.getElementById('viz-offset-input');
   const btnVizClose=document.getElementById('btn-viz-close');
 
-  /* BEATMAP
-     Times in the file are absolute seconds from song start (audio t=0).
-     lead_in=3 is already baked in: first note at 3.1s means it hits the shield
-     3.1 seconds after audio starts. No extra offset needed.
-  */
+  /* BEATMAP */
   let BEATMAP=[],bmApproachRate=0.8,bmLeadIn=3;
-  async function loadBeatmap(){
-    try{
-      const r=await fetch('beatmap.txt');const text=await r.text();
-      const notes=[],lines=text.split(/\r?\n/);
-      for(const raw of lines){const line=raw.trim();if(!line)continue;const hm=line.match(/^#\s*(\w+):\s*([\d.+-]+)/);if(hm){if(hm[1]==='approach_rate')bmApproachRate=parseFloat(hm[2]);if(hm[1]==='lead_in')bmLeadIn=parseFloat(hm[2]);continue;}if(line.startsWith('#'))continue;const m=line.match(/^([\d.]+)\s+(\d)/);if(m)notes.push({time:parseFloat(m[1]),dir:parseInt(m[2])});}
-      BEATMAP=notes;approachRate=bmApproachRate;arSlider.value=approachRate;arInput.value=approachRate.toFixed(2);
-    }catch(e){console.warn('beatmap.txt not found',e);BEATMAP=[];}
-  }
+  async function loadBeatmap(){try{const r=await fetch('beatmap.txt');if(!r.ok)throw 0;const text=await r.text();const notes=[],lines=text.split(/\r?\n/);for(const raw of lines){const line=raw.trim();if(!line)continue;const hm=line.match(/^#\s*(\w+):\s*([\d.+-]+)/);if(hm){if(hm[1]==='approach_rate')bmApproachRate=parseFloat(hm[2]);if(hm[1]==='lead_in')bmLeadIn=parseFloat(hm[2]);continue;}if(line.startsWith('#'))continue;const m=line.match(/^([\d.]+)\s+(\d)/);if(m)notes.push({time:parseFloat(m[1]),dir:parseInt(m[2])});}if(notes.length>0){BEATMAP=notes;approachRate=bmApproachRate;arSlider.value=approachRate;arInput.value=approachRate.toFixed(2);}}catch{}}
 
   /* AUDIO */
   let audioCtx=null,gainNode=null,hitGainNode=null,sourceNode=null,audioBuffer=null,audioLoaded=false,audioLoading=false;
-  let _audioStartAC=0,_audioStartPos=0,_audioRate=1;
-  // Volume state (0-1). gainNode = music, hitGainNode = hitsounds
-  let volMusic=0.12, volHit=0.55;
-  function initAudio(){
-    if(audioCtx)return;
-    audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-    gainNode=audioCtx.createGain();gainNode.gain.value=volMusic;gainNode.connect(audioCtx.destination);
-    hitGainNode=audioCtx.createGain();hitGainNode.gain.value=volHit;hitGainNode.connect(audioCtx.destination);
-  }
+  let volMusic=0.12,volHit=0.55;
+  function initAudio(){if(audioCtx)return;audioCtx=new(window.AudioContext||window.webkitAudioContext)();gainNode=audioCtx.createGain();gainNode.gain.value=volMusic;gainNode.connect(audioCtx.destination);hitGainNode=audioCtx.createGain();hitGainNode.gain.value=volHit;hitGainNode.connect(audioCtx.destination);}
   async function loadAudio(){if(audioLoaded||audioLoading)return;audioLoading=true;try{const resp=await fetch('kan_saete.mp3');const ab=await resp.arrayBuffer();audioBuffer=await audioCtx.decodeAudioData(ab);audioLoaded=true;buildWaveform();}catch(e){console.warn('Audio failed',e);}audioLoading=false;}
-  // acDelay: seconds from NOW before playback starts (0 = immediate)
-  function startAudioFrom(pos,rate,acDelay){
-    if(!audioCtx||!audioBuffer)return;stopAudio();
-    acDelay=acDelay||0;
-    sourceNode=audioCtx.createBufferSource();sourceNode.buffer=audioBuffer;sourceNode.playbackRate.value=rate;sourceNode.connect(gainNode);
-    const p=Math.max(0,Math.min(pos,audioBuffer.duration));
-    const startAt=audioCtx.currentTime+acDelay;
-    sourceNode.start(startAt,p);
-    _audioStartAC=startAt;_audioStartPos=p;_audioRate=rate;
-    sourceNode.onended=()=>{sourceNode=null;if(phase==='playing'){phase='results';showMenu(true);}};
-  }
-  function stopAudio(){
-    if(sourceNode){
-      sourceNode.onended=null;
-      // stop(0) cancels even a future-scheduled source (scheduled via start(futureTime))
-      try{sourceNode.stop(0);}catch{}
-      try{sourceNode.disconnect();}catch{}
-      sourceNode=null;
-    }
-  }
-
-  /* WAVEFORM — downsampled peak array built once after audio loads */
+  function startAudioFrom(pos,rate,acDelay){if(!audioCtx||!audioBuffer)return;stopAudio();acDelay=acDelay||0;sourceNode=audioCtx.createBufferSource();sourceNode.buffer=audioBuffer;sourceNode.playbackRate.value=rate;sourceNode.connect(gainNode);const p=Math.max(0,Math.min(pos,audioBuffer.duration));const startAt=audioCtx.currentTime+acDelay;sourceNode.start(startAt,p);sourceNode.onended=()=>{sourceNode=null;if(phase==='playing'){phase='results';showMenu(true);}};}
+  function stopAudio(){if(sourceNode){sourceNode.onended=null;try{sourceNode.stop(0);}catch{}try{sourceNode.disconnect();}catch{}sourceNode=null;}}
   let waveformPeaks=null;
-  function buildWaveform(){
-    if(!audioBuffer)return;
-    const raw=audioBuffer.getChannelData(0);
-    const bins=1400; // resolution
-    const bsize=Math.floor(raw.length/bins);
-    waveformPeaks=new Float32Array(bins);
-    for(let i=0;i<bins;i++){let pk=0;for(let j=0;j<bsize;j++){const v=Math.abs(raw[i*bsize+j]);if(v>pk)pk=v;}waveformPeaks[i]=pk;}
-  }
+  function buildWaveform(){if(!audioBuffer)return;const raw=audioBuffer.getChannelData(0),bins=1400,bsize=Math.floor(raw.length/bins);waveformPeaks=new Float32Array(bins);for(let i=0;i<bins;i++){let pk=0;for(let j=0;j<bsize;j++){const v=Math.abs(raw[i*bsize+j]);if(v>pk)pk=v;}waveformPeaks[i]=pk;}}
 
   /* SETTINGS */
   let approachRate=bmApproachRate,userOffsetMs=0;
@@ -432,42 +294,11 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   arSlider.addEventListener('input',()=>syncAR(arSlider.value));arInput.addEventListener('change',()=>syncAR(arInput.value));arInput.addEventListener('keydown',e=>{if(e.key==='Enter')syncAR(arInput.value);});
   offsetSlider.addEventListener('input',()=>syncOffset(offsetSlider.value));offsetInput.addEventListener('change',()=>syncOffset(offsetInput.value));offsetInput.addEventListener('keydown',e=>{if(e.key==='Enter')syncOffset(offsetInput.value);});
   vizOffsetSlider.addEventListener('input',()=>syncOffset(vizOffsetSlider.value));vizOffsetInput.addEventListener('change',()=>syncOffset(vizOffsetInput.value));vizOffsetInput.addEventListener('keydown',e=>{if(e.key==='Enter')syncOffset(vizOffsetInput.value);});
-  // Volume sliders: slider 0-1, input 0-100
-  document.getElementById('vol-music-slider').addEventListener('input',e=>syncVolMusic(e.target.value));
-  document.getElementById('vol-music-input').addEventListener('change',e=>syncVolMusic(e.target.value/100));
-  document.getElementById('vol-music-input').addEventListener('keydown',e=>{if(e.key==='Enter')syncVolMusic(e.target.value/100);});
-  document.getElementById('vol-hit-slider').addEventListener('input',e=>syncVolHit(e.target.value));
-  document.getElementById('vol-hit-input').addEventListener('change',e=>syncVolHit(e.target.value/100));
-  document.getElementById('vol-hit-input').addEventListener('keydown',e=>{if(e.key==='Enter')syncVolHit(e.target.value/100);});
+  document.getElementById('vol-music-slider').addEventListener('input',e=>syncVolMusic(e.target.value));document.getElementById('vol-music-input').addEventListener('change',e=>syncVolMusic(e.target.value/100));document.getElementById('vol-music-input').addEventListener('keydown',e=>{if(e.key==='Enter')syncVolMusic(e.target.value/100);});
+  document.getElementById('vol-hit-slider').addEventListener('input',e=>syncVolHit(e.target.value));document.getElementById('vol-hit-input').addEventListener('change',e=>syncVolHit(e.target.value/100));document.getElementById('vol-hit-input').addEventListener('keydown',e=>{if(e.key==='Enter')syncVolHit(e.target.value/100);});
 
-  /* HITSOUND — routed through hitGainNode for independent volume */
-  function blip(ok){
-    if(!audioCtx||!hitGainNode)return;
-    const t=audioCtx.currentTime;
-    // Tone
-    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-    o.connect(g);g.connect(hitGainNode);
-    // Noise burst for punch
-    const blen=audioCtx.sampleRate*.03,nb=audioCtx.createBuffer(1,blen,audioCtx.sampleRate),nd=nb.getChannelData(0);
-    for(let i=0;i<blen;i++)nd[i]=Math.random()*2-1;
-    const ns=audioCtx.createBufferSource(),ng=audioCtx.createGain();
-    ns.buffer=nb;ns.connect(ng);ng.connect(hitGainNode);
-    if(ok){
-      o.type='square';
-      o.frequency.setValueAtTime(880,t);o.frequency.setValueAtTime(1320,t+.018);o.frequency.setValueAtTime(1760,t+.032);
-      g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(.0001,t+.09);
-      o.start(t);o.stop(t+.1);
-      ng.gain.setValueAtTime(.35,t);ng.gain.exponentialRampToValueAtTime(.0001,t+.025);
-      ns.start(t);ns.stop(t+.03);
-    }else{
-      o.type='sawtooth';
-      o.frequency.setValueAtTime(220,t);o.frequency.setValueAtTime(110,t+.04);
-      g.gain.setValueAtTime(.7,t);g.gain.exponentialRampToValueAtTime(.0001,t+.1);
-      o.start(t);o.stop(t+.12);
-      ng.gain.setValueAtTime(.2,t);ng.gain.exponentialRampToValueAtTime(.0001,t+.04);
-      ns.start(t);ns.stop(t+.05);
-    }
-  }
+  /* HITSOUND */
+  function blip(ok){if(!audioCtx||!hitGainNode)return;const t=audioCtx.currentTime;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(hitGainNode);const blen=audioCtx.sampleRate*.03,nb=audioCtx.createBuffer(1,blen,audioCtx.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<blen;i++)nd[i]=Math.random()*2-1;const ns=audioCtx.createBufferSource(),ng=audioCtx.createGain();ns.buffer=nb;ns.connect(ng);ng.connect(hitGainNode);if(ok){o.type='square';o.frequency.setValueAtTime(880,t);o.frequency.setValueAtTime(1320,t+.018);o.frequency.setValueAtTime(1760,t+.032);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(.0001,t+.09);o.start(t);o.stop(t+.1);ng.gain.setValueAtTime(.35,t);ng.gain.exponentialRampToValueAtTime(.0001,t+.025);ns.start(t);ns.stop(t+.03);}else{o.type='sawtooth';o.frequency.setValueAtTime(220,t);o.frequency.setValueAtTime(110,t+.04);g.gain.setValueAtTime(.7,t);g.gain.exponentialRampToValueAtTime(.0001,t+.1);o.start(t);o.stop(t+.12);ng.gain.setValueAtTime(.2,t);ng.gain.exponentialRampToValueAtTime(.0001,t+.04);ns.start(t);ns.stop(t+.05);}}
 
   /* CANVAS */
   const DPR=Math.min(window.devicePixelRatio||1,2);let W=0,H=0,CX=0,CY=0,SHIELD_R=0,CUP_R=0;
@@ -483,101 +314,19 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   function shieldCovers(dir){return shieldDir===dir||(prevDir===dir&&(performance.now()*.001-prevAt)<GRACE);}
 
   /* STATE */
-  const MAX_HP=10;
-  // HP is float (0–MAX_HP), regen happens over time on hits
-  let score,combo,hp,arrows=[],particles=[],bmIdx=0,feedbackTimer=0;
-  let totalNotes=0,hitNotes=0,missNotes=0,maxCombo=0;
-  let ppDisplay=0; // smoothed PP for display
-
-  function resetState(){
-    score=0;combo=0;hp=MAX_HP;arrows=[];particles=[];bmIdx=0;
-    shieldDir=0;prevDir=-1;prevAt=-999;gameStartMs=0;
-    totalNotes=0;hitNotes=0;missNotes=0;maxCombo=0;ppDisplay=0;
-    updateHUD();feedback.textContent='';feedbackTimer=0;
-  }
+  const MAX_HP=10;let score,combo,hp,arrows=[],particles=[],bmIdx=0,feedbackTimer=0;
+  let totalNotes=0,hitNotes=0,missNotes=0,maxCombo=0,ppDisplay=0,phase='idle',raf=null,gameStartMs=0,lastT=null;
+  function resetState(){score=0;combo=0;hp=MAX_HP;arrows=[];particles=[];bmIdx=0;shieldDir=0;prevDir=-1;prevAt=-999;gameStartMs=0;totalNotes=0;hitNotes=0;missNotes=0;maxCombo=0;ppDisplay=0;updateHUD();feedback.textContent='';feedbackTimer=0;}
   function accuracy(){return totalNotes===0?1:hitNotes/totalNotes;}
-  function calcPP(){
-    // Osu-inspired: combo scaling * accuracy weight * miss penalty
-    const acc=accuracy();
-    const accWeight=Math.pow(acc,8); // harsh on low acc
-    const comboWeight=Math.pow(maxCombo,0.6)/Math.pow(BEATMAP.length||1,0.6);
-    const missPenalty=Math.max(0,1-missNotes*0.04);
-    const rawPP=1000*accWeight*comboWeight*missPenalty;
-    return Math.round(rawPP);
-  }
-  function updateHUD(){
-    hudScore.textContent=score;
-    hudCombo.textContent=combo;
-    const p=Math.max(0,hp/MAX_HP*100);
-    hpFill.style.width=p+'%';
-    hpFill.style.background=hp>MAX_HP*.5?'linear-gradient(90deg,#c4a882,#e8c870)':hp>MAX_HP*.25?'linear-gradient(90deg,#c4a882,#e8a040)':'linear-gradient(90deg,#c498a8,#e87878)';
-    hpLabel.textContent='hp '+Math.ceil(hp)+'/'+MAX_HP;
-    const pp=calcPP();
-    ppDisplay+=(pp-ppDisplay)*.2; // smooth
-    document.getElementById('hud-pp').textContent=Math.round(ppDisplay);
-    document.getElementById('hud-acc').textContent='acc '+(accuracy()*100).toFixed(1)+'%';
-    document.getElementById('hud-miss').textContent=missNotes;
-  }
+  function calcPP(){const acc=accuracy(),accW=Math.pow(acc,8),comboW=Math.pow(maxCombo,.6)/Math.pow(BEATMAP.length||1,.6),missP=Math.max(0,1-missNotes*.04);return Math.round(1000*accW*comboW*missP);}
+  function updateHUD(){hudScore.textContent=score;hudCombo.textContent=combo;const p=Math.max(0,hp/MAX_HP*100);hpFill.style.width=p+'%';hpFill.style.background=hp>MAX_HP*.5?'linear-gradient(90deg,#c4a882,#e8c870)':hp>MAX_HP*.25?'linear-gradient(90deg,#c4a882,#e8a040)':'linear-gradient(90deg,#c498a8,#e87878)';hpLabel.textContent='hp '+Math.ceil(hp)+'/'+MAX_HP;const pp=calcPP();ppDisplay+=(pp-ppDisplay)*.2;document.getElementById('hud-pp').textContent=Math.round(ppDisplay);document.getElementById('hud-acc').textContent='acc '+(accuracy()*100).toFixed(1)+'%';document.getElementById('hud-miss').textContent=missNotes;}
   function setFeedback(txt,col){feedback.textContent=txt;feedback.style.color=col;feedbackTimer=1.2;}
-  function showMenu(isResult){
-    gameMenu.classList.remove('hidden');
-    if(isResult){
-      const won=hp>0;
-      const pp=calcPP();
-      const acc=(accuracy()*100).toFixed(1);
-      menuResultBox.className='menu-result-box'+(won?'':' fail');
-      menuResultBox.innerHTML=
-        '<div class="menu-result-title">'+(won?'coffee safe \u2615':'the coffee spilled\u2026')+'</div>'+
-        '<div class="menu-result-score">'+pp+' pp &nbsp;\u00b7&nbsp; acc '+acc+'% &nbsp;\u00b7&nbsp; '+missNotes+' miss</div>'+
-        '<div class="menu-result-score" style="font-size:10px;opacity:.6">score '+score+'&nbsp; max combo '+maxCombo+'</div>';
-      menuResultBox.style.display='flex';btnRetry.style.display='block';btnPlay.textContent='\u25b6  play again';
-    }else{
-      menuResultBox.style.display='none';btnRetry.style.display='none';btnPlay.textContent='\u25b6  play';
-    }
-  }
+  function showMenu(isResult){gameMenu.classList.remove('hidden');if(isResult){const won=hp>0,pp=calcPP(),acc=(accuracy()*100).toFixed(1);menuResultBox.className='menu-result-box'+(won?'':' fail');menuResultBox.innerHTML='<div class="menu-result-title">'+(won?'coffee safe \u2615':'the coffee spilled\u2026')+'</div><div class="menu-result-score">'+pp+' pp \u00b7 acc '+acc+'% \u00b7 '+missNotes+' miss</div><div class="menu-result-score" style="font-size:10px;opacity:.6">score '+score+'\u00a0 max combo '+maxCombo+'</div>';menuResultBox.style.display='flex';btnRetry.style.display='block';btnPlay.textContent='\u25b6  play again';}else{menuResultBox.style.display='none';btnRetry.style.display='none';btnPlay.textContent='\u25b6  play';}}
   function hideMenu(){gameMenu.classList.add('hidden');}
-
-  /* SPAWN */
   function spawnPos(dir){switch(dir){case 0:return{x:0,y:CY,nx:1,ny:0};case 1:return{x:CX,y:0,nx:0,ny:1};case 2:return{x:W,y:CY,nx:-1,ny:0};case 3:return{x:CX,y:H,nx:0,ny:-1};}}
   function spawnArrow(dir){const p=spawnPos(dir),dist=Math.hypot(p.x-CX,p.y-CY)-SHIELD_R,spd=dist/approachRate;arrows.push({x:p.x,y:p.y,vx:p.nx*spd,vy:p.ny*spd,dir,color:COLS[dir],label:LABELS[dir],pastShield:false,dead:false});}
+  function checkCollisions(){for(const a of arrows){if(a.dead)continue;const dist=Math.hypot(a.x-CX,a.y-CY);if(!a.pastShield){if(dist<=SHIELD_R+1){totalNotes++;if(shieldCovers(a.dir)){a.dead=true;combo++;hitNotes++;if(combo>maxCombo)maxCombo=combo;score+=100+combo*10;hp=Math.min(MAX_HP,hp+0.4);burst(a.x,a.y,a.color,10);blip(true);setFeedback(combo>=10?combo+'\xd7 COMBO!! \u2615':combo>=5?combo+'\xd7 combo!':'parried!','#8ac49a');updateHUD();}else{a.pastShield=true;}}}else{if(dist<=SHIELD_R-16){a.dead=true;missNotes++;hp=Math.max(0,hp-0.5);combo=0;burst(a.x,a.y,'#c498a8',10);blip(false);setFeedback(hp<=0?'the coffee!! \ud83d\ude31':hp<=0.5?'careful!!':'ouch!','#c498a8');if(hp<=0){phase='results';stopAudio();showMenu(true);}updateHUD();}if(dist>Math.hypot(W,H))a.dead=true;}}arrows=arrows.filter(a=>!a.dead);}
 
-  /* COLLISION */
-  function checkCollisions(){
-    for(const a of arrows){
-      if(a.dead)continue;
-      const dist=Math.hypot(a.x-CX,a.y-CY);
-      if(!a.pastShield){
-        if(dist<=SHIELD_R+1){
-          totalNotes++;
-          if(shieldCovers(a.dir)){
-            a.dead=true;combo++;hitNotes++;
-            if(combo>maxCombo)maxCombo=combo;
-            score+=100+combo*10;
-            // HP regen: +0.4 per perfect, capped at MAX_HP
-            hp=Math.min(MAX_HP,hp+0.4);
-            burst(a.x,a.y,a.color,10);blip(true);
-            setFeedback(combo>=10?combo+'\xd7 COMBO!! \u2615':combo>=5?combo+'\xd7 combo!':'parried!','#8ac49a');
-            updateHUD();
-          }else{a.pastShield=true;}
-        }
-      }else{
-        if(dist<=SHIELD_R-16){
-          a.dead=true;missNotes++;
-          // Miss costs 0.5 HP (half damage vs before)
-          hp=Math.max(0,hp-0.5);
-          combo=0;
-          burst(a.x,a.y,'#c498a8',10);blip(false);
-          setFeedback(hp<=0?'the coffee!! \ud83d\ude31':hp<=0.5?'careful!!':'ouch!','#c498a8');
-          if(hp<=0){phase='results';stopAudio();showMenu(true);}
-          updateHUD();
-        }
-        if(dist>Math.hypot(W,H))a.dead=true;
-      }
-    }
-    arrows=arrows.filter(a=>!a.dead);
-  }
-
-  /* DRAW */
   let _bgGrad=null,_bgW=0,_bgH=0;
   function drawBg(){if(_bgW!==W||_bgH!==H){_bgGrad=ctx.createRadialGradient(CX,CY,0,CX,CY,Math.hypot(W,H)/1.5);_bgGrad.addColorStop(0,'rgba(22,12,4,.97)');_bgGrad.addColorStop(1,'rgba(3,1,0,1)');_bgW=W;_bgH=H;}ctx.fillStyle=_bgGrad;ctx.fillRect(0,0,W,H);const S=Math.min(W,H),maxR=Math.max(W,H)*.9;ctx.save();for(let r=S*.05;r<maxR;r+=S*.07){const a=Math.max(0,.06*(1-r/maxR));ctx.strokeStyle=`rgba(50,22,5,${a})`;ctx.lineWidth=4+r/maxR*5;ctx.beginPath();ctx.arc(CX,CY,r,0,Math.PI*2);ctx.stroke();}const vg=ctx.createRadialGradient(CX,CY,Math.min(W,H)*.22,CX,CY,Math.max(W,H)*.78);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.68)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(196,168,130,.04)';ctx.lineWidth=1;ctx.setLineDash([2,9]);ctx.beginPath();ctx.arc(CX,CY,SHIELD_R,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.restore();}
   function drawShield(nowSec){const S=Math.min(W,H),lw=S*.013;const[a0,a1]=SHIELD_ARC[shieldDir],col=COLS[shieldDir];ctx.save();ctx.strokeStyle=col+'22';ctx.lineWidth=lw*3.5;ctx.lineCap='round';ctx.shadowColor=col;ctx.shadowBlur=S*.05;ctx.beginPath();ctx.arc(CX,CY,SHIELD_R,a0,a1);ctx.stroke();ctx.strokeStyle=col+'cc';ctx.lineWidth=lw;ctx.shadowBlur=S*.02;ctx.beginPath();ctx.arc(CX,CY,SHIELD_R,a0,a1);ctx.stroke();ctx.restore();const grace=Math.max(0,1-(nowSec-prevAt)/GRACE);if(prevDir>=0&&grace>0){const[ga0,ga1]=SHIELD_ARC[prevDir];ctx.save();ctx.strokeStyle=COLS[prevDir]+(Math.round(grace*40).toString(16).padStart(2,'0'));ctx.lineWidth=lw*.45;ctx.lineCap='round';ctx.setLineDash([3,7]);ctx.beginPath();ctx.arc(CX,CY,SHIELD_R,ga0,ga1);ctx.stroke();ctx.setLineDash([]);ctx.restore();}const D=SHIELD_R*1.52,fs=Math.max(10,Math.min(W,H)*.016);[{dir:0,x:CX-D,y:CY},{dir:1,x:CX,y:CY-D},{dir:2,x:CX+D,y:CY},{dir:3,x:CX,y:CY+D}].forEach(({dir,x,y})=>{const active=dir===shieldDir,inGrace=dir===prevDir&&grace>0;ctx.save();ctx.font='bold '+fs+'px "DM Mono",monospace';ctx.textAlign='center';ctx.textBaseline='middle';if(active){ctx.fillStyle=COLS[dir];ctx.shadowColor=COLS[dir];ctx.shadowBlur=10;}else if(inGrace){ctx.fillStyle=COLS[dir]+(Math.round(grace*60).toString(16).padStart(2,'0'));}else{ctx.fillStyle=COLS[dir]+'18';}ctx.fillText(LABELS[dir],x,y);ctx.restore();});}
@@ -586,151 +335,95 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   function drawParticles(nowSec){for(let i=particles.length-1;i>=0;i--){const p=particles[i],age=nowSec-p.born;if(age>.5){particles.splice(i,1);continue;}ctx.save();ctx.globalAlpha=(1-age/.5)*.85;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x+p.vx*age*75,p.y+p.vy*age*75,p.r*(1-age*.5),0,Math.PI*2);ctx.fill();ctx.restore();}}
   function burst(x,y,color,n){const now=performance.now()*.001;for(let i=0;i<n;i++){const a=Math.PI*2*i/n+Math.random()*.4;particles.push({x,y,vx:Math.cos(a),vy:Math.sin(a),r:1.5+Math.random()*2.5,color,born:now});}}
 
-  /* MAIN LOOP */
-  let lastT=null;
+  function gameClock(){return gameStartMs>0?(performance.now()-gameStartMs)*.001:0;}
+
   function loop(){raf=requestAnimationFrame(loop);if(document.hidden)return;const nowMs=performance.now(),nowSec=nowMs*.001,dt=lastT!==null?Math.min(nowSec-lastT,.05):0;lastT=nowSec;resizeCanvas();
     if(phase==='playing'){const gc_s=gameClock(),offsetSec=userOffsetMs*.001;while(bmIdx<BEATMAP.length){const note=BEATMAP[bmIdx],spawnAt=note.time-approachRate-offsetSec;if(gc_s>=spawnAt){spawnArrow(note.dir);bmIdx++;}else break;}drawBg();checkCollisions();drawShield(nowSec);drawArrows(dt);drawParticles(nowSec);drawCup();if(combo>=3){ctx.save();ctx.font='bold '+(10+Math.min(combo,20)*.28)+'px "DM Mono",monospace';ctx.fillStyle=combo>=10?'#d4f030':'#c4a882';ctx.textAlign='center';ctx.textBaseline='middle';ctx.globalAlpha=.32;ctx.fillText(combo+'\xd7',CX,CY+SHIELD_R*1.55);ctx.restore();}if(feedbackTimer>0){feedbackTimer-=dt;if(feedbackTimer<=0)feedback.textContent='';}if(!sourceNode&&bmIdx>=BEATMAP.length&&arrows.length===0){phase='results';showMenu(true);}}
     else{drawBg();drawShield(nowSec);drawCup();ctx.save();const vg=ctx.createRadialGradient(CX,CY,0,CX,CY,Math.max(W,H)*.65);vg.addColorStop(0,'rgba(10,5,2,.82)');vg.addColorStop(1,'rgba(2,1,0,.97)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);ctx.restore();}}
 
-  /* INPUT */
   function onDir(dir){if(phase==='playing')rotateShield(dir);}
   document.addEventListener('keydown',e=>{if(!modal.classList.contains('active'))return;const tag=e.target.tagName;if(tag==='INPUT'||tag==='SELECT'||tag==='BUTTON')return;const k=e.key.toLowerCase();if(k in DIR_KEYS){e.preventDefault();onDir(DIR_KEYS[k]);return;}if(e.key==='Escape'){e.preventDefault();closeGame();}});
   function quadrant(x,y){const dx=x-CX,dy=y-CY;return Math.abs(dx)>Math.abs(dy)?(dx<0?0:2):(dy<0?1:3);}
   gc.addEventListener('touchstart',e=>{e.preventDefault();const r=gc.getBoundingClientRect();for(const t of e.changedTouches)onDir(quadrant(t.clientX-r.left,t.clientY-r.top));},{passive:false});
   gc.addEventListener('click',e=>{if(phase==='playing'){const r=gc.getBoundingClientRect();onDir(quadrant(e.clientX-r.left,e.clientY-r.top));}});
 
-  /* START GAME
-     gameClock starts at 0 immediately (gameStartMs = now).
-     Audio is scheduled to start bmLeadIn seconds later via Web Audio scheduler.
-     Beatmap times already include the lead_in offset (first note at ~3.1s),
-     so a note at time T hits the shield when gameClock() == T.
-     Audio position at that moment = T - bmLeadIn = the correct song position.
-     No double-offset, no dependency on audio clock for note spawning.
-  */
-  async function startGame(){
-    initAudio();if(audioCtx.state==='suspended')await audioCtx.resume();if(!audioLoaded)await loadAudio();
-    hideMenu();resetState();phase='playing';lastT=null;
-    gameStartMs=performance.now();
-    // Delay audio by lead_in so audio t=0 aligns with gameClock=bmLeadIn
-    startAudioFrom(0,1,bmLeadIn);
-  }
+  async function startGame(){initAudio();if(audioCtx.state==='suspended')await audioCtx.resume();if(!audioLoaded)await loadAudio();hideMenu();resetState();phase='playing';lastT=null;gameStartMs=performance.now();startAudioFrom(0,1,bmLeadIn);}
   btnPlay.addEventListener('click',startGame);btnRetry.addEventListener('click',startGame);
 
-  /* ===== OFFSET VISUALIZER =====
-     Independent clock, own audio source node, transport controls.
-     Starts paused at t=0.
-  */
-  let vizClock=0,vizPlaying=false,vizSpeed=1,vizLastMs=null,vizAnimRaf=null;
+  /* ═══════════════════════════════════════════════════════════════
+     OFFSET VISUALIZER — FIXED TIMING MODEL
+     ═══════════════════════════════════════════════════════════════
+     vizClock = beatmap clock (same domain as note.time).
+     note.time already includes lead_in: first note at ~3.1s.
+     Audio file position 0 corresponds to beatmap clock = bmLeadIn (3s).
+
+     Clock model when playing:
+       Phase A — lead-in (vizClock < bmLeadIn, audio not started yet):
+         vizClock = _vizClockAtPlay + (wallNow - _vizWallAtPlay) * speed
+         Audio is scheduled for _vizACAnchor in the future. We do NOT read
+         audioCtx.currentTime for positioning here — it would give a negative
+         delta and snap vizClock backwards.
+
+       Phase B — song playing (audioCtx.currentTime >= _vizACAnchor):
+         vizClock = bmLeadIn + (audioCtx.currentTime - _vizACAnchor) * speed
+         This locks to the actual audio clock, preventing drift.
+         At the transition moment both formulas give the same value because
+         _vizACAnchor was set so audio file pos=0 plays exactly when
+         wallNow - _vizWallAtPlay = (bmLeadIn - _vizClockAtPlay) / speed.
+
+     Scrubbing: stops audio, repositions vizClock, restarts audio from the
+     correct file position with a fresh wall/AC anchor.
+  ═══════════════════════════════════════════════════════════════ */
+  let vizClock=0,vizPlaying=false,vizSpeed=1,vizAnimRaf=null;
   let vizSrcNode=null,vizDragging=false,vizDragStartX=0,vizDragStartClock=0;
+  let _vizWallAtPlay=0;  // wall-clock seconds when play was pressed (or scrub ended)
+  let _vizClockAtPlay=0; // vizClock at that moment
+  let _vizACAnchor=0;    // audioCtx.currentTime when audio file will start
   const VIZ_WINDOW=4,VIZ_COLS=['#e8c49a','#9ab8e8','#c498a8','#8ac49a'],VIZ_LBL=['\u2190','\u2191','\u2192','\u2193'];
+
+  function vizStopAudio(){if(vizSrcNode){vizSrcNode.onended=null;try{vizSrcNode.stop(0);}catch{}try{vizSrcNode.disconnect();}catch{}vizSrcNode=null;}}
+
+  /* Schedule audio so file-pos=0 aligns with beatmap-clock=bmLeadIn.
+     If vizClock < bmLeadIn: audio hasn't started yet, delay = (bmLeadIn - vizClock)/speed
+     If vizClock >= bmLeadIn: audio should be mid-song, file-pos = vizClock - bmLeadIn */
+  function _schedVizAudio(){
+    if(!audioCtx||!audioBuffer)return;vizStopAudio();
+    const filePos=Math.max(0,vizClock-bmLeadIn);
+    const acDelay=vizClock<bmLeadIn?(bmLeadIn-vizClock)/vizSpeed:0;
+    vizSrcNode=audioCtx.createBufferSource();
+    vizSrcNode.buffer=audioBuffer;vizSrcNode.playbackRate.value=vizSpeed;
+    vizSrcNode.connect(gainNode);
+    _vizACAnchor=audioCtx.currentTime+acDelay;
+    vizSrcNode.start(_vizACAnchor,filePos);
+    vizSrcNode.onended=()=>{vizSrcNode=null;};
+  }
 
   function syncVizSpeed(val){
     vizSpeed=Math.max(0.1,Math.min(2,parseFloat(val)||1));
     vizSpeedSlider.value=vizSpeed;vizSpeedInput.value=vizSpeed.toFixed(2);
     if(vizPlaying){
-      _vizPlayStartMs=performance.now();_vizClockAtPlay=vizClock;
-      vizStartAudio(vizClock,0);
+      // Re-anchor at current vizClock and reschedule
+      _vizWallAtPlay=performance.now()*.001;_vizClockAtPlay=vizClock;
+      _schedVizAudio();
     }
   }
   vizSpeedSlider.addEventListener('input',()=>syncVizSpeed(vizSpeedSlider.value));
   vizSpeedInput.addEventListener('change',()=>syncVizSpeed(vizSpeedInput.value));
   vizSpeedInput.addEventListener('keydown',e=>{if(e.key==='Enter')syncVizSpeed(vizSpeedInput.value);});
 
-  function vizStopAudio(){
-    if(vizSrcNode){
-      vizSrcNode.onended=null;
-      try{vizSrcNode.stop(0);}catch{}
-      try{vizSrcNode.disconnect();}catch{}
-      vizSrcNode=null;
-    }
-  }
-  // ── VIZ TIMING MODEL ────────────────────────────────────────────────────
-  // vizClock = seconds since the visualizer "session" started (or scrub position).
-  // This is the SAME time domain as beatmap note.time values (which already
-  // include the lead_in baked in, e.g. first note at 3.1s).
-  //
-  // Audio file: we play it directly from file position = vizClock.
-  // Start IMMEDIATELY with no delay — the silence in the first ~3s of the
-  // audio file IS the lead_in. Audio and beatmap share the same clock.
-  //
-  // This is intentionally different from the game, where gameClock starts at 0
-  // and audio is delayed by bmLeadIn to compensate for the approach-rate window.
-  // The visualizer doesn't need that — it's a pure preview tool.
-  // ────────────────────────────────────────────────────────────────────────
-  // Schedule audio at a future AC time, anchored so vizAudioPos() stays accurate
-  function vizStartAudio(fromVizClock, acDelay){
-    if(!audioCtx||!audioBuffer)return;
-    vizStopAudio();
-    acDelay=acDelay||0;
-    // Audio file position 0 = vizClock 0 (they share the same timeline)
-    const filePos=Math.max(0,Math.min(fromVizClock,audioBuffer.duration));
-    vizSrcNode=audioCtx.createBufferSource();
-    vizSrcNode.buffer=audioBuffer;
-    vizSrcNode.playbackRate.value=vizSpeed;
-    vizSrcNode.connect(gainNode);
-    const startAt=audioCtx.currentTime+acDelay;
-    vizSrcNode.start(startAt,filePos);
-    // Anchor: at AC time startAt, vizClock = fromVizClock
-    _vizACAnchor=startAt;
-    _vizPosAnchor=fromVizClock;
-    vizSrcNode.onended=()=>{vizSrcNode=null;};
-  }
-  let _vizACAnchor=0,_vizPosAnchor=0;
-  // Returns vizClock derived from audio position — only valid once audio is playing
-  function vizAudioPos(){
-    if(!vizSrcNode||!audioCtx)return vizClock;
-    return _vizPosAnchor+(audioCtx.currentTime-_vizACAnchor)*vizSpeed;
-  }
-
-  // When play is pressed, vizClock advances from its current position.
-  // Audio is delayed by bmLeadIn only when starting from vizClock=0 (the very
-  // beginning). If scrubbing mid-song (vizClock > 0), audio starts immediately.
-  let _vizPlayStartMs=0; // wall time when play was last pressed
-  let _vizClockAtPlay=0; // vizClock value at that moment
-
   function vizSetPlaying(playing){
-    vizPlaying=playing;
-    vizPlayBtn.textContent=playing?'⏸':'▶';
-    vizPlayBtn.classList.toggle('active-btn',playing);
+    vizPlaying=playing;vizPlayBtn.textContent=playing?'⏸':'▶';vizPlayBtn.classList.toggle('active-btn',playing);
     if(playing){
-      _vizPlayStartMs=performance.now();
-      _vizClockAtPlay=vizClock;
-      // Delay audio by bmLeadIn only when starting from the very beginning
-      const audioDelay=vizClock===0?bmLeadIn:0;
-      if(audioCtx&&audioLoaded)vizStartAudio(vizClock,audioDelay);
-      vizLastMs=performance.now();
-    }else{
-      vizStopAudio();
-      vizLastMs=null;
-    }
+      _vizWallAtPlay=performance.now()*.001;_vizClockAtPlay=vizClock;
+      if(audioCtx&&audioLoaded)_schedVizAudio();
+    }else{vizStopAudio();}
   }
   vizPlayBtn.addEventListener('click',()=>vizSetPlaying(!vizPlaying));
-  vizRestartBtn.addEventListener('click',()=>{
-    vizClock=0;vizSetPlaying(false);vizLastMs=null;
-    vizTimeLabel.textContent='0.00s';
-    drawViz();
-  });
+  vizRestartBtn.addEventListener('click',()=>{vizClock=0;vizSetPlaying(false);vizTimeLabel.textContent='0.00s';drawViz();});
 
-  // Drag to scrub
-  function vizStartDrag(clientX){
-    vizDragging=true;vizDragStartX=clientX;vizDragStartClock=vizClock;
-    if(vizPlaying)vizStopAudio();
-  }
-  function vizMoveDrag(clientX){
-    if(!vizDragging)return;
-    const VW=vizCanvas.offsetWidth,pps=VW/VIZ_WINDOW,dx=clientX-vizDragStartX;
-    vizClock=Math.max(0,vizDragStartClock-dx/pps);
-    vizTimeLabel.textContent=vizClock.toFixed(2)+'s';
-    drawViz();
-  }
-  function vizEndDrag(){
-    if(!vizDragging)return;
-    vizDragging=false;
-    if(vizPlaying){
-      _vizPlayStartMs=performance.now();_vizClockAtPlay=vizClock;
-      vizStartAudio(vizClock,0); // resume immediately after scrub
-    }
-  }
+  function vizStartDrag(clientX){vizDragging=true;vizDragStartX=clientX;vizDragStartClock=vizClock;if(vizPlaying)vizStopAudio();}
+  function vizMoveDrag(clientX){if(!vizDragging)return;const VW=vizCanvas.offsetWidth,pps=VW/VIZ_WINDOW,dx=clientX-vizDragStartX;vizClock=Math.max(0,vizDragStartClock-dx/pps);vizTimeLabel.textContent=vizClock.toFixed(2)+'s';drawViz();}
+  function vizEndDrag(){if(!vizDragging)return;vizDragging=false;if(vizPlaying){_vizWallAtPlay=performance.now()*.001;_vizClockAtPlay=vizClock;_schedVizAudio();}}
   vizWrap.addEventListener('mousedown',e=>vizStartDrag(e.clientX));
   window.addEventListener('mousemove',e=>{if(vizDragging)vizMoveDrag(e.clientX);});
   window.addEventListener('mouseup',vizEndDrag);
@@ -738,138 +431,82 @@ footer::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1
   window.addEventListener('touchmove',e=>{if(vizDragging)vizMoveDrag(e.touches[0].clientX);},{passive:true});
   window.addEventListener('touchend',vizEndDrag);
 
-  // ── DRAW: combined waveform + notes on one canvas ────────────────────────
-  // The waveform is drawn as a semi-transparent layer behind the notes.
-  // Both use vizClock as the time reference so they're always in sync.
   function drawViz(){
-    const vc=vizCanvas.getContext('2d');
-    const VW=vizCanvas.offsetWidth,VH=vizCanvas.offsetHeight;
+    const vc=vizCanvas.getContext('2d');const VW=vizCanvas.offsetWidth,VH=vizCanvas.offsetHeight;
     if(vizCanvas.width!==VW||vizCanvas.height!==VH){vizCanvas.width=VW;vizCanvas.height=VH;}
-
-    // ── Background ──
     vc.fillStyle='rgba(4,2,0,.98)';vc.fillRect(0,0,VW,VH);
-
     const tc=vizClock,pps=VW/VIZ_WINDOW,px=VW/2;
-
-    // ── Waveform overlay (drawn first, behind everything) ──
+    // Waveform — X maps to beatmap clock; audio file starts at beatmap clock = bmLeadIn
     if(waveformPeaks&&audioBuffer){
       const dur=audioBuffer.duration,bins=waveformPeaks.length;
-      // Visible audio range: [tc - VIZ_WINDOW/2, tc + VIZ_WINDOW/2]
-      const tStart=tc-VIZ_WINDOW/2,tEnd=tc+VIZ_WINDOW/2;
       vc.save();
       for(let x=0;x<VW;x++){
-        const t=tStart+x/VW*VIZ_WINDOW;
-        if(t<0||t>dur)continue;
-        const bi=Math.min(bins-1,Math.floor(t/dur*bins));
-        const pk=waveformPeaks[bi];
-        const h=pk*VH*.7;
-        // Gradient color based on amplitude
-        const alpha=0.12+pk*0.22;
-        vc.fillStyle=`rgba(196,168,130,${alpha.toFixed(3)})`;
+        const t=tc-VIZ_WINDOW/2+x/VW*VIZ_WINDOW; // beatmap clock for this pixel
+        const audioT=t-bmLeadIn; // corresponding audio file position
+        if(audioT<0||audioT>dur)continue;
+        const bi=Math.min(bins-1,Math.floor(audioT/dur*bins));
+        const pk=waveformPeaks[bi],h=pk*VH*.7;
+        vc.fillStyle=`rgba(196,168,130,${(0.12+pk*0.22).toFixed(3)})`;
         vc.fillRect(x,VH/2-h/2,1,h);
       }
       vc.restore();
     }
-
-    // ── Beat grid ──
-    const bs=60/150,fb=Math.floor((tc-VIZ_WINDOW/2)/bs)*bs;
+    // Beat grid (150 BPM, aligned to song start = bmLeadIn)
+    const bs_=60/150,fb=Math.floor((tc-VIZ_WINDOW/2-bmLeadIn)/bs_)*bs_+bmLeadIn;
     vc.lineWidth=1;
-    for(let b=fb;b<tc+VIZ_WINDOW/2+bs;b+=bs){
-      const x=px+(b-tc)*pps;
-      vc.strokeStyle='rgba(196,168,130,.1)';
-      vc.beginPath();vc.moveTo(x,0);vc.lineTo(x,VH);vc.stroke();
+    for(let b=fb;b<tc+VIZ_WINDOW/2+bs_;b+=bs_){
+      const x=px+(b-tc)*pps;if(x<0||x>VW)continue;
+      vc.strokeStyle='rgba(196,168,130,.1)';vc.beginPath();vc.moveTo(x,0);vc.lineTo(x,VH);vc.stroke();
     }
-    for(let b=fb+bs/2;b<tc+VIZ_WINDOW/2+bs;b+=bs){
-      const x=px+(b-tc)*pps;
-      vc.strokeStyle='rgba(196,168,130,.04)';
-      vc.beginPath();vc.moveTo(x,0);vc.lineTo(x,VH);vc.stroke();
-    }
-
-    // ── Lane backgrounds ──
+    // Lane backgrounds
     const lanes=[VH*.78,VH*.18,VH*.58,VH*.38];
     lanes.forEach((ly,i)=>{vc.fillStyle=VIZ_COLS[i]+'0c';vc.fillRect(0,ly-14,VW,28);});
-
-    // ── Playhead ──
-    vc.strokeStyle='rgba(207,224,60,.14)';vc.lineWidth=10;
-    vc.beginPath();vc.moveTo(px,0);vc.lineTo(px,VH);vc.stroke();
-    vc.strokeStyle='rgba(207,224,60,.85)';vc.lineWidth=2;
-    vc.beginPath();vc.moveTo(px,0);vc.lineTo(px,VH);vc.stroke();
-
-    // ── Notes (offset applied: positive ms = notes shift left = arrive earlier) ──
+    // Playhead (bright green line at px)
+    vc.strokeStyle='rgba(207,224,60,.14)';vc.lineWidth=10;vc.beginPath();vc.moveTo(px,0);vc.lineTo(px,VH);vc.stroke();
+    vc.strokeStyle='rgba(207,224,60,.85)';vc.lineWidth=2;vc.beginPath();vc.moveTo(px,0);vc.lineTo(px,VH);vc.stroke();
+    // Notes (with offset applied)
     const offsetSec=userOffsetMs*.001;
-    for(const note of BEATMAP){
-      const nt=note.time-offsetSec,dx=nt-tc;
-      if(Math.abs(dx)>VIZ_WINDOW/2+.4)continue;
-      const x=px+dx*pps,col=VIZ_COLS[note.dir],ly=lanes[note.dir];
-      vc.save();
-      vc.shadowColor=col;vc.shadowBlur=10;
-      vc.fillStyle=col;vc.beginPath();vc.arc(x,ly,7,0,Math.PI*2);vc.fill();
-      vc.shadowBlur=0;
-      vc.font='bold 9px "DM Mono",monospace';vc.fillStyle='rgba(4,2,0,.9)';
-      vc.textAlign='center';vc.textBaseline='middle';
-      vc.fillText(VIZ_LBL[note.dir],x,ly);
-      vc.restore();
-    }
-
-    // ── Lane labels ──
-    lanes.forEach((ly,i)=>{
-      vc.font='bold 9px "DM Mono",monospace';
-      vc.fillStyle=VIZ_COLS[i]+'99';
-      vc.textAlign='left';vc.textBaseline='middle';
-      vc.fillText(VIZ_LBL[i],5,ly);
-    });
-
-    // ── Time display ──
-    vc.font='9px "DM Mono",monospace';vc.fillStyle='rgba(196,168,130,.5)';
-    vc.textAlign='left';vc.textBaseline='top';
-    vc.fillText(tc.toFixed(2)+'s',5,5);
+    for(const note of BEATMAP){const nt=note.time-offsetSec,dx=nt-tc;if(Math.abs(dx)>VIZ_WINDOW/2+.4)continue;const x=px+dx*pps,col=VIZ_COLS[note.dir],ly=lanes[note.dir];vc.save();vc.shadowColor=col;vc.shadowBlur=10;vc.fillStyle=col;vc.beginPath();vc.arc(x,ly,7,0,Math.PI*2);vc.fill();vc.shadowBlur=0;vc.font='bold 9px "DM Mono",monospace';vc.fillStyle='rgba(4,2,0,.9)';vc.textAlign='center';vc.textBaseline='middle';vc.fillText(VIZ_LBL[note.dir],x,ly);vc.restore();}
+    // Song-start marker (dashed line at beatmap clock = bmLeadIn)
+    const liX=px+(bmLeadIn-tc)*pps;
+    if(liX>=0&&liX<=VW){vc.strokeStyle='rgba(196,168,130,.3)';vc.lineWidth=1.5;vc.setLineDash([4,6]);vc.beginPath();vc.moveTo(liX,0);vc.lineTo(liX,VH);vc.stroke();vc.setLineDash([]);vc.font='8px "DM Mono",monospace';vc.fillStyle='rgba(196,168,130,.45)';vc.textAlign='center';vc.fillText('song start',liX,10);}
+    // Lane labels
+    lanes.forEach((ly,i)=>{vc.font='bold 9px "DM Mono",monospace';vc.fillStyle=VIZ_COLS[i]+'99';vc.textAlign='left';vc.textBaseline='middle';vc.fillText(VIZ_LBL[i],5,ly);});
+    vc.font='9px "DM Mono",monospace';vc.fillStyle='rgba(196,168,130,.5)';vc.textAlign='left';vc.textBaseline='top';vc.fillText(tc.toFixed(2)+'s',5,5);
   }
 
+  /* THE FIXED vizLoop
+     Two clean phases — no wallElapsed/audioDelay confusion.
+     Phase A (lead-in): pure wall clock, no AC dependency.
+     Phase B (playing): locked to audio clock, no drift. */
   function vizLoop(){
     vizAnimRaf=requestAnimationFrame(vizLoop);
     if(vizPlaying&&!vizDragging){
-      const now=performance.now();
-      const wallElapsed=(now-_vizPlayStartMs)*.001; // seconds since play pressed
-      const audioDelay=_vizClockAtPlay===0?bmLeadIn:0;
-
-      if(wallElapsed<audioDelay){
-        // Still in lead-in: advance clock by wall time, audio not started yet
-        vizClock=_vizClockAtPlay+wallElapsed*vizSpeed;
-      }else if(vizSrcNode&&audioCtx){
-        // Audio is playing: lock vizClock to actual audio position (no drift)
-        vizClock=vizAudioPos();
-      }else{
-        // Audio ended or not loaded: wall-clock fallback
-        if(vizLastMs!==null)vizClock+=((now-vizLastMs)*.001)*vizSpeed;
+      const nowSec=performance.now()*.001;
+      if(vizSrcNode&&audioCtx&&audioCtx.currentTime>=_vizACAnchor){
+        // Phase B: audio is playing → lock to audio clock
+        // filePos elapsed = (audioCtx.currentTime - _vizACAnchor) * speed
+        // beatmap clock = bmLeadIn + filePos_at_schedStart + elapsed
+        // filePos_at_schedStart = max(0, _vizClockAtPlay - bmLeadIn)
+        const fileOffset=Math.max(0,_vizClockAtPlay-bmLeadIn);
+        vizClock=bmLeadIn+fileOffset+(audioCtx.currentTime-_vizACAnchor)*vizSpeed;
+      } else {
+        // Phase A: lead-in or audio not loaded → pure wall clock, no jump
+        vizClock=_vizClockAtPlay+(nowSec-_vizWallAtPlay)*vizSpeed;
       }
-      vizLastMs=now;
-
-      if(audioBuffer&&vizClock>=audioBuffer.duration){
-        vizClock=audioBuffer.duration;vizSetPlaying(false);
-      }
+      // Clamp
+      const maxT=audioBuffer?audioBuffer.duration+bmLeadIn:Infinity;
+      if(vizClock>=maxT){vizClock=maxT;vizSetPlaying(false);}
       vizTimeLabel.textContent=vizClock.toFixed(2)+'s';
     }
     drawViz();
   }
 
-  btnOpenViz.addEventListener('click',async()=>{
-    initAudio();if(audioCtx.state==='suspended')await audioCtx.resume();if(!audioLoaded)await loadAudio();
-    vizClock=0;vizSetPlaying(false);vizLastMs=null;
-    vizTimeLabel.textContent='0.00s';
-    offsetViz.classList.add('active');
-    if(!vizAnimRaf)vizLoop();
-    else{drawViz();}
-  });
-  btnVizClose.addEventListener('click',()=>{
-    offsetViz.classList.remove('active');
-    vizSetPlaying(false);
-    if(vizAnimRaf){cancelAnimationFrame(vizAnimRaf);vizAnimRaf=null;}
-    syncOffset(vizOffsetInput.value);
-  });
+  btnOpenViz.addEventListener('click',async()=>{initAudio();if(audioCtx.state==='suspended')await audioCtx.resume();if(!audioLoaded)await loadAudio();vizClock=0;vizSetPlaying(false);vizTimeLabel.textContent='0.00s';offsetViz.classList.add('active');if(!vizAnimRaf)vizLoop();else drawViz();});
+  btnVizClose.addEventListener('click',()=>{offsetViz.classList.remove('active');vizSetPlaying(false);if(vizAnimRaf){cancelAnimationFrame(vizAnimRaf);vizAnimRaf=null;}syncOffset(vizOffsetInput.value);});
 
-  /* OPEN / CLOSE */
   function closeGame(){stopAudio();vizStopAudio();phase='idle';modal.classList.remove('active');if(raf){cancelAnimationFrame(raf);raf=null;lastT=null;}if(vizAnimRaf){cancelAnimationFrame(vizAnimRaf);vizAnimRaf=null;}vizSetPlaying(false);offsetViz.classList.remove('active');arrows=[];particles=[];feedback.textContent='';}
-  avatarBtn.addEventListener('click',async()=>{modal.classList.add('active');W=window.innerWidth;H=window.innerHeight;resizeCanvas();calcSizes();initAudio();if(!BEATMAP.length)await loadBeatmap();loadAudio();phase='idle';resetState();lastT=null;showMenu(false);if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);});
+  avatarBtn.addEventListener('click',async()=>{modal.classList.add('active');W=window.innerWidth;H=window.innerHeight;resizeCanvas();calcSizes();initAudio();loadBeatmap().then(()=>loadAudio());phase='idle';resetState();lastT=null;showMenu(false);if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);});
   closeBtn.addEventListener('click',closeGame);
   modal.addEventListener('click',e=>{if(e.target===modal)closeGame();});
   window.addEventListener('resize',()=>{if(modal.classList.contains('active')){W=window.innerWidth;H=window.innerHeight;calcSizes();}},{passive:true});
