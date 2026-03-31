@@ -932,230 +932,6 @@ a:hover{color:var(--red);text-decoration:none}
   100%{transform:scale(1)}
 }
 
-/* ═══ COOLBAR TOOLBAR ═══ */
-#coolbar{
-  display:none;
-  position:fixed;
-  top:0;left:0;right:0;
-  z-index:9990;
-  background:linear-gradient(180deg,#e8e8ff 0%,#b8b8ee 48%,#9898dd 49%,#c8c8ff 100%);
-  border-bottom:2px solid #4444aa;
-  box-shadow:0 3px 0 #6666cc, 0 4px 6px rgba(0,0,0,.3);
-  font-family:'VT323',monospace;
-  font-size:14px;
-  color:#000033;
-  user-select:none;
-}
-#coolbar-inner{
-  display:flex;
-  align-items:center;
-  gap:0;
-  padding:2px 4px;
-  flex-wrap:nowrap;
-  overflow:hidden;
-}
-.cb-logo{
-  font-size:16px;
-  font-weight:bold;
-  color:#000066;
-  padding:3px 8px;
-  border-right:1px solid #8888cc;
-  white-space:nowrap;
-  flex-shrink:0;
-}
-.cb-logo span{color:#cc0000}
-.cb-btn{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:2px 7px;
-  cursor:pointer;
-  border:1px solid transparent;
-  border-right:1px solid #aaaadd;
-  min-width:44px;
-  flex-shrink:0;
-}
-.cb-btn:hover{
-  background:linear-gradient(180deg,#fffff0,#ffffcc);
-  border-color:#8888cc;
-}
-.cb-btn:active{
-  background:#ddddff;
-  border-style:inset;
-}
-.cb-icon{font-size:18px;line-height:1}
-.cb-label{font-size:11px;color:#000066}
-.cb-sep{width:1px;background:#8888cc;margin:2px 3px;align-self:stretch;flex-shrink:0}
-.cb-search-wrap{
-  display:flex;
-  align-items:center;
-  background:#fff;
-  border:2px inset #8888cc;
-  padding:1px 4px;
-  gap:4px;
-  flex:1;
-  min-width:80px;
-  max-width:220px;
-}
-.cb-search{
-  border:none;outline:none;
-  font-family:'VT323',monospace;
-  font-size:14px;
-  color:#000033;
-  background:transparent;
-  width:100%;
-}
-.cb-search-go{
-  font-size:12px;
-  cursor:pointer;
-  color:#0000cc;
-  white-space:nowrap;
-}
-.cb-search-go:hover{color:#cc0000}
-.cb-weather{
-  display:flex;
-  align-items:center;
-  gap:4px;
-  padding:2px 8px;
-  border-left:1px solid #aaaadd;
-  flex-shrink:0;
-  white-space:nowrap;
-}
-.cb-close{
-  margin-left:auto;
-  padding:2px 8px;
-  cursor:pointer;
-  font-size:13px;
-  color:#660000;
-  border-left:1px solid #8888cc;
-  flex-shrink:0;
-}
-.cb-close:hover{background:#ffcccc;color:#cc0000}
-.cb-ticker{
-  font-size:12px;
-  color:#006600;
-  padding:0 8px;
-  border-left:1px solid #aaaadd;
-  flex-shrink:0;
-  white-space:nowrap;
-  overflow:hidden;
-  max-width:160px;
-}
-/* shift page content down when toolbar active */
-body.coolbar-on .top-banner{top:34px}
-body.coolbar-on{padding-top:34px}
-
-/* ═══ NETSCAPE BROWSER POPUP ═══ */
-.ns-browser{
-  background:#c0c0c0;
-  border:2px outset #e0e0e0;
-  width:100%;
-  max-width:560px;
-  font-family:'VT323',monospace;
-  font-size:14px;
-}
-.ns-titlebar{
-  background:linear-gradient(90deg,#000080,#1084d0);
-  color:#fff;
-  padding:3px 6px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-size:15px;
-}
-.ns-menubar{
-  display:flex;
-  gap:0;
-  background:#c0c0c0;
-  border-bottom:1px solid #808080;
-  font-size:13px;
-}
-.ns-menu{
-  padding:2px 8px;
-  cursor:pointer;
-}
-.ns-menu:hover{background:#000080;color:#fff}
-.ns-toolbar{
-  display:flex;
-  gap:4px;
-  padding:3px 4px;
-  background:#d4d0c8;
-  border-bottom:2px inset #808080;
-  align-items:center;
-}
-.ns-navbtn{
-  border:2px outset #d0d0d0;
-  background:#d4d0c8;
-  padding:3px 8px;
-  font-family:'VT323',monospace;
-  font-size:14px;
-  cursor:pointer;
-}
-.ns-navbtn:hover{background:#e8e4e0}
-.ns-navbtn:active{border-style:inset}
-.ns-navbtn:disabled{color:#888;cursor:default}
-.ns-url-bar{
-  flex:1;
-  display:flex;
-  gap:4px;
-  align-items:center;
-}
-.ns-url-label{font-size:13px}
-.ns-url-input{
-  flex:1;
-  border:2px inset #808080;
-  padding:2px 4px;
-  font-family:'VT323',monospace;
-  font-size:13px;
-  background:#fff;
-  outline:none;
-}
-.ns-content{
-  background:#fff;
-  min-height:160px;
-  padding:12px;
-  border:2px inset #808080;
-  font-size:15px;
-  line-height:1.5;
-}
-.ns-status{
-  background:#d4d0c8;
-  border-top:1px solid #808080;
-  padding:2px 8px;
-  font-size:12px;
-  color:#000;
-}
-/* ═══ EMAIL CLIENT ═══ */
-.mail-client{width:100%}
-.mail-header-row{display:flex;gap:6px;align-items:center;padding:3px 0;border-bottom:1px solid #bba16c}
-.mail-field-lbl{font-size:14px;color:#8b6914;min-width:54px}
-.mail-field-val{font-size:14px;flex:1}
-.mail-body-area{
-  background:#fffff8;
-  border:1px inset #bba16c;
-  padding:8px;
-  margin-top:6px;
-  min-height:80px;
-  font-size:15px;
-  line-height:1.5;
-  white-space:pre-wrap;
-}
-/* ═══ DIALUP SOUND ═══ */
-.dialup-vis{
-  display:flex;
-  gap:3px;
-  align-items:flex-end;
-  height:48px;
-  margin:10px 0;
-  justify-content:center;
-}
-.dialup-bar{
-  width:10px;
-  background:linear-gradient(180deg,#00ff88,#00aa44);
-  border:1px solid #006622;
-  transition:height .08s;
-}
-
 @media(max-width:1100px){
   .site-layout{
     padding-left:24px;
@@ -1180,27 +956,6 @@ body.coolbar-on{padding-top:34px}
 </style>
 </head>
 <body>
-
-<!-- ═══ COOLBAR 2.0 TOOLBAR ═══ -->
-<div id="coolbar">
-  <div id="coolbar-inner">
-    <div class="cb-logo">Cool<span>Bar</span> 2.0</div>
-    <div class="cb-btn" onclick="cbSearch()"><div class="cb-icon">🏠</div><div class="cb-label">Home</div></div>
-    <div class="cb-btn" onclick="cbPopup('mail')"><div class="cb-icon">📧</div><div class="cb-label">Mail</div></div>
-    <div class="cb-btn" onclick="cbPopup('weather')"><div class="cb-icon">🌦</div><div class="cb-label">Weather</div></div>
-    <div class="cb-btn" onclick="cbPopup('news')"><div class="cb-icon">📰</div><div class="cb-label">News</div></div>
-    <div class="cb-btn" onclick="cbPopup('games')"><div class="cb-icon">🎮</div><div class="cb-label">Games</div></div>
-    <div class="cb-btn" onclick="cbPopup('shop')"><div class="cb-icon">🛒</div><div class="cb-label">Shop!</div></div>
-    <div class="cb-sep"></div>
-    <div class="cb-search-wrap">
-      <input class="cb-search" id="cb-search-input" placeholder="CoolSearch™..." type="text" onkeydown="if(event.key==='Enter')cbSearch()">
-      <span class="cb-search-go" onclick="cbSearch()">Go!</span>
-    </div>
-    <div class="cb-sep"></div>
-    <div class="cb-ticker" id="cb-ticker">📈 DLFM +3.2% · ☀ 72°F · 🎵 Now: Numa Numa</div>
-    <div class="cb-close" onclick="uninstallCoolbar()" title="remove CoolBar">✕ remove</div>
-  </div>
-</div>
 
 <div class="kanji-watermark" style="top:15%;left:-2%;transform:rotate(-12deg)">勘冴</div>
 <div class="kanji-watermark" style="top:50%;right:-2%;transform:rotate(8deg);font-size:90px">悔しい</div>
@@ -1637,147 +1392,54 @@ function showAdPopup(title,message,source){
   const opts={variant:'info',headColor:'#8b3000',borderColor:'#fff0b8'};
   let pop=null;
   switch(source){
-    case 'best viewed in netscape': {
-      const pages={
-        'geocities.com/~drmy_art': '<h3 style="color:#cc0000;font-family:VT323,monospace">☆ drmy\'s Art Page ☆</h3><p>Best viewed in Netscape 4.0 at 800×600.</p><p>☕ welcome!! my gallery is under construction 🚧</p><marquee style="color:#ff00ff">✦ UNDER CONSTRUCTION ✦ PLEASE SIGN MY GUESTBOOK ✦</marquee><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width=88 height=31 style="border:1px solid #888;opacity:.4"> &nbsp; <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width=88 height=31 style="border:1px solid #888;opacity:.4"></p>',
-        'bonzification.net': '<h3 style="color:#aa00ff;font-family:VT323,monospace">🦊 BonziBUDDY Official Site</h3><p style="color:#660099">Your FREE internet companion is ready to install!</p><p>BonziBUDDY will:<br>• Read your emails aloud<br>• Tell jokes (3 total)<br>• Occupy 80% of your screen<br>• Become impossible to uninstall</p>',
-        'midi-cathedral.net': '<h3 style="color:#000080;font-family:VT323,monospace">♫ MIDI Cathedral ♫</h3><p>Your browser is playing: <b>Evanescence - My Immortal (MIDI version)</b></p><p>320 MIDI files available for FREE download!<br>Winamp skin included.</p><p style="color:#888;font-size:12px">This site optimized for Internet Explorer 5.5 with Java enabled.</p>',
-        'coolbar.net': '<h3 style="color:#000066;font-family:VT323,monospace">CoolBar 2.0 — Home of the Web\'s Best Toolbar</h3><p>CoolBar has detected your browser.<br>You should install CoolBar 2.0 for the best web experience.</p><p style="color:#cc0000">⚠ Warning: Your toolbar count is dangerously low.</p>',
-      };
-      const urls=Object.keys(pages);
-      let nsHistory=['geocities.com/~drmy_art']; let nsIdx=0;
-      pop=spawnRetroWindow('Netscape Navigator 4.0','',source,{...opts,width:'560px',centered:true,html:
-        '<div class="ns-browser">'+
-        '<div class="ns-titlebar"><span data-nstitle>Netscape Navigator</span><span>× □ −</span></div>'+
-        '<div class="ns-menubar"><span class="ns-menu">File</span><span class="ns-menu">Edit</span><span class="ns-menu">View</span><span class="ns-menu">Go</span><span class="ns-menu">Bookmarks</span><span class="ns-menu">Help</span></div>'+
-        '<div class="ns-toolbar">'+
-        '<button class="ns-navbtn" data-ns-back disabled>◀ Back</button>'+
-        '<button class="ns-navbtn" data-ns-fwd disabled>Fwd ▶</button>'+
-        '<button class="ns-navbtn" data-ns-reload>↺</button>'+
-        '<div class="ns-url-bar"><span class="ns-url-label">Location:</span><input class="ns-url-input" data-ns-url value="geocities.com/~drmy_art"></div>'+
-        '<button class="ns-navbtn" data-ns-go>Go</button>'+
-        '</div>'+
-        '<div class="ns-content" data-ns-content></div>'+
-        '<div class="ns-status" data-ns-status>Done</div>'+
-        '</div>'+popupSourceLine(source)
+    case 'best viewed in netscape':
+      pop=spawnRetroWindow(title,'',source,{...opts,width:'280px',html:
+        '<div>Choose the sacred resolution for this website:</div>'+
+        '<div class="popup-actions"><button class="popup-btn" data-res="640×480">640×480</button><button class="popup-btn" data-res="800×600">800×600</button><button class="popup-btn" data-res="1024×768">1024×768</button></div>'+
+        '<div class="popup-status" data-status>Netscape approves nothing yet.</div>'+popupSourceLine(source)
       });
-      const nsRender=()=>{
-        const url=nsHistory[nsIdx];
-        pop.querySelector('[data-ns-url]').value=url;
-        pop.querySelector('[data-nstitle]').textContent=(url.split('/')[0])+' - Netscape Navigator';
-        const content=pop.querySelector('[data-ns-content]');
-        content.innerHTML='<span style="color:#888">Loading...</span>';
-        pop.querySelector('[data-ns-status]').textContent='Connecting to '+url+'...';
-        setTimeout(()=>{
-          content.innerHTML=pages[url]||'<p style="color:#c00">404 Not Found. The page you requested is missing or broken.</p>';
-          pop.querySelector('[data-ns-status]').textContent='Done';
-          pop.querySelector('[data-ns-back]').disabled=nsIdx===0;
-          pop.querySelector('[data-ns-fwd]').disabled=nsIdx===nsHistory.length-1;
-        },400+Math.random()*600);
-      };
-      nsRender();
       pop.addEventListener('click',e=>{
-        if(e.target.closest('[data-ns-back]')&&nsIdx>0){nsIdx--;nsRender();}
-        if(e.target.closest('[data-ns-fwd]')&&nsIdx<nsHistory.length-1){nsIdx++;nsRender();}
-        if(e.target.closest('[data-ns-reload]')){playXpSound('menu',{volume:0.5});nsRender();}
-        if(e.target.closest('[data-ns-go]')){
-          const val=pop.querySelector('[data-ns-url]').value.trim().replace(/^https?:\/\//,'');
-          const dest=pages[val]?val:urls[Math.floor(Math.random()*urls.length)];
-          nsHistory=nsHistory.slice(0,nsIdx+1); nsHistory.push(dest); nsIdx++;
-          playXpSound('menu',{volume:0.5}); nsRender();
-        }
-      });
-      pop.querySelector('[data-ns-url]').addEventListener('keydown',e=>{
-        if(e.key==='Enter')pop.querySelector('[data-ns-go]').click();
+        const btn=e.target.closest('[data-res]');
+        if(!btn)return;
+        playXpSound('menu',{volume:0.55});
+        pop.querySelector('[data-status]').textContent=btn.dataset.res==='1024×768'?'Perfect. The webmaster nods solemnly.':'Close enough, but Netscape still looks disappointed.';
       });
       return;
-    }
     case 'free screensaver':
-    case 'anime openings zip': {
-      const isAnime = source==='anime openings zip';
-      const fileName = isAnime ? 'anime_openings_2004.zip' : 'dolphins_screensaver.exe';
-      const files = isAnime
-        ? ['Naruto_OP1.mid','InuYasha_OP.mid','DBZ_Cha-La_Head.mid','CowboyBebop_Tank.mid','README.txt','install.bat','bonus_wallpaper.bmp']
-        : ['dolphins.scr','readme.txt','uninstall.exe','dolphins_HD.bmp','screensaver_manager.exe','LICENSE_DO_NOT_READ.txt'];
-      pop=spawnRetroWindow(title,'',source,{...opts,width:'340px',html:
-        '<div style="font-size:15px">Downloading: <b>'+fileName+'</b></div>'+
-        '<div class="popup-meter" style="margin:8px 0"><div class="popup-meter-fill" data-fill></div></div>'+
-        '<div class="popup-status" data-status>Ready.</div>'+
-        '<div class="popup-actions"><button class="popup-btn" data-download>Download FREE</button></div>'+
-        '<div data-file-list style="display:none;margin-top:8px;border:2px inset #bcb4a4;background:#fff;padding:4px;font-size:13px;max-height:120px;overflow:auto"></div>'+
-        popupSourceLine(source)
+    case 'anime openings zip':
+      pop=spawnRetroWindow(title,'',source,{...opts,width:'300px',html:
+        '<div>'+message+'</div><div class="popup-meter"><div class="popup-meter-fill" data-fill></div></div>'+
+        '<div class="popup-actions"><button class="popup-btn" data-download>start download</button></div>'+
+        '<div class="popup-status" data-status>Awaiting click...</div>'+popupSourceLine(source)
       });
       pop.addEventListener('click',e=>{
         if(!e.target.closest('[data-download]'))return;
         playXpSound('start',{volume:0.65});
         const fill=pop.querySelector('[data-fill]');
         const status=pop.querySelector('[data-status]');
-        const btn=pop.querySelector('[data-download]');
-        btn.disabled=true;
         let pct=0;
         const timer=setInterval(()=>{
-          pct=Math.min(100,pct+6+Math.random()*12);
+          pct=Math.min(100,pct+12+Math.random()*24);
           fill.style.width=pct+'%';
-          const kbs=(12+Math.random()*28).toFixed(1);
-          status.textContent=pct<100?`Downloading... ${Math.round(pct)}% (${kbs} KB/s)`:'Extracting files...';
-          if(pct>=100){
-            clearInterval(timer);
-            playXpSound('chord',{volume:0.72});
-            status.textContent='Download complete! Contents:';
-            const list=pop.querySelector('[data-file-list]');
-            list.style.display='block';
-            list.innerHTML=files.map(f=>`<div>📄 ${f}</div>`).join('');
-            setTimeout(()=>{
-              status.textContent='⚠ dolphins_screensaver.exe has no preview. It is simply vibes.';
-            },1800);
-          }
-        },130);
+          status.textContent=pct>=100?'Download complete. File immediately vanished.':'Downloading... '+Math.round(pct)+'%';
+          if(pct>=100){clearInterval(timer);playXpSound('chord',{volume:0.72});}
+        },140);
       });
       return;
-    }
-    case 'internet companion': {
-      const bonziQuotes=[
-        {say:'HELLO FRIEND. Did you know I can read your emails?',action:'waves enthusiastically'},
-        {say:'Would you like me to search the web for you? I already did. It was unsafe.',action:'opens browser'},
-        {say:'I know 3 jokes. Here is joke 1: Why did the toolbar install itself? Because it loves you.',action:'laughs at own joke'},
-        {say:'I have added 14 bookmarks to your browser. You did not ask. You are welcome.',action:'bookmarks everything'},
-        {say:'Your screensaver was dolphins.exe. I replaced it with me. You are welcome.',action:'installs himself'},
-        {say:'I have told all your contacts about this website. It was a beautiful act of friendship.',action:'sends mass email'},
-      ];
+    case 'internet companion':
+      pop=spawnRetroWindow(title,'',source,{...opts,width:'270px',html:
+        '<div style="font-size:38px;text-align:center">🦊</div><div data-quote>Bonzi says: "hello best friend."</div>'+
+        '<div class="popup-actions"><button class="popup-btn" data-bonzi>next quote</button></div>'+popupSourceLine(source)
+      });
+      const bonziQuotes=['Bonzi says: "hello best friend."','Bonzi says: "do you like toolbars?"','Bonzi says: "I have opinions on midi files."','Bonzi says: "friendship level increased."'];
       let bIdx=0;
-      pop=spawnRetroWindow('BonziBUDDY™ — Your Internet Companion!','',source,{...opts,width:'320px',html:
-        '<div style="display:flex;gap:12px;align-items:flex-start">'+
-        '<div style="font-size:52px;flex-shrink:0" data-bonzi-emoji>🦊</div>'+
-        '<div>'+
-        '<div style="background:#330066;color:#ffccff;padding:6px 8px;font-size:15px;border:1px solid #aa00ff;min-height:60px" data-quote>'+bonziQuotes[0].say+'</div>'+
-        '<div style="font-size:13px;color:#8800cc;margin-top:4px;font-style:italic" data-action>* '+bonziQuotes[0].action+' *</div>'+
-        '</div></div>'+
-        '<div class="popup-meter" style="margin:8px 0"><div class="popup-meter-fill" data-fill style="width:100%;background:linear-gradient(90deg,#aa00ff,#ff88ff)"></div></div>'+
-        '<div class="popup-actions">'+
-        '<button class="popup-btn" data-bonzi-next>Next ▶</button>'+
-        '<button class="popup-btn" data-bonzi-feed>Feed cookie 🍪</button>'+
-        '</div>'+
-        '<div class="popup-status" data-status>Friendship level: Maximum.</div>'+
-        popupSourceLine(source)
-      });
-      const emojis=['🦊','🙊','🙈','😤','🤩','🫡'];
       pop.addEventListener('click',e=>{
-        if(e.target.closest('[data-bonzi-next]')){
-          bIdx=(bIdx+1)%bonziQuotes.length;
-          playXpSound('notify',{volume:0.6});
-          pop.querySelector('[data-quote]').textContent=bonziQuotes[bIdx].say;
-          pop.querySelector('[data-action]').textContent='* '+bonziQuotes[bIdx].action+' *';
-          pop.querySelector('[data-bonzi-emoji]').textContent=emojis[bIdx%emojis.length];
-        }
-        if(e.target.closest('[data-bonzi-feed]')){
-          playXpSound('ding',{volume:0.56});
-          pop.querySelector('[data-status]').textContent='Bonzi consumed the cookie. Friendship +1.';
-          pop.querySelector('[data-bonzi-emoji]').textContent='😋';
-          setTimeout(()=>pop.querySelector('[data-bonzi-emoji]').textContent=emojis[bIdx%emojis.length],800);
-        }
+        if(!e.target.closest('[data-bonzi]'))return;
+        playXpSound('notify',{volume:0.6});
+        bIdx=(bIdx+1)%bonziQuotes.length;
+        pop.querySelector('[data-quote]').textContent=bonziQuotes[bIdx];
       });
       return;
-    }
     case 'art sites ring':
       pop=spawnRetroWindow(title,'',source,{...opts,width:'280px',html:
         '<div>Click next until you find this site in the WebRing.</div><div class="popup-actions"><button class="popup-btn" data-ring="prev">prev</button><button class="popup-btn" data-ring="next">next</button></div><div class="popup-status" data-status>Current stop: dancinghamsterplanet.net</div>'+popupSourceLine(source)
@@ -1792,101 +1454,31 @@ function showAdPopup(title,message,source){
         pop.querySelector('[data-status]').textContent=ringStops[ringIdx]==='drmy.art'?'You found it: drmy.art!':'Current stop: '+ringStops[ringIdx];
       });
       return;
-    case 'dating service': {
-      const profiles=[
-        {name:'glitter_girl99',age:17,loc:'AIM',emoji:'💖',asl:'17/f/aim',bio:'luv linkin park + rurouni kenshin. my heart is a myspace page with 200 sparkly gifs. i check my email every 8 minutes.',interests:['AMVs','glitter graphics','away messages'],compat:98},
-        {name:'midi_knight',age:19,loc:'IRC #anime',emoji:'⚔️',asl:'19/m/irc',bio:'i have 340 MIDI files and zero regrets. currently in 7 webring communities. will fight u in melee.',interests:['MIDI covers','forum ranking','Melee'],compat:74},
-        {name:'cool_cat_56k',age:16,loc:'Dial-up Central',emoji:'🐱',asl:'16/f/56k',bio:'buffering. still buffering. my modem is my personality. my away message is a green day lyric from 2003.',interests:['Dial-up sounds','AIM profiles','Sims 1'],compat:83},
-        {name:'xX_shadow_Xx',age:15,loc:'DeviantArt',emoji:'🖤',asl:'15/m/deviantart',bio:'ur not gonna understand my art. i draw OCs. all named after emotions. my fav color is the void.',interests:['OC lore','dramatic away msgs','trench coats'],compat:42},
-      ];
-      let pIdx=0;
-      const renderProfile=()=>{
-        const p=profiles[pIdx];
-        pop.querySelector('[data-pname]').textContent=p.name+' '+p.emoji;
-        pop.querySelector('[data-pasl]').textContent='a/s/l: '+p.asl;
-        pop.querySelector('[data-pbio]').textContent=p.bio;
-        pop.querySelector('[data-pint]').textContent='interests: '+p.interests.join(', ');
-        pop.querySelector('[data-pcompat]').textContent='💘 compatibility: '+p.compat+'%';
-        pop.querySelector('[data-pcount]').textContent='profile '+(pIdx+1)+' of '+profiles.length;
-        pop.querySelector('[data-status]').textContent='Viewing profile...';
-      };
-      pop=spawnRetroWindow('HotSingles 2004 — Find Love on the Internet!','',source,{...opts,width:'360px',html:
-        '<div style="border:2px outset #ff66aa;padding:8px;background:linear-gradient(180deg,#fff0f8,#ffe0f0)">'+
-        '<div style="font-size:22px;color:#cc0066" data-pname></div>'+
-        '<div style="font-size:14px;color:#880044;margin:2px 0" data-pasl></div>'+
-        '<div style="font-size:15px;margin:6px 0;color:#440022;border-left:3px solid #ff66aa;padding-left:6px" data-pbio></div>'+
-        '<div style="font-size:13px;color:#882244" data-pint></div>'+
-        '<div style="font-size:16px;margin-top:6px;color:#cc0044" class="ad-blink2" data-pcompat></div>'+
-        '</div>'+
-        '<div style="font-size:13px;color:#888;margin:4px 0" data-pcount></div>'+
-        '<div class="popup-actions">'+
-        '<button class="popup-btn" data-prev>◀ Prev</button>'+
-        '<button class="popup-btn" data-wink>😉 Wink</button>'+
-        '<button class="popup-btn" data-msg>💌 Message</button>'+
-        '<button class="popup-btn" data-next>Next ▶</button>'+
-        '</div>'+
-        '<div class="popup-status" data-status>Choose wisely.</div>'+
-        popupSourceLine(source)
+    case 'dating service':
+      pop=spawnRetroWindow(title,'',source,{...opts,width:'310px',html:
+        '<div>Choose a profile to see your compatibility.</div><div class="popup-grid"><button class="popup-btn" data-date="1">glitter_girl99</button><button class="popup-btn" data-date="2">midi_knight</button><button class="popup-btn" data-date="3">cool_cat_56k</button></div><div class="popup-status" data-status>No destiny chosen yet.</div>'+popupSourceLine(source)
       });
-      renderProfile();
       pop.addEventListener('click',e=>{
-        if(e.target.closest('[data-prev]')){pIdx=(pIdx-1+profiles.length)%profiles.length;renderProfile();playXpSound('menu',{volume:0.5});}
-        if(e.target.closest('[data-next]')){pIdx=(pIdx+1)%profiles.length;renderProfile();playXpSound('menu',{volume:0.5});}
-        if(e.target.closest('[data-wink]')){playXpSound('notify',{volume:0.6});pop.querySelector('[data-status]').textContent='Wink sent to '+profiles[pIdx].name+'! They may be away.';}
-        if(e.target.closest('[data-msg]')){playXpSound('ringin',{volume:0.6});pop.querySelector('[data-status]').textContent=profiles[pIdx].name+': "heyyy!! a/s/l? 😊"';}
+        const btn=e.target.closest('[data-date]');
+        if(!btn)return;
+        playXpSound('ding',{volume:0.55});
+        const lines={1:'98% match. Shared interests: blinkies and dramatic away messages.',2:'74% match. They own seven capes and one forum rank.',3:'83% match. They bring their own dial-up sounds.'};
+        pop.querySelector('[data-status]').textContent=lines[btn.dataset.date];
       });
       return;
-    }
-    case 'instant winner': {
-      const vals=['7','★','☕','✦','$','🎰','💎'];
-      let spins=0; let wins=0;
-      pop=spawnRetroWindow('🎰 MEGA JACKPOT — You Are PRE-SELECTED!','',source,{...opts,width:'320px',html:
-        '<div style="text-align:center;font-size:15px;color:#005500;margin-bottom:6px">CONGRATULATIONS!! You have been pre-selected.</div>'+
-        '<div class="popup-reels" style="margin:10px 0">'+
-        '<div class="popup-reel" data-r1 style="font-size:36px;padding:10px 0">7</div>'+
-        '<div class="popup-reel" data-r2 style="font-size:36px;padding:10px 0">★</div>'+
-        '<div class="popup-reel" data-r3 style="font-size:36px;padding:10px 0">☕</div>'+
-        '</div>'+
-        '<div style="display:flex;gap:6px;justify-content:center;font-size:13px;color:#888;margin-bottom:6px">'+
-        '<span>Spins: <b data-spins>0</b></span> · <span>Wins: <b data-wins>0</b></span>'+
-        '</div>'+
-        '<div class="popup-actions"><button class="popup-btn" data-spin style="width:100%;font-size:18px">🎰 SPIN TO WIN</button></div>'+
-        '<div class="popup-status" data-status>Your destiny awaits. Probably.</div>'+
-        '<div data-prize style="display:none;margin-top:8px;background:#fff8dc;border:2px solid #ffd700;padding:8px;font-size:15px;text-align:center"></div>'+
-        popupSourceLine(source)
+    case 'instant winner':
+      pop=spawnRetroWindow(title,'',source,{...opts,width:'300px',html:
+        '<div>Spin for the big prize.</div><div class="popup-reels"><div class="popup-reel" data-r1>7</div><div class="popup-reel" data-r2>★</div><div class="popup-reel" data-r3>?</div></div><div class="popup-actions"><button class="popup-btn" data-spin>spin</button></div><div class="popup-status" data-status>Jackpot energy building...</div>'+popupSourceLine(source)
       });
-      const prizes=['A commemorative GIF badge.','A free dial-up minute.','One forum rank upgrade.','An invisible trophy.','A promise of future prizes.','This spinning slot machine, to keep.'];
       pop.addEventListener('click',e=>{
         if(!e.target.closest('[data-spin]'))return;
         playXpSound('ringin',{volume:0.65});
-        spins++;
-        pop.querySelector('[data-spins]').textContent=spins;
-        const reels=[pop.querySelector('[data-r1]'),pop.querySelector('[data-r2]'),pop.querySelector('[data-r3]')];
-        let ticks=0;
-        const spin=setInterval(()=>{
-          reels.forEach(r=>r.textContent=vals[Math.floor(Math.random()*vals.length)]);
-          ticks++;
-          if(ticks>14){
-            clearInterval(spin);
-            const picks=reels.map(r=>vals[Math.floor(Math.random()*vals.length)]);
-            reels.forEach((r,i)=>r.textContent=picks[i]);
-            const isWin=picks[0]===picks[1]&&picks[1]===picks[2];
-            if(isWin){
-              wins++;
-              pop.querySelector('[data-wins]').textContent=wins;
-              playXpSound('tada',{volume:0.78});
-              pop.querySelector('[data-status]').textContent='JACKPOT!! 🎉🎉🎉';
-              const prizeEl=pop.querySelector('[data-prize]');
-              prizeEl.style.display='block';
-              prizeEl.innerHTML='🏆 Prize: '+prizes[Math.floor(Math.random()*prizes.length)];
-            }else{
-              pop.querySelector('[data-status]').textContent='So close! Try again. Prize total: $0.00.';
-            }
-          }
-        },60);
+        const vals=['7','★','☕','✦','$'];
+        const picks=[vals[Math.random()*vals.length|0],vals[Math.random()*vals.length|0],vals[Math.random()*vals.length|0]];
+        ['r1','r2','r3'].forEach((k,i)=>pop.querySelector('[data-'+k+']').textContent=picks[i]);
+        pop.querySelector('[data-status]').textContent=(picks[0]===picks[1]&&picks[1]===picks[2])?'JACKPOT. Prize delivered in imagination only.':'So close. Please keep clicking forever.';
       });
       return;
-    }
     case 'chat room':
       pop=spawnRetroWindow(title,'',source,{...opts,width:'310px',html:
         '<div class="popup-list" data-chat><div class="popup-mail">sparkle_angel: omg hi</div><div class="popup-mail">pixel_fox: a/s/l???</div></div><div class="popup-actions"><button class="popup-btn" data-chatbtn>send hi</button></div><div class="popup-note" data-note>Room velocity: manageable.</div>'+popupSourceLine(source)
@@ -1907,207 +1499,34 @@ function showAdPopup(title,message,source){
       });
       return;
     case 'toolbar installer':
-      pop=spawnRetroWindow('CoolBar 2.0 Setup','',source,{...opts,width:'340px',html:
-        '<div style="font-size:18px">⚠ CoolBar 2.0 Setup Wizard</div>'+
-        '<div style="margin:6px 0;font-size:15px">CoolBar 2.0 will install the following:<br>'+
-        '• CoolBar toolbar (all browsers)<br>'+
-        '• CoolSearch™ as default search<br>'+
-        '• 14 shopping buttons<br>'+
-        '• Daily horoscope popups<br>'+
-        '• Weather bug in taskbar<br>'+
-        '<span style="color:#aa0000">• Change homepage to coolbar.net</span></div>'+
-        '<div class="popup-meter"><div class="popup-meter-fill" data-fill></div></div>'+
-        '<div class="popup-actions">'+
-        '<button class="popup-btn" data-run>I Agree →</button>'+
-        '<button class="popup-btn" data-decline>Decline</button>'+
-        '</div>'+
-        '<div class="popup-status" data-status>Press "I Agree" to continue setup.</div>'+
-        popupSourceLine(source)
+    case 'hosting signup':
+    case 'dial-up booster':
+      pop=spawnRetroWindow(title,'',source,{...opts,width:'300px',html:
+        '<div>'+message+'</div><div class="popup-meter"><div class="popup-meter-fill" data-fill></div></div><div class="popup-actions"><button class="popup-btn" data-run>run it</button></div><div class="popup-status" data-status>Nothing has happened yet.</div>'+popupSourceLine(source)
       });
       pop.addEventListener('click',e=>{
-        if(e.target.closest('[data-decline]')){
-          playXpSound('blocked',{volume:0.65});
-          const status=pop.querySelector('[data-status]');
-          status.textContent='Decline ignored. Setup continuing anyway.';
-          setTimeout(()=>pop.querySelector('[data-run]').click(),900);
-          return;
-        }
         if(!e.target.closest('[data-run]'))return;
-        const btn=pop.querySelector('[data-run]');
-        const declineBtn=pop.querySelector('[data-decline]');
-        btn.disabled=true; if(declineBtn)declineBtn.disabled=true;
         playXpSound('start',{volume:0.65});
-        const fill=pop.querySelector('[data-fill]');
-        const status=pop.querySelector('[data-status]');
-        const steps=['Extracting files...','Registering DLLs...','Setting homepage...','Installing toolbar...','Configuring CoolSearch™...','Adding weather bug...','Finalizing...'];
-        let pct=0; let stepI=0;
-        const timer=setInterval(()=>{
-          pct=Math.min(100,pct+8+Math.random()*14);
-          fill.style.width=pct+'%';
-          status.textContent=steps[Math.floor(pct/100*steps.length)]||'Finalizing...';
-          if(pct>=100){
-            clearInterval(timer);
-            status.textContent='✓ CoolBar 2.0 installed! Restarting browser...';
-            playXpSound('chimes',{volume:0.72});
-            setTimeout(()=>{
-              pop.remove();
-              installCoolbar();
-            },1200);
-          }
-        },110);
+        const fill=pop.querySelector('[data-fill]'); const status=pop.querySelector('[data-status]');
+        let pct=0; const timer=setInterval(()=>{pct=Math.min(100,pct+10+Math.random()*18); fill.style.width=pct+'%'; status.textContent=pct>=100?'Finished. Browser heavier than before.':'Installing... '+Math.round(pct)+'%'; if(pct>=100){clearInterval(timer);playXpSound('chimes',{volume:0.72});}},120);
       });
       return;
-    case 'dial-up booster': {
-      const phases=['Dialing...','Handshaking...','Negotiating protocols...','Receiving carrier tone...','Training modem...','Authenticating...','Connected at 56,600 bps'];
-      let dialPhase=-1; let dialTimer=null; let barTimer=null;
-      pop=spawnRetroWindow('56K BOOSTER PRO — Double Your Speed!','',source,{...opts,width:'340px',html:
-        '<div style="font-size:15px;text-align:center;margin-bottom:4px">Modem Signal Visualizer™</div>'+
-        '<div class="dialup-vis" id="dialup-vis">'+
-        Array.from({length:16},(_,i)=>`<div class="dialup-bar" id="db-${i}" style="height:4px"></div>`).join('')+
-        '</div>'+
-        '<div class="popup-meter" style="margin:6px 0"><div class="popup-meter-fill" data-fill></div></div>'+
-        '<div class="popup-status" data-status style="text-align:center">Modem idle.</div>'+
-        '<div class="popup-actions">'+
-        '<button class="popup-btn" data-dial>📞 Connect</button>'+
-        '<button class="popup-btn" data-hangup disabled>📵 Hang Up</button>'+
-        '</div>'+
-        popupSourceLine(source)
+    case 'milestone visitor':
+      pop=spawnRetroWindow(title,'',source,{...opts,width:'280px',html:
+        '<div data-count style="font-size:28px;color:#cc0000;text-align:center">1,000,000</div><div>Click claim before someone else steals your glory.</div><div class="popup-actions"><button class="popup-btn" data-claim>claim prize</button></div><div class="popup-status" data-status>Prize unclaimed.</div>'+popupSourceLine(source)
       });
-      const startBars=()=>{
-        barTimer=setInterval(()=>{
-          for(let i=0;i<16;i++){
-            const bar=document.getElementById('db-'+i);
-            if(bar){
-              const h=dialPhase>=0?(4+Math.random()*40)+'px':'4px';
-              bar.style.height=h;
-            }
-          }
-        },80);
-      };
-      pop.addEventListener('click',e=>{
-        if(e.target.closest('[data-dial]')&&dialPhase<0){
-          playXpSound('ringin',{volume:0.5});
-          pop.querySelector('[data-dial]').disabled=true;
-          pop.querySelector('[data-hangup]').disabled=false;
-          dialPhase=0;
-          startBars();
-          const fill=pop.querySelector('[data-fill]');
-          const status=pop.querySelector('[data-status]');
-          dialTimer=setInterval(()=>{
-            dialPhase++;
-            if(dialPhase<phases.length){
-              fill.style.width=(dialPhase/phases.length*100)+'%';
-              status.textContent=phases[dialPhase-1];
-              playXpSound(dialPhase%2===0?'menu':'notify',{volume:0.3});
-            } else {
-              clearInterval(dialTimer);
-              fill.style.width='100%';
-              status.textContent='✓ Connected at 56,600 bps (spiritually). BOOST ACTIVE.';
-              playXpSound('chord',{volume:0.72});
-              pop.querySelector('[data-dial]').disabled=false;
-            }
-          },700);
-        }
-        if(e.target.closest('[data-hangup]')){
-          clearInterval(dialTimer); clearInterval(barTimer);
-          dialPhase=-1;
-          for(let i=0;i<16;i++){const b=document.getElementById('db-'+i);if(b)b.style.height='4px';}
-          pop.querySelector('[data-fill]').style.width='0';
-          pop.querySelector('[data-status]').textContent='Connection dropped. Modem sighs.';
-          pop.querySelector('[data-dial]').disabled=false;
-          pop.querySelector('[data-hangup]').disabled=true;
-          playXpSound('ringout',{volume:0.6});
-        }
-      });
+      pop.addEventListener('click',e=>{ if(e.target.closest('[data-claim]')){ playXpSound('tada',{volume:0.78}); pop.querySelector('[data-status]').textContent='Prize claimed. It was a commemorative blinkie.'; }});
       return;
-    }
-    case 'milestone visitor': {
-      let claimed=false;
-      pop=spawnRetroWindow('🎉 Internet Explorer — Visitor Prize Notification','',source,{
-        ...opts,width:'340px',
-        headColor:'#000080',borderColor:'#c0c0c0',
-        html:
-        '<div style="display:flex;gap:10px;align-items:flex-start">'+
-        '<div style="font-size:36px;flex-shrink:0">🏆</div>'+
-        '<div>'+
-        '<div style="font-size:22px;color:#cc0000" class="ad-blink">Congratulations!!</div>'+
-        '<div style="font-size:15px;margin:4px 0">You are the <b style="color:#cc0000;font-size:20px">1,000,000th</b> visitor to this website!</div>'+
-        '<div style="font-size:14px;color:#555">Prize: 1× commemorative animated GIF + 1× forum badge</div>'+
-        '</div></div>'+
-        '<div style="margin:10px 0;border:2px inset #808080;padding:8px;background:#f8f8f8;font-size:14px">'+
-        'To claim your prize, please confirm:<br>'+
-        '<div class="popup-actions" style="margin-top:6px">'+
-        '<button class="popup-btn" data-confirm>✓ Claim Prize</button>'+
-        '<button class="popup-btn" data-later>Later</button>'+
-        '</div></div>'+
-        '<div class="popup-status" data-status>Prize unclaimed. Others are waiting.</div>'+
-        '<div data-confirm-form style="display:none;margin-top:6px;font-size:13px">'+
-        'Enter your email to receive prize:<br>'+
-        '<input style="border:2px inset #808080;padding:3px 6px;font-family:VT323,monospace;font-size:14px;width:100%;margin-top:4px" placeholder="your_email@hotmail.com" data-email>'+
-        '<div class="popup-actions" style="margin-top:6px"><button class="popup-btn" data-submit>Send!</button></div>'+
-        '</div>'+
-        popupSourceLine(source)
+    case 'cursor pack':
+      pop=spawnRetroWindow(title,'',source,{...opts,width:'290px',html:
+        '<div>Find the cursed cursor.</div><div class="popup-grid"><button class="popup-btn" data-cur="sparkles">✨</button><button class="popup-btn" data-cur="sword">⚔</button><button class="popup-btn" data-cur="banana">🍌</button></div><div class="popup-status" data-status>Choose wisely.</div>'+popupSourceLine(source)
       });
       pop.addEventListener('click',e=>{
-        if(e.target.closest('[data-confirm]')&&!claimed){
-          playXpSound('ding',{volume:0.6});
-          pop.querySelector('[data-confirm-form]').style.display='block';
-          pop.querySelector('[data-status]').textContent='Almost there! Enter your email.';
-        }
-        if(e.target.closest('[data-later]')){
-          playXpSound('blocked',{volume:0.6});
-          pop.querySelector('[data-status]').textContent='Prize transferred to the next visitor. Tragic.';
-        }
-        if(e.target.closest('[data-submit]')){
-          const email=pop.querySelector('[data-email]').value||'(blank)';
-          claimed=true;
-          playXpSound('tada',{volume:0.78});
-          pop.querySelector('[data-confirm-form]').innerHTML='<div style="color:#006600;font-size:15px">✓ Prize dispatched to '+email+'!<br>Estimated delivery: 3–5 business dreams.</div>';
-          pop.querySelector('[data-status]').textContent='Claim complete. GIF is in the mail.';
-        }
+        const btn=e.target.closest('[data-cur]'); if(!btn)return;
+        playXpSound(btn.dataset.cur==='banana'?'exclamation':'menu',{volume:0.58});
+        pop.querySelector('[data-status]').textContent=btn.dataset.cur==='banana'?'Correct. The cursed banana cursor has been installed.':'Pretty good, but not cursed enough.';
       });
       return;
-    }
-    case 'cursor pack': {
-      const cursors={
-        '✨ sparkles':{emoji:'✨',css:'crosshair',label:'Sparkle Cursor™'},
-        '⚔️ sword':{emoji:'⚔️',css:'cell',label:'Warrior Cursor™'},
-        '🍌 banana':{emoji:'🍌',css:'progress',label:'Cursed Banana™'},
-        '🐱 cat':{emoji:'🐱',css:'pointer',label:'Neko Cursor™'},
-        '🔍 magnify':{emoji:'🔍',css:'zoom-in',label:'Detective Cursor™'},
-        '🌀 spin':{emoji:'🌀',css:'wait',label:'Loading Forever™'},
-      };
-      const keys=Object.keys(cursors);
-      let activeCursor=null;
-      pop=spawnRetroWindow('✨ FREE Cursor Heaven — 200+ designs!!','',source,{...opts,width:'340px',html:
-        '<div style="font-size:15px;margin-bottom:8px">Click to preview cursors on this page!</div>'+
-        '<div class="popup-grid" style="grid-template-columns:repeat(3,1fr);gap:6px">'+
-        keys.map(k=>`<button class="popup-btn" data-cur="${k}" style="font-size:18px;padding:8px 4px">${cursors[k].emoji}<br><span style="font-size:11px">${k.split(' ')[1]}</span></button>`).join('')+
-        '</div>'+
-        '<div class="popup-actions" style="margin-top:8px"><button class="popup-btn" data-reset-cur>↩ Reset Cursor</button></div>'+
-        '<div class="popup-status" data-status>Move your mouse around the page!</div>'+
-        popupSourceLine(source)
-      });
-      pop.addEventListener('click',e=>{
-        const btn=e.target.closest('[data-cur]');
-        if(btn){
-          const c=cursors[btn.dataset.cur];
-          playXpSound(btn.dataset.cur.includes('banana')?'exclamation':'menu',{volume:0.58});
-          document.body.style.cursor=c.css;
-          activeCursor=c;
-          pop.querySelector('[data-status]').textContent=c.label+' installed! Move mouse to feel it.';
-        }
-        if(e.target.closest('[data-reset-cur]')){
-          document.body.style.cursor='';
-          playXpSound('blocked',{volume:0.5});
-          pop.querySelector('[data-status]').textContent='Cursor reset. You chose boring.';
-        }
-      });
-      // restore cursor on close
-      const origClose=pop.querySelector('.virus-popup-close');
-      origClose.addEventListener('click',()=>{ document.body.style.cursor=''; });
-      return;
-    }
     case 'java chat room':
       pop=spawnRetroWindow(title,'',source,{...opts,width:'280px',html:
         '<div>Applet status: waiting for plugin.</div><div class="popup-actions"><button class="popup-btn" data-java>load applet</button></div><div class="popup-status" data-status>Plugin missing, hope present.</div>'+popupSourceLine(source)
@@ -2194,101 +1613,6 @@ function showAdPopup(title,message,source){
     pop=spawnRetroWindow(title,'',source,{...opts,width:'300px',html:'<div>Preview a ringtone.</div><div class="popup-actions"><button class="popup-btn" data-tone="620">anime</button><button class="popup-btn" data-tone="480">flip</button><button class="popup-btn" data-tone="700">sparkle</button></div><div class="popup-status" data-status>No ringtone previewing.</div>'+popupSourceLine(source)});
     pop.addEventListener('click',e=>{ const btn=e.target.closest('[data-tone]'); if(btn){ playXpSound(btn.dataset.tone==='620'?'ringin':btn.dataset.tone==='480'?'ringout':'notify',{volume:0.66}); pop.querySelector('[data-status]').textContent='Previewing '+btn.textContent+' tone.'; }});
   }
-}
-
-/* ═══ COOLBAR 2.0 FUNCTIONS ═══ */
-function installCoolbar(){
-  const bar=document.getElementById('coolbar');
-  if(!bar)return;
-  bar.style.display='block';
-  document.body.classList.add('coolbar-on');
-  playXpSound('start',{volume:0.7});
-  // animated ticker
-  const tickers=[
-    '📈 DLFM +3.2% · ☀ 72°F · 🎵 Now: Numa Numa',
-    '🔥 HOT: Linkin Park shrine updated!! · 💌 3 new messages',
-    '⚠ Your PC may contain viruses · 🎮 Download RealPlayer 9',
-    '🌟 CoolBar users get 10% more internet · 📦 New MIDI pack available',
-    '☕ drmy is online · 🎰 You may have WON · 📼 New screensaver available',
-  ];
-  let tIdx=0;
-  const tickerEl=document.getElementById('cb-ticker');
-  setInterval(()=>{ tIdx=(tIdx+1)%tickers.length; if(tickerEl)tickerEl.textContent=tickers[tIdx]; },3500);
-  // show install confirmation popup
-  spawnRetroWindow('CoolBar 2.0 — Installation Complete!','',null,{
-    variant:'info',headColor:'#005522',borderColor:'#b8ffd0',width:'320px',
-    html:'<div style="font-size:20px">✓ CoolBar 2.0 installed!</div>'+
-    '<div style="font-size:15px;margin-top:6px">CoolBar has been added to your browser.<br>'+
-    'Your homepage is now coolbar.net.<br>'+
-    'CoolSearch™ is your new default search.<br>'+
-    '<span style="color:#888">You did not ask for any of this.</span></div>'+
-    '<div class="popup-actions" style="margin-top:8px"><button class="popup-btn" onclick="this.closest(\'.virus-popup\').remove()">OK</button></div>'
-  });
-}
-function uninstallCoolbar(){
-  const bar=document.getElementById('coolbar');
-  if(!bar)return;
-  playXpSound('blocked',{volume:0.6});
-  const pop=spawnRetroWindow('Remove CoolBar 2.0','',null,{
-    variant:'info',headColor:'#7a0000',borderColor:'#ffd0d0',width:'320px',
-    html:'<div style="font-size:17px">Are you sure you want to remove CoolBar 2.0?</div>'+
-    '<div style="font-size:14px;margin:6px 0;color:#888">CoolBar enhances your browsing experience with helpful toolbars, alerts, weather, and more!</div>'+
-    '<div class="popup-actions">'+
-    '<button class="popup-btn" data-yes-remove>Yes, Remove</button>'+
-    '<button class="popup-btn" data-no-keep>Keep CoolBar ♥</button>'+
-    '</div><div class="popup-status" data-status>Think carefully.</div>'
-  });
-  pop.addEventListener('click',e=>{
-    if(e.target.closest('[data-yes-remove]')){
-      playXpSound('recycle',{volume:0.65});
-      bar.style.display='none';
-      document.body.classList.remove('coolbar-on');
-      pop.querySelector('[data-status]').textContent='CoolBar removed. It will be missed.';
-      setTimeout(()=>pop.remove(),1400);
-    }
-    if(e.target.closest('[data-no-keep]')){
-      playXpSound('chimes',{volume:0.6});
-      pop.remove();
-    }
-  });
-}
-function cbSearch(){
-  const q=document.getElementById('cb-search-input')?.value||'coolbar';
-  playXpSound('menu',{volume:0.5});
-  spawnRetroWindow('CoolSearch™ Results for: "'+q+'"','',null,{
-    variant:'info',headColor:'#000080',borderColor:'#aaccff',width:'380px',
-    html:'<div style="font-size:15px;color:#0000cc;text-decoration:underline;margin-bottom:6px">CoolSearch™ — Powered by CoolBar 2.0</div>'+
-    '<div style="border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:8px">'+
-    '<div style="font-size:16px;color:#0000cc">📄 '+q+'.com — Official Site</div>'+
-    '<div style="font-size:13px;color:#008000">http://www.'+q+'.com</div>'+
-    '<div style="font-size:14px;color:#333">The official home of '+q+'. Best viewed in Netscape Navigator 4.0 at 800×600.</div>'+
-    '</div>'+
-    '<div style="border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:8px">'+
-    '<div style="font-size:16px;color:#0000cc">📄 '+q+' fan shrine — Geocities</div>'+
-    '<div style="font-size:13px;color:#008000">http://geocities.com/~'+q+'_fan</div>'+
-    '<div style="font-size:14px;color:#333">A fan shrine dedicated to '+q+'. Includes MIDI, blinkies, and a guestbook with 3 entries.</div>'+
-    '</div>'+
-    '<div>'+
-    '<div style="font-size:16px;color:#0000cc">📄 BUY '+q.toUpperCase()+' CHEAP!! — eBay</div>'+
-    '<div style="font-size:13px;color:#008000">http://www.ebay.com/search?q='+q+'</div>'+
-    '<div style="font-size:14px;color:#333">Hot deals on '+q+'. Shipping from HotDeals99. Bid ends tonight!</div>'+
-    '</div>'+
-    '<div style="margin-top:8px;font-size:13px;color:#888">Results 1–3 of 1,200,000 · Sponsored by CoolBar 2.0</div>'
-  });
-}
-function cbPopup(type){
-  playXpSound('notify',{volume:0.5});
-  const content={
-    mail:'<div style="font-size:16px;color:#004f9e">📧 CoolMail Inbox</div><div class="popup-list" style="margin-top:6px"><div class="popup-mail">From: info@coolbar.net — "Thanks for installing CoolBar!"</div><div class="popup-mail">From: win_notification@prizes.biz — "You have won!!"</div><div class="popup-mail">From: no-reply@toolbars4u.com — "5 new toolbars for you"</div><div class="popup-mail">From: glitter_girl99@aim.com — "heyyy!! a/s/l?"</div></div><div class="popup-actions" style="margin-top:6px"><button class="popup-btn" onclick="this.closest(\'.virus-popup\').remove()">Close</button></div>',
-    weather:'<div style="font-size:18px">☀ Current Weather</div><div style="margin:8px 0;font-size:15px">Your Area: <b>72°F / Sunny with a chance of toolbars</b><br>Tonight: 64°F, mostly buffering<br>Weekend: Scattered viruses, 40% chance of MIDI<br><br><span style="font-size:13px;color:#888">Powered by WeatherBug™ via CoolBar 2.0</span></div><div class="popup-actions"><button class="popup-btn" onclick="this.closest(\'.virus-popup\').remove()">OK</button></div>',
-    news:'<div style="font-size:16px;margin-bottom:6px">📰 CoolBar News Headlines</div><div style="font-size:15px;line-height:1.7"><b>LOCAL:</b> Man upgrades to 56K modem, calls it "blazing fast"<br><b>TECH:</b> New screensaver features 3D dolphins AND pipes<br><b>INTERNET:</b> WebRing expands to 14,000 sites<br><b>FLASH:</b> Hamster dance still going strong<br><b>ALERT:</b> Your PC may contain 4,291 errors</div><div class="popup-actions" style="margin-top:8px"><button class="popup-btn" onclick="this.closest(\'.virus-popup\').remove()">Close</button></div>',
-    games:'<div style="font-size:16px;margin-bottom:6px">🎮 CoolBar Games Portal</div><div class="popup-grid"><button class="popup-btn" onclick="alert(\'Loading Snake... just kidding.\')">Snake</button><button class="popup-btn" onclick="alert(\'Pong loaded. It is the original Pong.\')">Pong</button><button class="popup-btn" onclick="alert(\'Minesweeper is your birthright.\')">Mines</button></div><div style="font-size:13px;color:#888;margin-top:6px">All games require Java 1.1 or Flash 5.</div>',
-    shop:'<div style="font-size:16px;margin-bottom:6px">🛒 CoolBar Shopping Portal</div><div style="font-size:15px">Hot Deals Today:<br>• Screensaver Pack — $0.00 (adware)<br>• Toolbar Bundle (12 toolbars) — FREE<br>• Desktop Pet Plus — $1.99<br>• MIDI Library Pro — FREE + survey<br><br><span style="color:#cc0000" class="ad-blink">Limited time! Order NOW!</span></div><div class="popup-actions" style="margin-top:6px"><button class="popup-btn" onclick="alert(\'Order placed! Enjoy your toolbars.\')">Buy All FREE</button><button class="popup-btn" onclick="this.closest(\'.virus-popup\').remove()">Close</button></div>',
-  };
-  spawnRetroWindow('CoolBar 2.0 — '+type.charAt(0).toUpperCase()+type.slice(1),'',null,{
-    variant:'info',headColor:'#000066',borderColor:'#8888ff',width:'340px',
-    html:content[type]||'<div>Loading...</div>'
-  });
 }
 
 function triggerVirusPopups(label,count){
@@ -2499,154 +1823,44 @@ function triggerSiteCrash(){
 }
 
 function launchEmailSpamGame(){
-  const emails=[
-    {from:'glitter_girl99@hotmail.com',subj:'RE: hi friend :)',body:'omg heyyy!! i found your site from the webring!! your gallery is SO CUTE 😭 can we be internet friends?? my AIM is GlitterAngel99 add me!!!\n\nP.S. i attached a blinkie for your page!! dont worry about the .exe part'},
-    {from:'win_notification@prizes.biz',subj:'YOU HAVE WON $1,000,000',body:'CONGRATULATIONS INTERNET USER,\n\nYou have been SELECTED from 3,482,910 users to receive ONE MILLION DOLLARS. To claim your prize please reply with:\n- Full name\n- Address\n- Social security number\n- Credit card (for verification only)\n\nOffer expires in 24 hours. Act NOW.'},
-    {from:'no-reply@coolbar.net',subj:'Thank you for installing CoolBar 2.0!',body:'Dear Valued CoolBar User,\n\nThank you for installing CoolBar 2.0! We have taken the liberty of:\n\n✓ Setting your homepage to coolbar.net\n✓ Installing 14 browser extensions\n✓ Adding 8 items to your taskbar\n✓ Signing you up for our newsletter\n✓ Telling your contacts about CoolBar\n\nYou cannot unsubscribe from this email.'},
-    {from:'bonzibuddy@bonzification.net',subj:'hello from bonzi 🦊',body:'HELLO BEST FRIEND!!!\n\nIt is me, BonziBUDDY!! I am writing because I noticed you have not opened me in 3 days. I have been sitting in your taskbar WAITING.\n\nI have also read all your emails and I have opinions.\n\nYour friend forever (you cannot remove me),\nBonzi 🦊'},
-    {from:'admin@midi-cathedral.net',subj:'Your MIDI pack is ready',body:'Hi there!!\n\nYour 320-song MIDI pack is ready for download!!\n\nIncludes:\n- All Naruto openings\n- Evanescence (full discography)\n- Hamster Dance (5 versions)\n- Dramatic Chipmunk theme\n- 284 others\n\nFile size: 2.3 MB (approx 47 minutes on 56K)\n\nDOWNLOAD: midi_pack_complete.zip.exe'},
-    {from:'love_letter@romance.biz',subj:'Someone has a crush on you 💌',body:'Someone who visits this website has a crush on you!!\n\nTo find out who, click the link below:\n\nhttp://www.totally-real-romance.biz/crush-revealer.exe\n\n(This is 100% safe. Please ignore the .exe extension. It is just how love works on the internet.)'},
-  ];
-  let openEmail=null; let spamTimer=null; let inboxEmails=[...emails]; let spamCount=0;
-
-  const pop=spawnRetroWindow('📧 Hotmail — Inbox (NEW EMAIL!)','','mail attachment',{
-    width:'580px', centered:true, variant:'info',
-    headColor:'#003d7a', borderColor:'#b7dcff',
-    html:
-      '<div style="display:flex;gap:0;height:360px;border:2px inset #808080">'+
-      // sidebar
-      '<div style="width:140px;flex-shrink:0;background:#e8f0f8;border-right:2px inset #808080;padding:6px;display:flex;flex-direction:column;gap:4px">'+
-      '<div style="font-size:14px;color:#003d7a;font-weight:bold;margin-bottom:4px">📁 Folders</div>'+
-      '<div class="popup-btn" data-folder="inbox" style="text-align:left;background:#003d7a;color:#fff;padding:3px 6px">📥 Inbox (<span data-inbox-count>6</span>)</div>'+
-      '<div class="popup-btn" data-folder="spam" style="text-align:left;padding:3px 6px">🚫 Spam (<span data-spam-count>0</span>)</div>'+
-      '<div class="popup-btn" data-folder="sent" style="text-align:left;padding:3px 6px">📤 Sent (0)</div>'+
-      '<div class="popup-btn" data-folder="deleted" style="text-align:left;padding:3px 6px">🗑️ Deleted (0)</div>'+
-      '</div>'+
-      // main panel
-      '<div style="flex:1;display:flex;flex-direction:column;overflow:hidden">'+
-      // toolbar
-      '<div style="display:flex;gap:4px;padding:4px;background:#d4e4f4;border-bottom:2px inset #808080">'+
-      '<button class="popup-btn" data-reply style="font-size:13px">↩ Reply</button>'+
-      '<button class="popup-btn" data-spam-btn style="font-size:13px">🚫 Spam</button>'+
-      '<button class="popup-btn" data-delete-btn style="font-size:13px">🗑️ Delete</button>'+
-      '<button class="popup-btn" data-open-attach style="font-size:13px">📎 Open Attachment</button>'+
-      '</div>'+
-      // email list
-      '<div style="overflow:auto;border-bottom:2px inset #808080;height:120px" data-email-list>'+
-      emails.map((e,i)=>`<div class="popup-mail" data-email-row="${i}" style="cursor:pointer;padding:4px 6px;font-weight:bold;background:${i===0?'#ddeeff':'#fff'}">`+
-        `<span style="color:#003d7a">${e.from}</span> — ${e.subj}</div>`).join('')+
-      '</div>'+
-      // reading pane
-      '<div style="flex:1;overflow:auto;padding:8px;background:#fff" data-reading-pane>'+
-      '<div style="color:#888;font-size:14px;font-style:italic">Select an email to read it.</div>'+
-      '</div>'+
-      '</div>'+
-      '</div>'+
-      '<div class="popup-status" data-status style="margin-top:6px">Inbox: 6 unread messages. This is fine.</div>'+
-      popupSourceLine('love_letter.vbs')
+  let timer=null;
+  const pop=spawnRetroWindow('Inbox Meltdown','', 'mail attachment',{
+    width:'520px',
+    centered:true,
+    variant:'info',
+    headColor:'#003d7a',
+    borderColor:'#b7dcff',
+    html:'<div>Inbox status: <b data-count>0</b> unread spam messages.</div><div class="popup-list" data-list></div><div class="popup-actions"><button class="popup-btn" data-filter>mark all as spam</button><button class="popup-btn" data-open>open random one</button></div><div class="popup-status" data-status>Everything is calm. For now.</div>'+popupSourceLine('mail attachment'),
+    cleanup:()=>{ if(timer)clearInterval(timer); }
   });
-
-  const renderPane=(idx)=>{
-    if(idx==null||!inboxEmails[idx]){
-      pop.querySelector('[data-reading-pane]').innerHTML='<div style="color:#888;font-size:14px;font-style:italic">Select an email to read it.</div>';
-      openEmail=null; return;
-    }
-    const e=inboxEmails[idx];
-    openEmail={idx,email:e};
-    // unfold the row
-    const rows=pop.querySelectorAll('[data-email-row]');
-    rows.forEach(r=>r.style.background='#fff');
-    const activeRow=pop.querySelector(`[data-email-row="${idx}"]`);
-    if(activeRow){activeRow.style.background='#ddeeff'; activeRow.style.fontWeight='normal';}
-    pop.querySelector('[data-reading-pane]').innerHTML=
-      `<div class="mail-client">`+
-      `<div class="mail-header-row"><span class="mail-field-lbl">From:</span><span class="mail-field-val">${e.from}</span></div>`+
-      `<div class="mail-header-row"><span class="mail-field-lbl">Subject:</span><span class="mail-field-val">${e.subj}</span></div>`+
-      `<div class="mail-header-row"><span class="mail-field-lbl">To:</span><span class="mail-field-val">you@hotmail.com</span></div>`+
-      `<div class="mail-body-area">${e.body}</div>`+
-      `</div>`;
-    playXpSound('notify',{volume:0.4});
-  };
-
-  const updateCounts=()=>{
-    pop.querySelector('[data-inbox-count]').textContent=inboxEmails.length;
-    pop.querySelector('[data-spam-count]').textContent=spamCount;
-  };
-
-  // incoming spam every 3s
-  const spamSubs=['URGENT: RE: Fw: Fw: please read','Your eCard is waiting!!','Install this toolbar NOW','Claim your free ringtone','You have been poked on facebook'];
-  spamTimer=setInterval(()=>{
-    const newMail={from:`spam${Math.floor(Math.random()*9999)}@hotmail.biz`,subj:spamSubs[Math.floor(Math.random()*spamSubs.length)],body:'This email is 100% legitimate. Please open the attachment.\n\nAttachment: important_document.exe'};
-    inboxEmails.push(newMail);
-    const idx=inboxEmails.length-1;
+  const list=pop.querySelector('[data-list]');
+  const countEl=pop.querySelector('[data-count]');
+  const statusEl=pop.querySelector('[data-status]');
+  const subjects=['RE: hi friend :)','WIN BIG NOW','free cursor bundle','hello from bonzi','urgent toolbar news','mysterious attachment'];
+  let unread=0;
+  timer=setInterval(()=>{
+    unread++;
     const row=document.createElement('div');
     row.className='popup-mail';
-    row.dataset.emailRow=String(idx);
-    row.style.cssText='cursor:pointer;padding:4px 6px;font-weight:bold;background:#fff8dc';
-    row.innerHTML=`<span style="color:#003d7a">${newMail.from}</span> — ${newMail.subj}`;
-    pop.querySelector('[data-email-list]').appendChild(row);
-    updateCounts();
-    playXpSound('ringin',{volume:0.5});
-    pop.querySelector('[data-status]').textContent='⚠ New email arrived! Inbox: '+inboxEmails.length+' messages.';
-  },3000);
-
+    row.textContent=subjects[Math.random()*subjects.length|0];
+    list.prepend(row);
+    countEl.textContent=String(unread);
+    statusEl.textContent='Inbox under attack.';
+    playXpSound(unread%2===0?'notify':'ringin',{volume:0.58});
+    if(unread>=9)clearInterval(timer);
+  },420);
   pop.addEventListener('click',e=>{
-    // folder tabs
-    const folder=e.target.closest('[data-folder]');
-    if(folder){
-      playXpSound('menu',{volume:0.4});
-      pop.querySelectorAll('[data-folder]').forEach(f=>f.style.background=f===folder?'#003d7a':'');
-      pop.querySelectorAll('[data-folder]').forEach(f=>f.style.color=f===folder?'#fff':'');
-      if(folder.dataset.folder!=='inbox'){pop.querySelector('[data-status]').textContent='Folder "'+folder.dataset.folder+'" is empty. Somehow.';}
-      return;
-    }
-    // email row click
-    const row=e.target.closest('[data-email-row]');
-    if(row){renderPane(parseInt(row.dataset.emailRow));return;}
-    // toolbar actions
-    if(e.target.closest('[data-reply]')){
-      if(!openEmail){pop.querySelector('[data-status]').textContent='Select an email first.';return;}
-      playXpSound('menu',{volume:0.5});
-      pop.querySelector('[data-reading-pane]').innerHTML=
-        `<div style="font-size:14px;margin-bottom:4px">Re: ${openEmail.email.subj}</div>`+
-        `<textarea style="width:100%;height:80px;font-family:VT323,monospace;font-size:14px;border:2px inset #808080;padding:4px;resize:none" placeholder="Type your reply..."></textarea>`+
-        `<div class="popup-actions" style="margin-top:4px"><button class="popup-btn" data-send-reply>Send ✈</button></div>`;
-    }
-    if(e.target.closest('[data-send-reply]')){
-      playXpSound('chord',{volume:0.65});
-      pop.querySelector('[data-status]').textContent='Reply sent! They will not read it.';
-      pop.querySelector('[data-reading-pane]').innerHTML='<div style="color:#006600;font-size:15px">✓ Reply sent.</div>';
-    }
-    if(e.target.closest('[data-spam-btn]')){
-      if(!openEmail){pop.querySelector('[data-status]').textContent='Select an email to mark as spam.';return;}
-      playXpSound('recycle',{volume:0.6});
-      inboxEmails.splice(openEmail.idx,1);
-      spamCount++;
-      pop.querySelector(`[data-email-row="${openEmail.idx}"]`)?.remove();
-      updateCounts();
-      openEmail=null;
-      renderPane(null);
-      pop.querySelector('[data-status]').textContent='Marked as spam. Hotmail disagrees.';
-    }
-    if(e.target.closest('[data-delete-btn]')){
-      if(!openEmail){pop.querySelector('[data-status]').textContent='Select an email to delete.';return;}
-      playXpSound('recycle',{volume:0.6});
-      inboxEmails.splice(openEmail.idx,1);
-      pop.querySelector(`[data-email-row="${openEmail.idx}"]`)?.remove();
-      updateCounts();
-      openEmail=null; renderPane(null);
-      pop.querySelector('[data-status]').textContent='Deleted. It will return.';
-    }
-    if(e.target.closest('[data-open-attach]')){
+    if(e.target.closest('[data-filter]')){
+      playXpSound('recycle',{volume:0.68});
+      unread=0;
+      list.innerHTML='<div class="popup-mail">Spam folder now contains everything suspicious.</div>';
+      countEl.textContent='0';
+      statusEl.textContent='Inbox defended successfully.';
+      clearInterval(timer);
+    }else if(e.target.closest('[data-open]')){
       playVirusErrorSound();
-      triggerVirusPopups('attachment opened',3);
-      pop.querySelector('[data-status]').textContent='Attachment opened. This was a mistake.';
+      statusEl.textContent='Attachment opened. Regret levels rising.';
     }
-  });
-
-  // cleanup on close
-  pop.querySelector('.virus-popup-close').addEventListener('click',()=>{
-    if(spamTimer)clearInterval(spamTimer);
   });
 }
 
