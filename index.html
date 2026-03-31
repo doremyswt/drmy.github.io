@@ -170,6 +170,12 @@ a:hover{color:var(--red);text-decoration:none}
 .avatar-caption{
   font-family:'VT323',monospace;font-size:13px;
   color:var(--pink);text-align:center;
+  cursor:pointer;
+  user-select:none;
+}
+.avatar-caption:hover{
+  color:var(--red);
+  text-decoration:underline dotted;
 }
 .profile-info{flex:1;min-width:200px}
 .profile-name{
@@ -540,8 +546,6 @@ a:hover{color:var(--red);text-decoration:none}
   <a href="#">TOP</a><span class="nav-sep">|</span>
   <a href="#gallery-section">GALLERY</a><span class="nav-sep">|</span>
   <a href="https://vgen.co/doremy" target="_blank">COMMISSIONS</a><span class="nav-sep">|</span>
-  <a href="https://twitter.com/doremyswt" target="_blank">TWITTER</a><span class="nav-sep">|</span>
-  <a href="https://www.pixiv.net/en/users/105940981" target="_blank">PIXIV</a>
 </div>
 
 <div class="page-wrap">
@@ -550,7 +554,7 @@ a:hover{color:var(--red);text-decoration:none}
   <hr class="deco-hr">
   <div style="text-align:center;padding:6px 0">
     <span style="font-family:'VT323',monospace;font-size:18px" class="rainbow">★ Welcome to drmy's Art Page! ★</span><br>
-    <span style="font-size:11px;color:#888">Last updated: 2026 · best viewed at 1024×768</span>
+    <span style="font-size:11px;color:#888">Last updated: 2007 · best viewed at 1024×768</span>
   </div>
   <hr class="deco-hr">
 
@@ -561,10 +565,10 @@ a:hover{color:var(--red);text-decoration:none}
     </div>
     <div class="profile-card-body">
       <div class="avatar-area">
-        <div id="avatar-btn" title="click me ☕" style="cursor:pointer">
+        <div id="avatar-btn" title="click to play game ☕" style="cursor:pointer">
           <img src="me.png" class="avatar" alt="drmy">
         </div>
-        <span class="avatar-caption">▼ click me!</span>
+        <span class="avatar-caption" id="click-me-caption">☆ click me! ☆</span>
       </div>
       <div class="profile-info">
         <div class="profile-name">drmy <span class="kanji">ドレミ</span></div>
@@ -586,9 +590,9 @@ a:hover{color:var(--red);text-decoration:none}
   <!-- ═══ UPDATES ═══ -->
   <div class="section-head"><span class="deco">■</span> UPDATES <span class="deco">■</span></div>
   <div class="update-box">
-    <div><span class="date">2026.XX.XX</span><span class="msg">- site redesigned in retro style ☆</span></div>
-    <div><span class="date">2026.XX.XX</span><span class="msg">- new artwork uploaded!</span></div>
-    <div><span class="date">2026.XX.XX</span><span class="msg">- commissions on VGen</span></div>
+    <div><span class="date">2007.XX.XX</span><span class="msg">- commissions on VGen</span></div>
+    <div><span class="date">2006.XX.XX</span><span class="msg">- new artwork uploaded!</span></div>
+    <div><span class="date">2005.XX.XX</span><span class="msg">- site redesigned ☆</span></div>
   </div>
 
   <!-- ═══ GALLERY ═══ -->
@@ -831,7 +835,7 @@ window.addEventListener('resize',layout,{passive:true});function resetZoom(){zoo
 <script>
 (function(){
   var mugClicks=0,broken=false,blobReady=false;
-  var mug=document.querySelector('.profile-card .avatar');
+  var caption=document.getElementById('click-me-caption');
   var breakOverlay=document.getElementById("break-overlay");
   var breakBarFill=document.getElementById("break-bar-fill");
   var breakBarWrap=document.getElementById("break-bar-wrap");
@@ -849,7 +853,7 @@ window.addEventListener('resize',layout,{passive:true});function resetZoom(){zoo
   filt.appendChild(morph);defs.appendChild(filt);svg.appendChild(defs);document.body.appendChild(svg);
   function setPixel(n){if(n===0){document.documentElement.style.filter="";morph.setAttribute("radius","0");return;}var r=Math.round(Math.pow(n,1.7));morph.setAttribute("radius",r);document.documentElement.style.filter="url(#pix-filter)";}
   function showLoadingAndPlay(){document.documentElement.style.filter="";morph.setAttribute("radius","0");breakOverlay.style.display="flex";var start=performance.now(),dur=2800;function tick(){var pct=Math.min(100,(performance.now()-start)/dur*100);breakBarFill.style.width=pct+"%";if(pct<100){requestAnimationFrame(tick);}else{breakBarWrap.style.display="none";breakVideo.style.display="block";if(blobReady){breakVideo.currentTime=0;breakVideo.play().catch(function(e){console.error("play failed:",e);});}else{var poll=setInterval(function(){if(blobReady){clearInterval(poll);breakVideo.currentTime=0;breakVideo.play().catch(function(e){console.error("play failed:",e);});}},100);}}}requestAnimationFrame(tick);}
-  if(mug){mug.addEventListener("dblclick",function(e){e.stopPropagation();if(broken)return;mugClicks++;if(mugClicks<10){setPixel(mugClicks);}else{broken=true;setPixel(10);setTimeout(showLoadingAndPlay,400);}});}
+  if(caption){caption.addEventListener("click",function(e){e.stopPropagation();if(broken)return;mugClicks++;if(mugClicks<10){setPixel(mugClicks);}else{broken=true;setPixel(10);setTimeout(showLoadingAndPlay,400);}});}
 })();
 </script>
 </body>
