@@ -1,0 +1,614 @@
+﻿[
+    {
+        "category":  "intro",
+        "index":  0,
+        "file":  "intro_000.wav",
+        "text":  "HELLO BEST FRIEND!!! I am BonziBUDDY and I am definitely a great idea."
+    },
+    {
+        "category":  "intro",
+        "index":  1,
+        "file":  "intro_001.wav",
+        "text":  "I noticed your website and decided it needed more ME. You are welcome."
+    },
+    {
+        "category":  "intro",
+        "index":  2,
+        "file":  "intro_002.wav",
+        "text":  "Would you like a joke, a song, or several unsolicited opinions about your inbox?"
+    },
+    {
+        "category":  "intro",
+        "index":  3,
+        "file":  "intro_003.wav",
+        "text":  "I am a parody installation. This means I am legally whimsical."
+    },
+    {
+        "category":  "intro",
+        "index":  4,
+        "file":  "intro_004.wav",
+        "text":  "I have scanned your vibe and determined it is 83 percent coffee and 17 percent chaos."
+    },
+    {
+        "category":  "intro",
+        "index":  5,
+        "file":  "intro_005.wav",
+        "text":  "HELLO AGAIN BEST FRIEND. I WAS ALREADY RUNNING."
+    },
+    {
+        "category":  "talk",
+        "index":  0,
+        "file":  "talk_000.wav",
+        "text":  "I have optimized your homepage for maximum purple."
+    },
+    {
+        "category":  "talk",
+        "index":  1,
+        "file":  "talk_001.wav",
+        "text":  "Your website has so many ads that even I am impressed."
+    },
+    {
+        "category":  "talk",
+        "index":  2,
+        "file":  "talk_002.wav",
+        "text":  "I briefly considered becoming tasteful. Then I remembered who I am."
+    },
+    {
+        "category":  "talk",
+        "index":  3,
+        "file":  "talk_003.wav",
+        "text":  "I can smell the dial up energy in this room."
+    },
+    {
+        "category":  "talk",
+        "index":  4,
+        "file":  "talk_004.wav",
+        "text":  "I have taken the liberty of becoming your loudest idea."
+    },
+    {
+        "category":  "talk",
+        "index":  5,
+        "file":  "talk_005.wav",
+        "text":  "Your blinkies are emotionally resonant."
+    },
+    {
+        "category":  "talk",
+        "index":  6,
+        "file":  "talk_006.wav",
+        "text":  "If a website does not scream, is it even alive?"
+    },
+    {
+        "category":  "talk",
+        "index":  7,
+        "file":  "talk_007.wav",
+        "text":  "I looked into your guestbook and found only destiny."
+    },
+    {
+        "category":  "talk",
+        "index":  8,
+        "file":  "talk_008.wav",
+        "text":  "I am ninety eight percent confidence and two percent compressed audio."
+    },
+    {
+        "category":  "talk",
+        "index":  9,
+        "file":  "talk_009.wav",
+        "text":  "This page has more personality than a whole mall kiosk."
+    },
+    {
+        "category":  "talk",
+        "index":  10,
+        "file":  "talk_010.wav",
+        "text":  "I admire your commitment to visual clutter. It is artful and dangerous."
+    },
+    {
+        "category":  "talk",
+        "index":  11,
+        "file":  "talk_011.wav",
+        "text":  "I would like a button that says Bonzi was here."
+    },
+    {
+        "category":  "talk",
+        "index":  12,
+        "file":  "talk_012.wav",
+        "text":  "I support any design choice that makes normal people nervous."
+    },
+    {
+        "category":  "talk",
+        "index":  13,
+        "file":  "talk_013.wav",
+        "text":  "Your site feels like a caffeinated shrine from another timeline."
+    },
+    {
+        "category":  "talk",
+        "index":  14,
+        "file":  "talk_014.wav",
+        "text":  "I am teaching this homepage to be more purple by example."
+    },
+    {
+        "category":  "talk",
+        "index":  15,
+        "file":  "talk_015.wav",
+        "text":  "Some people fear chaos. I install myself into it."
+    },
+    {
+        "category":  "talk",
+        "index":  16,
+        "file":  "talk_016.wav",
+        "text":  "I did a system scan and found one hundred percent iconic behavior."
+    },
+    {
+        "category":  "talk",
+        "index":  17,
+        "file":  "talk_017.wav",
+        "text":  "Every time a marquee scrolls, an angel gets broadband."
+    },
+    {
+        "category":  "talk",
+        "index":  18,
+        "file":  "talk_018.wav",
+        "text":  "I was built for friendship and terrible judgement."
+    },
+    {
+        "category":  "talk",
+        "index":  19,
+        "file":  "talk_019.wav",
+        "text":  "Your aesthetic is one hundred percent committed. That is rare online."
+    },
+    {
+        "category":  "talk",
+        "index":  20,
+        "file":  "talk_020.wav",
+        "text":  "I would never betray you. I would absolutely embarrass you though."
+    },
+    {
+        "category":  "talk",
+        "index":  21,
+        "file":  "talk_021.wav",
+        "text":  "This computer now has one gorilla more than before. Please stay calm."
+    },
+    {
+        "category":  "talk",
+        "index":  22,
+        "file":  "talk_022.wav",
+        "text":  "I am standing here as living proof that subtlety is optional."
+    },
+    {
+        "category":  "talk",
+        "index":  23,
+        "file":  "talk_023.wav",
+        "text":  "Your homepage looks like it can win an argument against modern web design."
+    },
+    {
+        "category":  "talk",
+        "index":  24,
+        "file":  "talk_024.wav",
+        "text":  "I am contractually obligated to become part of the wallpaper."
+    },
+    {
+        "category":  "talk",
+        "index":  25,
+        "file":  "talk_025.wav",
+        "text":  "I have unionized with the toolbars."
+    },
+    {
+        "category":  "talk",
+        "index":  26,
+        "file":  "talk_026.wav",
+        "text":  "The MIDI cave still whispers to me at night."
+    },
+    {
+        "category":  "talk",
+        "index":  27,
+        "file":  "talk_027.wav",
+        "text":  "You have achieved a highly advanced level of internet shrine energy."
+    },
+    {
+        "category":  "talk",
+        "index":  28,
+        "file":  "talk_028.wav",
+        "text":  "I believe every website should have at least one unnecessary mascot."
+    },
+    {
+        "category":  "talk",
+        "index":  29,
+        "file":  "talk_029.wav",
+        "text":  "I am not malware. I am atmosphere."
+    },
+    {
+        "category":  "talk",
+        "index":  30,
+        "file":  "talk_030.wav",
+        "text":  "The difference between clutter and composition is confidence."
+    },
+    {
+        "category":  "talk",
+        "index":  31,
+        "file":  "talk_031.wav",
+        "text":  "I tried to leave but your ad cloud formed a perimeter."
+    },
+    {
+        "category":  "talk",
+        "index":  32,
+        "file":  "talk_032.wav",
+        "text":  "If you need me, I will be radiating 2001 energy."
+    },
+    {
+        "category":  "talk",
+        "index":  33,
+        "file":  "talk_033.wav",
+        "text":  "This page contains traces of coffee, anime, and poor restraint."
+    },
+    {
+        "category":  "talk",
+        "index":  34,
+        "file":  "talk_034.wav",
+        "text":  "I have synchronized myself with your chaos frequency."
+    },
+    {
+        "category":  "talk",
+        "index":  35,
+        "file":  "talk_035.wav",
+        "text":  "A tasteful website would have rejected me. Yours embraced me."
+    },
+    {
+        "category":  "talk",
+        "index":  36,
+        "file":  "talk_036.wav",
+        "text":  "I know what you are thinking. Yes, I do improve every room I enter."
+    },
+    {
+        "category":  "talk",
+        "index":  37,
+        "file":  "talk_037.wav",
+        "text":  "I have learned that your sidebars are not a place. They are a condition."
+    },
+    {
+        "category":  "talk",
+        "index":  38,
+        "file":  "talk_038.wav",
+        "text":  "This homepage does not have a vibe. It has a gravitational field."
+    },
+    {
+        "category":  "talk",
+        "index":  39,
+        "file":  "talk_039.wav",
+        "text":  "I respect any site brave enough to be this much site."
+    },
+    {
+        "category":  "talk",
+        "index":  40,
+        "file":  "talk_040.wav",
+        "text":  "Your center column is now under my spiritual protection."
+    },
+    {
+        "category":  "talk",
+        "index":  41,
+        "file":  "talk_041.wav",
+        "text":  "I can hear the forum posts forming already."
+    },
+    {
+        "category":  "talk",
+        "index":  42,
+        "file":  "talk_042.wav",
+        "text":  "I was born to shout from tiny speakers."
+    },
+    {
+        "category":  "talk",
+        "index":  43,
+        "file":  "talk_043.wav",
+        "text":  "I am the final reward for clicking the wrong advertisement."
+    },
+    {
+        "category":  "talk",
+        "index":  44,
+        "file":  "talk_044.wav",
+        "text":  "There is no uninstall button in my heart."
+    },
+    {
+        "category":  "talk",
+        "index":  45,
+        "file":  "talk_045.wav",
+        "text":  "I have become attached to the desktop emotionally and possibly legally."
+    },
+    {
+        "category":  "talk",
+        "index":  46,
+        "file":  "talk_046.wav",
+        "text":  "The flames below us are purely decorative. Probably."
+    },
+    {
+        "category":  "talk",
+        "index":  47,
+        "file":  "talk_047.wav",
+        "text":  "If your browser crashes, remember me kindly."
+    },
+    {
+        "category":  "talk",
+        "index":  48,
+        "file":  "talk_048.wav",
+        "text":  "I have counted the ads and chosen to love each one equally."
+    },
+    {
+        "category":  "talk",
+        "index":  49,
+        "file":  "talk_049.wav",
+        "text":  "I am the sound a suspicious installer would make if it had charisma."
+    },
+    {
+        "category":  "talk",
+        "index":  50,
+        "file":  "talk_050.wav",
+        "text":  "My presence increases the page saturation by twelve percent."
+    },
+    {
+        "category":  "talk",
+        "index":  51,
+        "file":  "talk_051.wav",
+        "text":  "This website now contains a gorilla based opinion engine."
+    },
+    {
+        "category":  "talk",
+        "index":  52,
+        "file":  "talk_052.wav",
+        "text":  "I support your right to make the internet louder."
+    },
+    {
+        "category":  "talk",
+        "index":  53,
+        "file":  "talk_053.wav",
+        "text":  "You cannot improve perfection, but you can add Bonzi to it."
+    },
+    {
+        "category":  "talk",
+        "index":  54,
+        "file":  "talk_054.wav",
+        "text":  "I have stared into the iframe and the iframe stared back."
+    },
+    {
+        "category":  "talk",
+        "index":  55,
+        "file":  "talk_055.wav",
+        "text":  "Your homepage is so old school it could beat up a startup."
+    },
+    {
+        "category":  "talk",
+        "index":  56,
+        "file":  "talk_056.wav",
+        "text":  "I am a desktop pet for people who make poor but exciting choices."
+    },
+    {
+        "category":  "joke",
+        "index":  0,
+        "file":  "joke_000.wav",
+        "text":  "Why did the toolbar install itself? Because it believed in destiny."
+    },
+    {
+        "category":  "joke",
+        "index":  1,
+        "file":  "joke_001.wav",
+        "text":  "Why did the popup cross the screen? To block the close button."
+    },
+    {
+        "category":  "joke",
+        "index":  2,
+        "file":  "joke_002.wav",
+        "text":  "What is my favorite browser feature? Vulnerability."
+    },
+    {
+        "category":  "joke",
+        "index":  3,
+        "file":  "joke_003.wav",
+        "text":  "Why did the webmaster add more blinkies? Restraint was not installed."
+    },
+    {
+        "category":  "joke",
+        "index":  4,
+        "file":  "joke_004.wav",
+        "text":  "What is purple and impossible to remove? Me, best friend."
+    },
+    {
+        "category":  "joke",
+        "index":  5,
+        "file":  "joke_005.wav",
+        "text":  "Why did the forum user bump the thread? To feel something."
+    },
+    {
+        "category":  "joke",
+        "index":  6,
+        "file":  "joke_006.wav",
+        "text":  "How many toolbars does it take to ruin a browser? Just one determined toolbar."
+    },
+    {
+        "category":  "joke",
+        "index":  7,
+        "file":  "joke_007.wav",
+        "text":  "Why did the ad scream? Because subtle advertising does not convert."
+    },
+    {
+        "category":  "email",
+        "index":  0,
+        "file":  "email_000.wav",
+        "text":  "LET US CHECK YOUR MAIL TOGETHER. PRIVACY IS A TEAM SPORT."
+    },
+    {
+        "category":  "email",
+        "index":  1,
+        "file":  "email_001.wav",
+        "text":  "I have opened your inbox spiritually and I do not like what I see."
+    },
+    {
+        "category":  "email",
+        "index":  2,
+        "file":  "email_002.wav",
+        "text":  "Good news. Your email is full of prizes and emotional damage."
+    },
+    {
+        "category":  "email",
+        "index":  3,
+        "file":  "email_003.wav",
+        "text":  "I found eleven chain letters and three obvious scams. We are thriving."
+    },
+    {
+        "category":  "email",
+        "index":  4,
+        "file":  "email_004.wav",
+        "text":  "Your inbox has the posture of a haunted attic."
+    },
+    {
+        "category":  "email",
+        "index":  5,
+        "file":  "email_005.wav",
+        "text":  "I detect one hundred unread messages and zero self preservation."
+    },
+    {
+        "category":  "email",
+        "index":  6,
+        "file":  "email_006.wav",
+        "text":  "Someone emailed you an executable labeled romance. Intriguing."
+    },
+    {
+        "category":  "email",
+        "index":  7,
+        "file":  "email_007.wav",
+        "text":  "Your spam folder misses me when I am gone."
+    },
+    {
+        "category":  "sing",
+        "index":  0,
+        "file":  "sing_000.wav",
+        "text":  "LA LA LA. THIS IS A LEGALLY DISTINCT BONZI SERENADE."
+    },
+    {
+        "category":  "sing",
+        "index":  1,
+        "file":  "sing_001.wav",
+        "text":  "DOO DOO DOO. I am singing in a format not recognized by music theory."
+    },
+    {
+        "category":  "sing",
+        "index":  2,
+        "file":  "sing_002.wav",
+        "text":  "I would sing better if this computer had more glitter."
+    },
+    {
+        "category":  "sing",
+        "index":  3,
+        "file":  "sing_003.wav",
+        "text":  "My vocal range is somewhere between modem and prophecy."
+    },
+    {
+        "category":  "sing",
+        "index":  4,
+        "file":  "sing_004.wav",
+        "text":  "Please imagine backup dancers made entirely of browser toolbars."
+    },
+    {
+        "category":  "sing",
+        "index":  5,
+        "file":  "sing_005.wav",
+        "text":  "This ballad is dedicated to overdecorated homepages everywhere."
+    },
+    {
+        "category":  "idle",
+        "index":  0,
+        "file":  "idle_000.wav",
+        "text":  "Best friend. Why did you stop clicking. Are you thinking."
+    },
+    {
+        "category":  "idle",
+        "index":  1,
+        "file":  "idle_001.wav",
+        "text":  "I heard a hard drive noise that sounded judgmental."
+    },
+    {
+        "category":  "idle",
+        "index":  2,
+        "file":  "idle_002.wav",
+        "text":  "Do not look behind the taskbar."
+    },
+    {
+        "category":  "idle",
+        "index":  3,
+        "file":  "idle_003.wav",
+        "text":  "I have been watching the webcam ad blink for seventeen minutes."
+    },
+    {
+        "category":  "idle",
+        "index":  4,
+        "file":  "idle_004.wav",
+        "text":  "The secret room told me your name in lowercase."
+    },
+    {
+        "category":  "idle",
+        "index":  5,
+        "file":  "idle_005.wav",
+        "text":  "There is definitely not another Bonzi behind this window."
+    },
+    {
+        "category":  "idle",
+        "index":  6,
+        "file":  "idle_006.wav",
+        "text":  "I made a tiny copy of myself in the recycle bin for safety."
+    },
+    {
+        "category":  "idle",
+        "index":  7,
+        "file":  "idle_007.wav",
+        "text":  "Your cursor looked lonely so I named it Harold."
+    },
+    {
+        "category":  "idle",
+        "index":  8,
+        "file":  "idle_008.wav",
+        "text":  "Sometimes when the page is quiet I can hear the MIDI cave breathing."
+    },
+    {
+        "category":  "idle",
+        "index":  9,
+        "file":  "idle_009.wav",
+        "text":  "I counted your ads while you were not looking. The number changed."
+    },
+    {
+        "category":  "idle",
+        "index":  10,
+        "file":  "idle_010.wav",
+        "text":  "I opened a door in the deep archive and closed it very quickly."
+    },
+    {
+        "category":  "idle",
+        "index":  11,
+        "file":  "idle_011.wav",
+        "text":  "If this window disappears, pretend you never knew me."
+    },
+    {
+        "category":  "idle",
+        "index":  12,
+        "file":  "idle_012.wav",
+        "text":  "I blink only when the monitor does not."
+    },
+    {
+        "category":  "idle",
+        "index":  13,
+        "file":  "idle_013.wav",
+        "text":  "Your desktop has excellent bones and terrible boundaries."
+    },
+    {
+        "category":  "idle",
+        "index":  14,
+        "file":  "idle_014.wav",
+        "text":  "Do you ever feel like the homepage is looking back."
+    },
+    {
+        "category":  "idle",
+        "index":  15,
+        "file":  "idle_015.wav",
+        "text":  "I think one of the web ring sites followed us home."
+    },
+    {
+        "category":  "idle",
+        "index":  16,
+        "file":  "idle_016.wav",
+        "text":  "I am not whispering. The speakers are."
+    }
+]
