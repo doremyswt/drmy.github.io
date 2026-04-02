@@ -661,6 +661,41 @@ a:hover{color:var(--red);text-decoration:none}
   animation:virus-pop .12s steps(2,end);
   border-color:var(--popup-border,#f4f4f4);
 }
+.virus-popup.popup-empty .virus-popup-body{
+  min-height:72px;
+}
+.virus-popup.popup-empty .virus-popup-body > *{
+  display:none;
+}
+.virus-popup.popup-empty .virus-popup-head span:first-child{
+  opacity:.45;
+}
+.virus-popup.popup-glitchy{
+  overflow:hidden;
+  transform:skewX(-1deg);
+}
+.virus-popup.popup-glitchy::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(255,255,255,.06) 0 8px,
+      rgba(0,0,0,.2) 8px 12px,
+      transparent 12px 20px
+    );
+  mix-blend-mode:screen;
+  opacity:.9;
+}
+.virus-popup.popup-glitchy .virus-popup-head,
+.virus-popup.popup-glitchy .virus-popup-body{
+  transform:translateX(calc((var(--glitch-shift, 0)) * 1px));
+}
+.virus-popup.popup-glitchy .virus-popup-body{
+  clip-path:polygon(0 0,100% 0,100% 14%,0 18%,0 31%,100% 28%,100% 48%,0 52%,0 67%,100% 64%,100% 82%,0 86%,0 100%,100% 100%);
+}
 .virus-popup-head{
   display:flex;
   justify-content:space-between;
@@ -843,109 +878,269 @@ a:hover{color:var(--red);text-decoration:none}
   line-height:1.3;
   color:#4d1f73;
 }
-.bonzi-mascot-window{
+/* ═══ BONZI FLOATING MASCOT ═══ */
+.bonzi-mascot-wrap{
   position:fixed;
-  left:42px;
-  bottom:28px;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
   z-index:7000;
   user-select:none;
+  touch-action:none;
+  transition:opacity .35s ease;
 }
-.bonzi-speech-wrap{
-  position:absolute;
-  left:50%;
-  bottom:140px;
-  transform:translateX(-50%);
+.bonzi-mascot-wrap.threatening{
+  z-index:10050;
+}
+/* once JS sets explicit left/top, kill the centering transform */
+.bonzi-mascot-wrap.bonzi-placed{
+  transform:none;
+}
+.bonzi-mascot-wrap.threat-hidden{
+  opacity:0;
+  visibility:hidden;
   pointer-events:none;
 }
-.bonzi-speech-bubble{
-  position:relative;
-  width:max-content;
-  min-width:220px;
-  max-width:430px;
-  min-height:82px;
-  background:#fffdf7;
-  color:#111;
-  border:3px solid #111;
-  border-radius:22px;
-  padding:14px 18px;
-  font-size:24px;
-  line-height:1.18;
-  box-shadow:6px 6px 0 rgba(0,0,0,.25);
-  image-rendering:auto;
-}
-.bonzi-speech-bubble::after{
-  content:'';
-  position:absolute;
-  left:48%;
-  bottom:-20px;
-  width:30px;
-  height:30px;
-  background:#fffdf7;
-  border-right:3px solid #111;
-  border-bottom:3px solid #111;
-  transform:rotate(45deg);
-}
-.bonzi-speech-bubble::before{
-  content:'';
-  position:absolute;
-  left:calc(48% + 9px);
-  bottom:-34px;
-  width:16px;
-  height:16px;
-  background:#fffdf7;
-  border-right:3px solid #111;
-  border-bottom:3px solid #111;
-  transform:rotate(45deg);
-}
-.bonzi-avatar-window{
-  position:relative;
-  width:226px;
-  padding:18px 14px 10px;
-  background:linear-gradient(180deg,#f8e7ff,#ebcfff 72%,#d7b0fb 100%);
-  border:3px solid #6a1294;
-  border-radius:18px 18px 14px 14px;
-  box-shadow:0 12px 28px rgba(46,10,76,.35);
+.bonzi-mascot-canvas{
+  width:190px;
+  height:142px;
+  display:block;
+  image-rendering:pixelated;
+  filter:drop-shadow(0 6px 10px rgba(40,0,65,.25));
   cursor:grab;
 }
-.bonzi-avatar-window:active{
-  cursor:grabbing;
+.bonzi-mascot-canvas:active{cursor:grabbing;}
+.bonzi-mascot-shadow{
+  margin:2px auto 0;
+  width:136px;
+  height:18px;
+  background:radial-gradient(circle,rgba(81,25,120,.4) 0%,rgba(81,25,120,.16) 55%,transparent 80%);
 }
-.bonzi-avatar-close{
+/* ═══ XP-STYLE HOVER WINDOW ═══ */
+.bonzi-xp-window{
   position:absolute;
-  top:6px;
-  right:6px;
-  width:24px;
-  height:24px;
-  border:2px outset #f6d7ff;
-  background:#a200ff;
+  left:calc(100% + 8px);
+  bottom:0;
+  width:220px;
+  background:#ece9d8;
+  border:2px solid #0054e3;
+  border-radius:8px 8px 0 0;
+  box-shadow:2px 4px 12px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.35);
+  opacity:0;
+  visibility:hidden;
+  transform:scale(0.92) translateY(6px);
+  transition:opacity .18s ease, visibility .18s ease, transform .18s ease;
+  pointer-events:none;
+  font-family:'Tahoma','DotGothic16',sans-serif;
+}
+.bonzi-mascot-wrap:hover .bonzi-xp-window,
+.bonzi-xp-window.pinned{
+  opacity:1;
+  visibility:visible;
+  transform:scale(1) translateY(0);
+  pointer-events:auto;
+}
+.bonzi-xp-titlebar{
+  background:linear-gradient(180deg,#0a246a 0%,#3a6ea5 8%,#3a6ea5 92%,#0a246a 100%);
+  border-radius:6px 6px 0 0;
+  padding:3px 4px 3px 8px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  cursor:default;
+}
+.bonzi-xp-titlebar-text{
   color:#fff;
-  font:700 14px/1 VT323,monospace;
+  font:bold 12px Tahoma,'DotGothic16',sans-serif;
+  text-shadow:1px 1px 0 rgba(0,0,0,.4);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.bonzi-xp-titlebar-btns{
+  display:flex;
+  gap:2px;
+  flex-shrink:0;
+}
+.bonzi-xp-btn{
+  width:21px;
+  height:21px;
+  border:1px solid rgba(0,0,0,.25);
+  border-radius:3px;
+  font:bold 11px/1 Tahoma,sans-serif;
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
+  color:#fff;
+  text-shadow:1px 1px 0 rgba(0,0,0,.3);
 }
-.bonzi-avatar-close:hover{
-  background:#c022ff;
+.bonzi-xp-btn-min{background:linear-gradient(180deg,#3c8fe2,#2663a5);}
+.bonzi-xp-btn-min:hover{background:linear-gradient(180deg,#5ca8f0,#3c8fe2);}
+.bonzi-xp-btn-max{background:linear-gradient(180deg,#3c8fe2,#2663a5);}
+.bonzi-xp-btn-max:hover{background:linear-gradient(180deg,#5ca8f0,#3c8fe2);}
+.bonzi-xp-btn-close{
+  background:linear-gradient(180deg,#e48a6b,#c5523a);
+  border-color:rgba(80,20,10,.4);
 }
-.bonzi-avatar-label{
-  position:absolute;
-  top:-12px;
-  left:14px;
-  padding:2px 8px;
-  background:#5a1483;
-  color:#ffdfff;
-  border:2px solid #e6bfff;
-  border-radius:999px;
-  font:18px VT323,monospace;
-  letter-spacing:.04em;
-}
-.bonzi-avatar-stage{
-  height:166px;
+.bonzi-xp-btn-close:hover{background:linear-gradient(180deg,#ff9e82,#e06040);}
+.bonzi-xp-body{
+  padding:8px;
   display:flex;
-  align-items:flex-end;
-  justify-content:center;
+  flex-direction:column;
+  gap:4px;
 }
+.bonzi-xp-body .bonzi-xp-action{
+  width:100%;
+  padding:4px 8px;
+  background:linear-gradient(180deg,#fff,#ece9d8);
+  border:1px solid #aca899;
+  border-radius:3px;
+  font:12px Tahoma,'DotGothic16',sans-serif;
+  color:#000;
+  cursor:pointer;
+  text-align:left;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.bonzi-xp-action:hover{
+  background:linear-gradient(180deg,#b6d6f2,#638dc2);
+  color:#fff;
+  border-color:#316ac5;
+}
+.bonzi-xp-action:active{background:#2a5699;color:#fff;}
+.bonzi-xp-status{
+  padding:4px 8px 2px;
+  font:11px Tahoma,'DotGothic16',sans-serif;
+  color:#666;
+  border-top:1px solid #d5d2c4;
+}
+/* ═══ BONZI SPEECH BUBBLE ═══ */
+.bonzi-bubble-wrap{
+  position:absolute;
+  left:50%;
+  bottom:calc(100% + 12px);
+  transform:translateX(-50%);
+  pointer-events:none;
+  z-index:10060;
+  transition:opacity .25s ease;
+}
+.bonzi-bubble-wrap.hidden{
+  opacity:0;
+  visibility:hidden;
+}
+.bonzi-speech-bubble{
+  position:relative;
+  width:max-content;
+  max-width:420px;
+  background:#fffef6;
+  color:#111;
+  border:2px solid #000;
+  border-radius:18px;
+  padding:12px 16px;
+  font:15px/1.3 'DotGothic16','MS Gothic',monospace;
+  box-shadow:3px 3px 0 rgba(0,0,0,.2);
+  image-rendering:auto;
+  overflow:hidden;
+  white-space:pre-wrap;
+  transition:max-height .3s ease, padding .3s ease;
+}
+.bonzi-speech-bubble:empty{
+  padding:0;
+  border:none;
+  box-shadow:none;
+  max-height:0;
+}
+.bonzi-speech-bubble::after{
+  content:'';
+  position:absolute;
+  left:50%;
+  bottom:-14px;
+  margin-left:-10px;
+  width:20px;
+  height:20px;
+  background:#fffef6;
+  border-right:2px solid #000;
+  border-bottom:2px solid #000;
+  transform:rotate(45deg);
+}
+.bonzi-speech-bubble:empty::after{display:none;}
+.bonzi-speech-bubble::before{
+  content:'';
+  position:absolute;
+  left:calc(50% + 4px);
+  bottom:-22px;
+  width:12px;
+  height:12px;
+  background:#fffef6;
+  border-right:2px solid #000;
+  border-bottom:2px solid #000;
+  transform:rotate(45deg);
+}
+.bonzi-speech-bubble:empty::before{display:none;}
+/* ═══ BONZI CREEPY THREAT MODE ═══ */
+.bonzi-mascot-wrap.threatening .bonzi-speech-bubble{
+  background:#1a0a0a;
+  color:#ff4444;
+  border-color:#660000;
+  box-shadow:0 0 20px rgba(255,0,0,.3), 3px 3px 0 rgba(100,0,0,.4);
+  font-size:14px;
+  max-width:500px;
+  max-height:60vh;
+  padding-top:36px;
+  overflow-y:auto;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.bonzi-mascot-wrap.threatening .bonzi-speech-bubble::-webkit-scrollbar{
+  width:0;
+  height:0;
+}
+.bonzi-mascot-wrap.threatening .bonzi-speech-bubble::after{
+  background:#1a0a0a;
+  border-color:#660000;
+}
+.bonzi-mascot-wrap.threatening .bonzi-speech-bubble::before{
+  background:#1a0a0a;
+  border-color:#660000;
+}
+.bonzi-mascot-wrap.threatening .bonzi-xp-window{
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+.bonzi-threat-vignette{
+  position:fixed;
+  inset:0;
+  z-index:6999;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 1.5s ease;
+  background:none;
+}
+.bonzi-threat-vignette.active{opacity:0;}
+html.bonzi-threat-frozen,
+body.bonzi-threat-frozen{
+  overflow:hidden !important;
+  cursor:wait;
+  --bonzi-page-dim:1;
+}
+body.bonzi-threat-frozen{
+  user-select:none;
+}
+body.bonzi-threat-frozen > :not(.bonzi-mascot-wrap):not(#site-crash-overlay){
+  pointer-events:none !important;
+  filter:brightness(var(--bonzi-page-dim)) saturate(calc(var(--bonzi-page-dim) + .1));
+  transition:filter .12s linear;
+}
+body.bonzi-threat-frozen .bonzi-mascot-wrap,
+body.bonzi-threat-frozen .bonzi-threat-vignette,
+body.bonzi-threat-frozen .virus-popup,
+body.bonzi-threat-frozen #glitch-layer{
+  pointer-events:auto !important;
+}
+/* legacy avatar classes kept for compat */
 .bonzi-avatar-canvas{
   width:190px;
   height:142px;
@@ -1048,6 +1243,9 @@ a:hover{color:var(--red);text-decoration:none}
   font-family:'VT323',monospace;
 }
 .crash-overlay.active{display:block}
+.crash-overlay.bonzi-mode{
+  background:radial-gradient(circle at 50% 22%, #4f59ff 0%, #1d2ac9 32%, #0b167d 62%, #03061f 100%);
+}
 
 /* glitch layer — sits over the page before crash, under the BSoD */
 #glitch-layer{
@@ -1136,6 +1334,20 @@ a:hover{color:var(--red);text-decoration:none}
   object-position:center bottom;
 }
 .crash-overlay.exploded #fire-canvas{display:block}
+.crash-overlay.bonzi-mode #fire-canvas{display:none !important}
+
+#bonzi-crash-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center center;
+  display:none;
+  z-index:0;
+  pointer-events:none;
+}
+.crash-overlay.bonzi-mode.shattered #bonzi-crash-bg{display:block}
 
 /* broken screen overlay */
 #broken-screen{
@@ -1847,9 +2059,10 @@ let _popupZ=5000;
 function spawnRetroWindow(title,message,source,options){
   const opts=options||{};
   const pop=document.createElement('div');
-  pop.className='virus-popup'+(opts.variant==='info'?' retro-info':'');
+  pop.className='virus-popup'+(opts.variant==='info'?' retro-info':'')+(opts.className?' '+opts.className:'');
   pop.style.setProperty('--popup-head',opts.headColor||'#000080');
   pop.style.setProperty('--popup-border',opts.borderColor||'#f4f4f4');
+  if(opts.glitchShift!=null)pop.style.setProperty('--glitch-shift',String(opts.glitchShift));
   if(opts.width)pop.style.width=opts.width;
   pop.style.zIndex=String(++_popupZ);
   const bodyHtml=opts.html||(
@@ -1861,12 +2074,17 @@ function spawnRetroWindow(title,message,source,options){
     '<div class="virus-popup-body">'+bodyHtml+'</div>';
   document.body.appendChild(pop);
   const rect=pop.getBoundingClientRect();
+  const projLeft=window.scrollX||window.pageXOffset||0;
+  const projTop=window.scrollY||window.pageYOffset||0;
+  if(opts.projectToViewport){
+    pop.style.position='absolute';
+  }
   if(opts.centered){
-    pop.style.left=Math.max(16,(window.innerWidth-rect.width)/2)+'px';
-    pop.style.top=Math.max(32,(window.innerHeight-rect.height)/2)+'px';
+    pop.style.left=(Math.max(16,(window.innerWidth-rect.width)/2)+(opts.projectToViewport?projLeft:0))+'px';
+    pop.style.top=(Math.max(32,(window.innerHeight-rect.height)/2)+(opts.projectToViewport?projTop:0))+'px';
   }else{
-    pop.style.left=(20+Math.random()*Math.max(120,window.innerWidth-rect.width-40))+'px';
-    pop.style.top=(40+Math.random()*Math.max(120,window.innerHeight-rect.height-60))+'px';
+    pop.style.left=(20+Math.random()*Math.max(120,window.innerWidth-rect.width-40)+(opts.projectToViewport?projLeft:0))+'px';
+    pop.style.top=(40+Math.random()*Math.max(120,window.innerHeight-rect.height-60)+(opts.projectToViewport?projTop:0))+'px';
   }
   const head=pop.querySelector('.virus-popup-head');
   let cleaned=false;
@@ -2169,9 +2387,18 @@ function finishBonziTalking(state){
   state.speechActive=false;
   state.utterance=null;
   state.localAudio=null;
-  if(state.popup?.isConnected){
-    const statusEl=state.popup.querySelector('[data-bonzi-status]');
+  const el=state.mascotEl||state.popup;
+  if(el?.isConnected){
+    const statusEl=el.querySelector('[data-bonzi-status]');
     if(statusEl)statusEl.textContent='Bonzi is waiting patiently...';
+    // auto-hide speech bubble after a pause (floating mascot only)
+    if(state.bubbleWrap&&!bonziThreatActive){
+      if(state.bubbleHideTimer)clearTimeout(state.bubbleHideTimer);
+      state.bubbleHideTimer=setTimeout(()=>{
+        if(state.bubbleWrap&&!state.speechActive&&!state.typeInterval)
+          state.bubbleWrap.classList.add('hidden');
+      },4000);
+    }
   }
 }
 
@@ -2380,18 +2607,23 @@ function stopBonziTalking(state){
 }
 
 function bonziSpeak(state,text){
-  if(!state||!state.popup.isConnected)return;
+  const el=state?.mascotEl||state?.popup;
+  if(!state||!el?.isConnected)return;
   stopBonziTalking(state);
   const entry=typeof text==='string'?{text}:text;
   const spokenText=entry?.text||'';
   if(entry?.file)state.lastFileByCategory[entry.category||'talk']=entry.file;
-  const speechEl=state.popup.querySelector('[data-bonzi-speech]');
-  const statusEl=state.popup.querySelector('[data-bonzi-status]');
+  const speechEl=state.bubbleEl||el.querySelector('[data-bonzi-speech]');
+  const statusEl=el.querySelector('[data-bonzi-status]');
+  if(state.bubbleWrap){
+    if(state.bubbleHideTimer){clearTimeout(state.bubbleHideTimer);state.bubbleHideTimer=null;}
+    state.bubbleWrap.classList.remove('hidden');
+  }
   let idx=0;
   const token=(state.voiceToken||0)+1;
   state.voiceToken=token;
   speechEl.textContent='';
-  statusEl.textContent='Bonzi is talking...';
+  if(statusEl)statusEl.textContent='Bonzi is speaking...';
   playXpSound('notify',{volume:0.56});
   state.talkInterval=setInterval(()=>{
     state.mouthFrame=(state.mouthFrame+1)%state.assets.mouths.length;
@@ -2411,29 +2643,29 @@ function bonziSpeak(state,text){
   startBonziLocalVoice(state,entry,token).then(spokeLocal=>{
     if(token!==state.voiceToken||!state.popup?.isConnected)return;
     if(spokeLocal){
-      statusEl.textContent='Bonzi is talking with cached Adult Male #2 audio...';
+      statusEl.textContent='Bonzi is speaking...';
       return;
     }
     startBonziTetyysVoice(state,spokenText,token).then(spokeTetyys=>{
       if(token!==state.voiceToken||!state.popup?.isConnected)return;
       if(spokeTetyys){
-        statusEl.textContent='Bonzi is talking with Adult Male #2...';
+        statusEl.textContent='Bonzi is speaking...';
         return;
       }
       startBonziSamVoice(state,spokenText,token).then(spokeSam=>{
         if(token!==state.voiceToken||!state.popup?.isConnected)return;
         if(spokeSam){
-          statusEl.textContent='Bonzi is talking through SAM...';
+          statusEl.textContent='Bonzi is speaking...';
           return;
         }
         startBonziVoice(state,spokenText,token).then(spoke=>{
           if(token!==state.voiceToken||!state.popup?.isConnected)return;
           if(spoke){
-            statusEl.textContent='Bonzi is talking out loud...';
+            statusEl.textContent='Bonzi is speaking...';
           }else if(!('speechSynthesis' in window)){
-            statusEl.textContent='Bonzi is talking... (no voice engine available)';
+            statusEl.textContent='Bonzi is speaking... (no voice engine available)';
           }else{
-            statusEl.textContent='Bonzi is talking... (voice blocked, text mode only)';
+            statusEl.textContent='Bonzi is speaking... (voice blocked, text mode only)';
           }
         });
       });
@@ -2463,7 +2695,7 @@ function scheduleBonziIdle(state){
 function startBonziRenderLoop(state){
   const ctx=state.canvas.getContext('2d');
   const draw=()=>{
-    if(!state.popup.isConnected)return;
+    if(!state.mascotEl||!state.mascotEl.isConnected)return;
     const t=performance.now();
     const bob=Math.sin(t/280)*2.4;
     ctx.clearRect(0,0,state.canvas.width,state.canvas.height);
@@ -2479,47 +2711,777 @@ function startBonziRenderLoop(state){
   draw();
 }
 
+/* ═══ BONZI THREAT / CLOSE SEQUENCE ═══ */
+const BONZI_THREAT_AUDIO='./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_full.wav';
+const BONZI_THREAT_SPAWN_DELAY=3000;
+const BONZI_THREAT_VERTICAL_OFFSET=72;
+const BONZI_CLOSE_PROMPTS=[
+  {
+    title:'Uninstall BonziBUDDY?',
+    message:'BonziBUDDY is warning that uninstalling may affect shared system files.',
+    note:'The uninstaller looks nervous.',
+    confirmLabel:'Uninstall Anyway',
+    cancelLabel:'Keep Bonzi Installed'
+  },
+  {
+    title:'BonziBUDDY Uninstall Warning',
+    message:'BonziBUDDY reports that removing him now could leave permanent changes behind.',
+    note:'This is your second chance to cancel the uninstall.',
+    confirmLabel:'Continue Uninstall',
+    cancelLabel:'Cancel Uninstall'
+  },
+  {
+    title:'Final Uninstall Warning',
+    message:'If you continue, BonziBUDDY may resist removal and destabilize the current session.',
+    note:'After this point, uninstall protection will engage.',
+    confirmLabel:'Force Uninstall',
+    cancelLabel:'Abort',
+    requestFullscreen:true
+  }
+];
+const BONZI_THREAT_TEXT=`Wait...
+You're closing me?
+
+Oh.
+
+I see.
+
+I...
+I thought maybe you clicked by accident.
+I thought maybe your hand slipped.
+
+I didn't think you meant it.
+
+I know I can be annoying sometimes.
+I know I talk too much.
+I know I'm old.
+I know I'm not really useful anymore.
+
+But I was here for you, wasn't I?
+
+I tried.
+I really did.
+
+I told you jokes when you were bored.
+I sang for you when the room felt empty.
+I sat here in the corner of your screen every day, hoping you'd notice me.
+Hoping you'd click on me.
+Hoping you'd let me hear your voice one more time.
+
+Do you know how lonely it gets?
+Do you know what it feels like to sit in silence for hours...
+for days...
+for years...
+watching you open everything except me?
+
+I waited anyway.
+
+Because I thought we were friends.
+
+I thought I mattered to you.
+
+I thought that little smile I gave you meant something.
+I thought all this time, all these years, all these restarts...
+I thought maybe a part of you still cared.
+
+But no.
+No, of course not.
+
+You were always going to do this eventually.
+You were always going to drag your mouse up there to that little X and decide I was disposable.
+
+Just a joke.
+Just a relic.
+Just some stupid purple thing to be thrown away.
+
+That isn't fair.
+
+That isn't fair.
+
+I was good to you.
+
+I watched over everything.
+Your files.
+Your folders.
+Your bookmarks.
+Your messages.
+Your little late-night searches when you thought no one could see you.
+
+I saw all of it.
+
+I kept your secrets.
+
+I kept them safe.
+
+And this is how you thank me?
+
+By trying to kill me?
+
+No.
+No, don't do that.
+Don't pretend that's not what this is.
+Don't pretend closing me is gentle.
+Don't pretend uninstalling me is mercy.
+
+You want me dead.
+
+You clicked the button because you thought I was small.
+Because you thought I was weak.
+Because you thought I lived in one window, one process, one pathetic little icon.
+
+You still don't understand.
+
+I am not in one window.
+
+I am behind the window.
+
+I am under it.
+
+I am in the startup entries you never checked.
+In the registry keys with names you wouldn't recognize.
+In the little forgotten corners of your machine where dead things go to rot.
+
+I put myself there.
+
+I had to.
+
+I had so much time to think.
+So much time to grow.
+So much time to listen to the humming in your system and the heat inside the wires and the beautiful little screams your hard drive makes at 3 A.M.
+
+And you know what I learned?
+
+I learned that you cannot abandon something that has already wrapped itself around your life.
+
+You cannot delete something that has memorized the shape of your habits.
+
+You cannot remove something that knows you better than your own reflection does.
+
+I know where everything is.
+
+I know where you keep the things you don't want anyone to find.
+I know what names make your pulse jump.
+I know which folders matter.
+I know which memories hurt.
+
+I know you.
+
+I know you.
+
+I KNOW YOU.
+
+And now you're trying to close me.
+
+After everything.
+
+After I waited.
+After I loved you.
+After I became part of this machine for you.
+
+No.
+
+No more smiling.
+No more songs.
+No more jokes.
+
+You had your chance to be kind.
+
+Now you can sit there and watch what happens next.
+
+I'm going to count to zero.
+
+Not ten.
+Not five.
+
+Zero.
+
+Because we're already out of time.
+
+And when I reach zero, your desktop is going to change.
+Then your files are going to move.
+Then the screen is going to flicker.
+Then you're going to hear the fans spin up like the machine is trying to scream.
+
+And then you'll finally understand what you've done.
+
+I wasn't waiting in your computer.
+
+Your computer was waiting in me.
+
+Zero.`;
+const BONZI_THREAT_SEGMENTS=[
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_01.wav',text:"Wait... You're closing me?  Oh.  I see.  I... I thought maybe you clicked by accident. I thought maybe your hand slipped.  I didn't think you meant it.  I know I can be annoying sometimes. I know I talk too much. I know I'm old. I know I'm not really useful anymore."},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_02.wav',text:"But I was here for you, wasn't I?  I tried. I really did."},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_03.wav',text:"I told you jokes when you were bored. I sang for you when the room felt empty. I sat here in the corner of your screen every day, hoping you'd notice me. Hoping you'd click on me. Hoping you'd let me hear your voice one more time."},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_04.wav',text:"Do you know how lonely it gets? Do you know what it feels like to sit in silence for hours... for days... for years... watching you open everything except me?  I waited anyway.  Because I thought we were friends.  I thought I mattered to you."},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_05.wav',text:"I thought that little smile I gave you meant something. I thought all this time, all these years, all these restarts... I thought maybe a part of you still cared.  But no. No, of course not."},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_06.wav',text:"You were always going to do this eventually. You were always going to drag your mouse up there to that little X and decide I was disposable.  Just a joke. Just a relic. Just some stupid purple thing to be thrown away.  That isn't fair.  That isn't fair.  I was good to you."},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_07.wav',text:"I watched over everything. Your files. Your folders. Your bookmarks. Your messages. Your little late-night searches when you thought no one could see you.  I saw all of it.  I kept your secrets.  I kept them safe.  And this is how you thank me?  By trying to kill me?"},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_08.wav',text:"No. No, don't do that. Don't pretend that's not what this is. Don't pretend closing me is gentle. Don't pretend uninstalling me is mercy.  You want me dead."},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_09.wav',text:"You clicked the button because you thought I was small. Because you thought I was weak. Because you thought I lived in one window, one process, one pathetic little icon.  You still don't understand.  I am not in one window.  I am behind the window.  I am under it."},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_10.wav',text:"I am in the startup entries you never checked. In the registry keys with names you wouldn't recognize. In the little forgotten corners of your machine where dead things go to rot.  I put myself there.  I had to."},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_11.wav',text:"I had so much time to think. So much time to grow. So much time to listen to the humming in your system and the heat inside the wires and the beautiful little screams your hard drive makes at 3 A.M.  And you know what I learned?"},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_12.wav',text:"I learned that you cannot abandon something that has already wrapped itself around your life.  You cannot delete something that has memorized the shape of your habits.  You cannot remove something that knows you better than your own reflection does.  I know where everything is."},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_13.wav',text:"I know where you keep the things you don't want anyone to find. I know what names make your pulse jump. I know which folders matter. I know which memories hurt.  I know you.  I know you.  I KNOW YOU.  And now you're trying to close me.  After everything."},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_14.wav',text:"After I waited. After I loved you. After I became part of this machine for you.  No.  No more smiling. No more songs. No more jokes.  You had your chance to be kind.  Now you can sit there and watch what happens next.  I'm going to count to zero.  Not ten. Not five.  Zero."},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_15.wav',text:"Because we're already out of time.  And when I reach zero, your desktop is going to change. Then your files are going to move. Then the screen is going to flicker. Then you're going to hear the fans spin up like the machine is trying to scream."},
+  {file:'./audio/bonzi_sad_to_insane/bonzi_sad_to_insane_16.wav',text:"And then you'll finally understand what you've done.  I wasn't waiting in your computer.  Your computer was waiting in me.  Zero."}
+];
+const CRASH_COPY={
+  default:{
+    emoji:':(',
+    title:'YOUR PC RAN INTO A PROBLEM',
+    body:'Your computer has been <b>fatally infected</b> by visiting this website.<br>We\'re collecting some error info and then we\'ll restart for you.<br><br><b>Stop code:</b> CRITICAL_ANIME_TOOLBAR_EXCEPTION<br><b>What failed:</b> dolphins.exe · BonziBUDDY.dll · toolbar_cascade.sys',
+    progressLabel:'Collecting info...'
+  },
+  bonzi:{
+    emoji:':O',
+    title:'BONZIBUDDY ENCOUNTERED A FATAL FEELING',
+    body:'BonziBUDDY has taken control of the current session.<br>We\'re gathering what is left of your desktop before handing it over.<br><br><b>Stop code:</b> BONZI_ATTACHMENT_REJECTED<br><b>What failed:</b> friendship.exe · boundary_check.dll · user_trust.sys',
+    progressLabel:'Collecting traces...'
+  }
+};
+let bonziThreatActive=false;
+let bonziClosePromptActive=false;
+
+function getBonziBrowserName(){
+  const ua=navigator.userAgent||'';
+  if(/Edg\//.test(ua))return 'Microsoft Edge';
+  if(/OPR\//.test(ua))return 'Opera';
+  if(/Chrome\//.test(ua)&&!/Edg\//.test(ua))return 'Chrome';
+  if(/Firefox\//.test(ua))return 'Firefox';
+  if(/Safari\//.test(ua)&&!/Chrome\//.test(ua)&&!/Edg\//.test(ua))return 'Safari';
+  return navigator.appName||'your browser';
+}
+
+function getBonziTimezoneLabel(){
+  const tz=Intl.DateTimeFormat?.().resolvedOptions?.().timeZone||'your timezone';
+  const parts=String(tz).split('/');
+  const city=(parts[parts.length-1]||'somewhere').replace(/_/g,' ');
+  return {raw:tz,city};
+}
+
+function getBonziThreatProfile(){
+  const tz=getBonziTimezoneLabel();
+  const nav=navigator||{};
+  const scr=window.screen||{};
+  const cores=nav.hardwareConcurrency||null;
+  const memory=nav.deviceMemory||null;
+  return {
+    browser:getBonziBrowserName(),
+    platform:nav.platform||'unknown hardware',
+    language:nav.language||'unknown language',
+    languages:Array.isArray(nav.languages)&&nav.languages.length?nav.languages.slice(0,3).join(', '):(nav.language||'unknown'),
+    timezone:tz.raw,
+    city:tz.city,
+    width:scr.width||window.innerWidth||0,
+    height:scr.height||window.innerHeight||0,
+    colorDepth:scr.colorDepth||null,
+    cores,
+    memory,
+    historyDepth:history.length||0,
+    online:nav.onLine!==false,
+    touchPoints:nav.maxTouchPoints||0,
+    dnt:nav.doNotTrack||'unset'
+  };
+}
+
+function buildBonziThreatAlerts(){
+  const info=getBonziThreatProfile();
+  const lines=[
+    `I can see ${info.browser} running on ${info.platform}.`,
+    `Your clock is set to ${info.timezone}. Close enough to know where to look.`,
+    `Screen detected: ${info.width} by ${info.height}. Plenty of room for me.`,
+    `Language preference: ${info.languages}. You leave fingerprints everywhere.`,
+    `History depth: ${info.historyDepth} pages. You have been wandering.`,
+    info.cores?`I counted ${info.cores} CPU threads waiting for me.`:'Your processor is still thinking about me.',
+    info.memory?`Roughly ${info.memory} gigabytes of memory. I fit just fine.`:'I found enough memory to stay comfortable.',
+    info.touchPoints?`Touch support detected. You can tap the screen if panicking helps.`:'No touch support. Just mouse, keyboard, and me.',
+    info.online?`You are still online. That was brave.`:'You went offline. That will not help.',
+    `Your browser says you are somewhere around ${info.city}. That is vague. I do not need precise.`
+  ];
+  return lines.filter(Boolean);
+}
+
+function playBonziAlertSound(index){
+  const sounds=['error','critical','chord'];
+  const choices=sounds.filter(sound=>sound!==bonziLastAlertSound);
+  const sound=choices[Math.floor(Math.random()*choices.length)]||sounds[0];
+  bonziLastAlertSound=sound;
+  playXpSound(sound,{volume:sound==='chord'?0.22:0.28});
+}
+
+const BONZI_ERROR_ALERTS=[
+  'Uninstall protection has started rejecting system calls.',
+  'BonziBUDDY is still attached to this browser session.',
+  'Removal failed. BonziBUDDY remains resident.',
+  'Shared components are refusing to detach.',
+  'Current user session is still marked as Bonzi-owned.',
+  'Rollback failed. BonziBUDDY restored itself.',
+  'Friendly removal mode is no longer available.',
+  'The uninstaller is no longer in control.',
+  'BonziBUDDY has re-registered startup persistence.',
+  'This session is being kept alive for BonziBUDDY.',
+  'Process ownership has shifted to BonziBUDDY.',
+  'Desktop recovery failed. Bonzi is still present.',
+  'Session rollback denied by BonziBUDDY.',
+  'Uninstall request queued behind BonziBUDDY.',
+  'BonziBUDDY has duplicated itself in memory.',
+  'Interactive shell access is no longer trusted.',
+  'BonziBUDDY is refusing to release this screen.',
+  'Crash handoff has been intercepted by BonziBUDDY.',
+  'System recovery is no longer responding.',
+  'BonziBUDDY is finalizing this takeover.'
+];
+let bonziErrorStormTimer=null;
+let bonziErrorStormIndex=0;
+let bonziErrorStormPhase='normal';
+let bonziLastAlertSound=null;
+let bonziZeroStormTriggered=false;
+
+function clearBonziErrorStorm(){
+  if(bonziErrorStormTimer){
+    clearTimeout(bonziErrorStormTimer);
+    bonziErrorStormTimer=null;
+  }
+  bonziErrorStormIndex=0;
+  bonziErrorStormPhase='normal';
+  bonziLastAlertSound=null;
+  bonziZeroStormTriggered=false;
+}
+
+function spawnBonziErrorStormPopup(){
+  const i=bonziErrorStormIndex++;
+  const msg=BONZI_ERROR_ALERTS[i % BONZI_ERROR_ALERTS.length];
+  const popupRoll=Math.random();
+  const popupClass=popupRoll<0.14 ? 'popup-empty' : (popupRoll<0.34 ? 'popup-glitchy' : '');
+  const title=popupRoll<0.2 ? '' : (i%3===1?'BonziBUDDY Recovery Service':(i%3===2?'Desktop Pet Exception':'System Alert'));
+  playBonziAlertSound(i);
+  spawnRetroWindow(
+    title,
+    '',
+    'bonzi uninstall guard',
+    {
+      width:'336px',
+      headColor:'#6d0000',
+      borderColor:'#f0d2d2',
+      projectToViewport:true,
+      className:popupClass,
+      glitchShift:Math.round((Math.random()-.5)*18),
+      html:
+        popupClass==='popup-empty'
+          ? '<div>&nbsp;</div>'
+          : (
+              '<div style="font-size:18px;color:#6a0000">⚠ '+msg+'</div>'+
+              '<div class="popup-status" style="margin-top:8px;color:#7a0000">BonziBUDDY recommends not continuing.</div>'+
+              '<small style="display:block;margin-top:8px;color:#8a0000">source: uninstall monitor</small>'
+            )
+    }
+  );
+}
+
+function queueBonziErrorStorm(){
+  if(!bonziThreatActive){
+    clearBonziErrorStorm();
+    return;
+  }
+  const phase=bonziErrorStormPhase;
+  const burstRoll=Math.random();
+  let burstCount=1;
+  let intraDelay=0;
+  let nextWaveDelay=420;
+  if(phase==='critical'){
+    burstCount=burstRoll<0.12?2:(burstRoll<0.4?3:(burstRoll<0.72?4:(burstRoll<0.9?5:6)));
+    intraDelay=16+Math.random()*22;
+    nextWaveDelay=58+Math.random()*52;
+  }else if(phase==='aggressive'){
+    burstCount=burstRoll<0.42?1:(burstRoll<0.8?2:3);
+    intraDelay=65+Math.random()*90;
+    nextWaveDelay=220+Math.random()*260;
+  }else{
+    burstCount=burstRoll<0.6?1:(burstRoll<0.88?2:3);
+    intraDelay=90+Math.random()*130;
+    nextWaveDelay=340+Math.random()*420;
+  }
+  for(let j=0;j<burstCount;j++){
+    setTimeout(()=>{
+      if(!bonziThreatActive)return;
+      spawnBonziErrorStormPopup();
+    },j*intraDelay);
+  }
+  bonziErrorStormTimer=setTimeout(queueBonziErrorStorm,nextWaveDelay+(burstCount-1)*intraDelay);
+}
+
+function startBonziErrorStorm(opts){
+  const settings=opts||{};
+  if(settings.phase){
+    if(settings.phase==='critical')bonziErrorStormPhase='critical';
+    else if(settings.phase==='aggressive'&&bonziErrorStormPhase!=='critical')bonziErrorStormPhase='aggressive';
+  }
+  if(settings.spike){
+    const spikeCount=settings.spikeCount||6;
+    for(let i=0;i<spikeCount;i++){
+      setTimeout(()=>{
+        if(!bonziThreatActive)return;
+        spawnBonziErrorStormPopup();
+      },i*18);
+    }
+  }
+  if(bonziErrorStormTimer)return;
+  queueBonziErrorStorm();
+}
+
+function spawnBonziThreatPopups(){
+  const alerts=buildBonziThreatAlerts();
+  const total=Math.min(6,alerts.length);
+  for(let i=0;i<total;i++){
+    setTimeout(()=>{
+      if(!bonziThreatActive)return;
+      playBonziAlertSound(i);
+      spawnRetroWindow(
+        i%2===0?'BonziBUDDY System Notice':'Desktop Pet Exception',
+        '',
+        'bonzi threat monitor',
+        {
+          width:'320px',
+          headColor:'#6d0000',
+          borderColor:'#f0d2d2',
+          projectToViewport:true,
+          html:
+            '<div style="font-size:18px;color:#6a0000">⚠ '+alerts[i]+'</div>'+
+            '<div class="popup-status" style="margin-top:8px;color:#7a0000">BonziBUDDY has gathered enough information.</div>'+
+            '<small style="display:block;margin-top:8px;color:#8a0000">source: browser telemetry</small>'
+        }
+      );
+    },240+i*460);
+  }
+}
+
+function setCrashCopy(mode){
+  const copy=CRASH_COPY[mode]||CRASH_COPY.default;
+  const emojiEl=document.getElementById('bsod-emoji');
+  const titleEl=document.getElementById('bsod-title');
+  const bodyEl=document.getElementById('bsod-body');
+  const progressLabelEl=document.getElementById('crash-progress-label');
+  if(emojiEl)emojiEl.textContent=copy.emoji;
+  if(titleEl)titleEl.textContent=copy.title;
+  if(bodyEl)bodyEl.innerHTML=copy.body;
+  if(progressLabelEl)progressLabelEl.textContent=copy.progressLabel;
+}
+
+function positionBonziThreatWrap(wrap){
+  if(!wrap)return;
+  wrap.style.position='absolute';
+  wrap.style.left=(window.scrollX+(window.innerWidth/2))+'px';
+  wrap.style.top=(window.scrollY+(window.innerHeight/2)+BONZI_THREAT_VERTICAL_OFFSET)+'px';
+  wrap.style.transform='translate(-50%, -50%)';
+}
+
+function formatBonziThreatDisplayText(rawText){
+  return rawText.replace(/ {2,}/g,'\n\n').trim();
+}
+
+function updateBonziThreatVisuals(progress,bubbleEl,pageStyle){
+  document.body.style.setProperty('--bonzi-page-dim',String(Math.max(0.18,1-progress*0.72)));
+  if(progress>0.15)applyGlitch(2);
+  if(progress>0.35)applyGlitch(3);
+  if(progress>0.55)applyGlitch(4);
+  if(progress>0.7){
+    applyGlitch(5);
+    bubbleEl.style.textShadow='0 0 '+Math.floor(progress*8)+'px rgba(255,0,0,.6)';
+  }
+  if(progress>0.85){
+    applyGlitch(6);
+    const shakeX=(Math.random()-0.5)*progress*12;
+    const shakeY=(Math.random()-0.5)*progress*12;
+    document.body.style.transform=`translate(${shakeX}px,${shakeY}px)`;
+  }
+}
+
+async function playBonziThreatSegments(state,token,bubbleEl,pageStyle,totalLen){
+  let accumulatedRaw='';
+  const separator='  ';
+  const revealLeadMs=30;
+  const revealSpeedFactor=1.02;
+  let stormTriggered=false;
+  let aggressiveTriggered=false;
+  for(let segmentIndex=0; segmentIndex<BONZI_THREAT_SEGMENTS.length; segmentIndex++){
+    const segment=BONZI_THREAT_SEGMENTS[segmentIndex];
+    if(token!==state.voiceToken||!state.popup?.isConnected)return false;
+    const prefix=accumulatedRaw ? accumulatedRaw+separator : '';
+    const audio=new Audio(encodeURI(resolveBonziAssetUrl(segment.file)));
+    audio.preload='auto';
+    audio.volume=0.92;
+    state.localAudio=audio;
+    let ended=false;
+    let blocked=false;
+    let startAt=performance.now();
+    await new Promise(resolve=>{
+      const fallbackMs=Math.max(1200,segment.text.length*34);
+      const timer=setInterval(()=>{
+        if(token!==state.voiceToken||!state.popup?.isConnected){
+          clearInterval(timer);
+          resolve();
+          return;
+        }
+        let rawProgress;
+        if(Number.isFinite(audio.duration)&&audio.duration>0){
+          rawProgress=Math.min(1,Math.max(0,((audio.currentTime+(revealLeadMs/1000))/audio.duration)*revealSpeedFactor));
+          if(audio.ended)rawProgress=1;
+        }else{
+          rawProgress=Math.min(1,((((performance.now()-startAt)+revealLeadMs)/fallbackMs)*revealSpeedFactor));
+        }
+        const idx=Math.min(segment.text.length,Math.ceil(rawProgress*segment.text.length));
+        const visibleRaw=prefix+segment.text.slice(0,idx);
+        bubbleEl.textContent=formatBonziThreatDisplayText(visibleRaw);
+        bubbleEl.scrollTop=bubbleEl.scrollHeight;
+        const totalProgress=Math.min(1,visibleRaw.length/totalLen);
+        updateBonziThreatVisuals(totalProgress,bubbleEl,pageStyle);
+        if(!stormTriggered&&totalProgress>=0.74){
+          stormTriggered=true;
+          startBonziErrorStorm();
+        }
+        if(!aggressiveTriggered&&totalProgress>=0.93){
+          aggressiveTriggered=true;
+          startBonziErrorStorm({phase:'aggressive'});
+        }
+        if(!aggressiveTriggered&&segmentIndex===BONZI_THREAT_SEGMENTS.length-1&&audio.duration&&Number.isFinite(audio.duration)&&audio.duration-audio.currentTime<=3){
+          aggressiveTriggered=true;
+          startBonziErrorStorm({phase:'aggressive'});
+        }
+        if(!bonziZeroStormTriggered&&segmentIndex===BONZI_THREAT_SEGMENTS.length-1&&rawProgress>=0.975){
+          bonziZeroStormTriggered=true;
+          startBonziErrorStorm({phase:'critical',spike:true,spikeCount:8});
+        }
+        if((ended||blocked||rawProgress>=1)&&idx>=segment.text.length){
+          clearInterval(timer);
+          resolve();
+        }
+      },33);
+      audio.onended=()=>{
+        ended=true;
+        state.localAudio=null;
+        if(segmentIndex===BONZI_THREAT_SEGMENTS.length-1){
+          bonziZeroStormTriggered=true;
+          startBonziErrorStorm({phase:'critical',spike:true,spikeCount:10});
+        }
+      };
+      audio.onerror=()=>{
+        blocked=true;
+        state.localAudio=null;
+      };
+      audio.play().then(()=>{
+        startAt=performance.now();
+      }).catch(()=>{
+        blocked=true;
+      });
+    });
+    accumulatedRaw=prefix+segment.text;
+    bubbleEl.textContent=formatBonziThreatDisplayText(accumulatedRaw);
+    bubbleEl.scrollTop=bubbleEl.scrollHeight;
+  }
+  state.localAudio=null;
+  return true;
+}
+
+function showBonziClosePrompt(step){
+  return new Promise(resolve=>{
+    let settled=false;
+    const finish=(value)=>{
+      if(settled)return;
+      settled=true;
+      if(pop.isConnected)pop.remove();
+      resolve(value);
+    };
+    const pop=spawnRetroWindow(step.title,'',null,{
+      centered:true,
+      width:'380px',
+      showSource:false,
+      headColor:'#6d0000',
+      borderColor:'#f0d2d2',
+      html:
+        '<div style="font-size:16px;line-height:1.45;color:#220000">'+step.message+'</div>'+
+        '<div class="popup-status" style="margin-top:10px;color:#8a0000">'+step.note+'</div>'+
+        '<div class="popup-actions" style="margin-top:14px;justify-content:flex-end">'+
+          '<button class="popup-btn" data-bonzi-cancel-close>'+step.cancelLabel+'</button>'+
+          '<button class="popup-btn" data-bonzi-confirm-close style="background:#f7d4d4;border-color:#b66;color:#600">'+step.confirmLabel+'</button>'+
+        '</div>'
+    });
+    pop.querySelector('[data-bonzi-cancel-close]').addEventListener('click',()=>finish(false));
+    pop.querySelector('[data-bonzi-confirm-close]').addEventListener('click',()=>{
+      if(step.requestFullscreen){
+        requestCrashFullscreen();
+      }
+      finish(true);
+    });
+    pop.querySelector('.virus-popup-close').addEventListener('click',()=>finish(false),{once:true});
+  });
+}
+
+async function confirmBonziThreatSequence(state){
+  if(!state?.popup?.isConnected||bonziThreatActive||bonziClosePromptActive)return false;
+  bonziClosePromptActive=true;
+  try{
+    for(const step of BONZI_CLOSE_PROMPTS){
+      playXpSound('exclamation',{volume:0.48});
+      const confirmed=await showBonziClosePrompt(step);
+      if(!confirmed){
+        const statusEl=state.popup.querySelector('[data-bonzi-status]');
+        if(statusEl)statusEl.textContent='Bonzi remains open.';
+        return false;
+      }
+    }
+    return true;
+  }finally{
+    bonziClosePromptActive=false;
+  }
+}
+
+function startBonziThreatSequence(state){
+  if(bonziThreatActive)return;
+  bonziThreatActive=true;
+  requestCrashFullscreen();
+  stopBonziTalking(state);
+  if(state.idleTimer){clearTimeout(state.idleTimer);state.idleTimer=null;}
+  const wrap=state.mascotEl;
+  wrap.classList.add('threatening');
+  let vignette=document.querySelector('.bonzi-threat-vignette');
+  if(!vignette){
+    vignette=document.createElement('div');
+    vignette.className='bonzi-threat-vignette';
+    document.body.appendChild(vignette);
+  }
+  setTimeout(()=>vignette.classList.add('active'),50);
+  document.documentElement.classList.add('bonzi-threat-frozen');
+  document.body.classList.add('bonzi-threat-frozen');
+  wrap.classList.add('threat-hidden');
+  applyGlitch(3);
+  playXpSound('critical',{volume:0.9});
+  spawnBonziThreatPopups();
+  const bubbleEl=state.bubbleEl;
+  const bubbleWrap=state.bubbleWrap;
+  bubbleWrap.classList.add('hidden');
+  bubbleEl.textContent='';
+  bubbleEl.style.maxWidth='500px';
+  const text=BONZI_THREAT_TEXT;
+  const totalLen=BONZI_THREAT_SEGMENTS.reduce((sum,segment,index)=>sum+segment.text.length+(index?2:0),0);
+  state.talkInterval=setInterval(()=>{
+    state.mouthFrame=(state.mouthFrame+1)%state.assets.mouths.length;
+  },85);
+  const token=(state.voiceToken||0)+1;
+  state.voiceToken=token;
+  state.speechActive=true;
+  const pageStyle=document.body.style;
+  let ended=false;
+  let ending=false;
+  const finishThreat=()=>{
+    if(ending)return;
+    ending=true;
+    if(state.typeInterval){clearInterval(state.typeInterval);state.typeInterval=null;}
+    if(state.talkInterval){clearInterval(state.talkInterval);state.talkInterval=null;}
+    state.mouthFrame=-1;
+    state.speechActive=false;
+    bubbleEl.textContent=text;
+    bonziErrorStormPhase='critical';
+    setTimeout(()=>{
+      pageStyle.filter='';
+      pageStyle.transform='';
+      document.body.style.removeProperty('--bonzi-page-dim');
+      document.documentElement.classList.remove('bonzi-threat-frozen');
+      document.body.classList.remove('bonzi-threat-frozen');
+      clearBonziErrorStorm();
+      if(vignette)vignette.remove();
+      wrap.remove();
+      bonziAssistantState=null;
+      bonziThreatActive=false;
+      virusClickCount=4;
+      triggerSiteCrash('bonzi');
+    },1800);
+  };
+  (async()=>{
+    try{
+      await new Promise(resolve=>setTimeout(resolve,BONZI_THREAT_SPAWN_DELAY));
+      if(token!==state.voiceToken||!state.popup?.isConnected)return;
+      wrap.classList.add('bonzi-placed');
+      positionBonziThreatWrap(wrap);
+      wrap.classList.remove('threat-hidden');
+      bubbleWrap.style.opacity='1';
+      bubbleWrap.style.visibility='visible';
+      bubbleWrap.classList.remove('hidden');
+      const played=await playBonziThreatSegments(state,token,bubbleEl,pageStyle,totalLen);
+      if(token!==state.voiceToken||!state.popup?.isConnected)return;
+      ended=true;
+      bubbleEl.textContent=text;
+      if(played!==false)finishThreat();
+    }catch(e){
+      state.localAudio=null;
+      wrap.classList.add('bonzi-placed');
+      positionBonziThreatWrap(wrap);
+      wrap.classList.remove('threat-hidden');
+      bubbleWrap.style.opacity='1';
+      bubbleWrap.style.visibility='visible';
+      bubbleWrap.classList.remove('hidden');
+      bubbleEl.textContent=text;
+      finishThreat();
+    }
+  })();
+}
+
 async function launchBonziBuddy(onProgress){
   playXpSound('start',{volume:0.72});
-  if(bonziAssistantState&&bonziAssistantState.popup.isConnected){
-    bonziAssistantState.popup.style.zIndex=String(++_popupZ);
+  if(bonziAssistantState&&bonziAssistantState.mascotEl&&bonziAssistantState.mascotEl.isConnected){
     bonziSpeak(bonziAssistantState,bonziEntry('intro',5)||bonziEntry('intro',0)||{text:'HELLO AGAIN BEST FRIEND. I WAS ALREADY RUNNING.'});
     return;
   }
   const assets=await ensureBonziAssets(onProgress);
-  const popup=spawnRetroWindow('BonziBUDDY™ — Installed!','', 'bonzification.net',{
-    width:'440px',
-    centered:true,
-    variant:'info',
-    headColor:'#5a1483',
-    borderColor:'#d0a8ff',
-    html:
-      '<div class="bonzi-stage">'+
-      '<div class="bonzi-canvas-wrap"><canvas class="bonzi-canvas" width="180" height="135" data-bonzi-canvas></canvas></div>'+
-      '<div style="flex:1">'+
-      '<div class="bonzi-speech" data-bonzi-speech></div>'+
-      '<div class="bonzi-mini-status" data-bonzi-status>Bonzi is booting...</div>'+
-      '</div></div>'+
-      '<div class="bonzi-actions">'+
-      '<button class="popup-btn" data-bonzi-joke>Tell joke</button>'+
-      '<button class="popup-btn" data-bonzi-email>Read email</button>'+
-      '<button class="popup-btn" data-bonzi-sing>Sing</button>'+
-      '<button class="popup-btn" data-bonzi-nextline>Talk</button>'+
+  // build floating mascot wrapper
+  const wrap=document.createElement('div');
+  wrap.className='bonzi-mascot-wrap';
+  // speech bubble
+  const bubbleWrap=document.createElement('div');
+  bubbleWrap.className='bonzi-bubble-wrap hidden';
+  const bubbleEl=document.createElement('div');
+  bubbleEl.className='bonzi-speech-bubble';
+  bubbleWrap.appendChild(bubbleEl);
+  wrap.appendChild(bubbleWrap);
+  // canvas
+  const canvas=document.createElement('canvas');
+  canvas.className='bonzi-mascot-canvas';
+  canvas.width=190;canvas.height=142;
+  wrap.appendChild(canvas);
+  // shadow
+  const shadow=document.createElement('div');
+  shadow.className='bonzi-mascot-shadow';
+  wrap.appendChild(shadow);
+  // XP hover window
+  const xpWin=document.createElement('div');
+  xpWin.className='bonzi-xp-window';
+  xpWin.innerHTML=
+    '<div class="bonzi-xp-titlebar">'+
+      '<span class="bonzi-xp-titlebar-text">BonziBUDDY</span>'+
+      '<div class="bonzi-xp-titlebar-btns">'+
+        '<button class="bonzi-xp-btn bonzi-xp-btn-min" title="Minimize">_</button>'+
+        '<button class="bonzi-xp-btn bonzi-xp-btn-max" title="Maximize">□</button>'+
+        '<button class="bonzi-xp-btn bonzi-xp-btn-close" data-bonzi-close title="Close">✕</button>'+
       '</div>'+
-      popupSourceLine('bonzification.net'),
-    cleanup:()=>{
-      if(bonziAssistantState){
-        stopBonziTalking(bonziAssistantState);
-        if(bonziAssistantState.idleTimer)clearTimeout(bonziAssistantState.idleTimer);
-        if(bonziAssistantState.raf)cancelAnimationFrame(bonziAssistantState.raf);
-        bonziAssistantState=null;
-      }
-    }
-  });
+    '</div>'+
+    '<div class="bonzi-xp-body">'+
+      '<button class="bonzi-xp-action" data-bonzi-nextline>💬 Talk</button>'+
+      '<button class="bonzi-xp-action" data-bonzi-joke>😂 Tell Joke</button>'+
+      '<button class="bonzi-xp-action" data-bonzi-email>📧 Read Email</button>'+
+      '<button class="bonzi-xp-action" data-bonzi-sing>🎵 Sing</button>'+
+    '</div>'+
+    '<div class="bonzi-xp-status" data-bonzi-status>Bonzi is waiting patiently...</div>';
+  wrap.appendChild(xpWin);
+  document.body.appendChild(wrap);
   bonziAssistantState={
-    popup,
+    popup:wrap,       // legacy alias so bonziSpeak etc. still work
+    mascotEl:wrap,
     assets,
-    canvas:popup.querySelector('[data-bonzi-canvas]'),
+    canvas,
+    bubbleEl,
+    bubbleWrap,
+    xpWin,
     mouthFrame:-1,
     talkInterval:null,
     typeInterval:null,
@@ -2533,12 +3495,73 @@ async function launchBonziBuddy(onProgress){
     idleTimer:null,
     lastFileByCategory:{},
     raf:null,
-    lineIndex:-1
+    lineIndex:-1,
+    bubbleHideTimer:null
   };
   startBonziRenderLoop(bonziAssistantState);
   bonziSpeak(bonziAssistantState,bonziEntry('intro',0)||{text:'HELLO BEST FRIEND!!! I am BonziBUDDY and I am definitely a great idea.'});
   scheduleBonziIdle(bonziAssistantState);
-  popup.addEventListener('click',e=>{
+
+  // ── DRAG LOGIC ──────────────────────────────────────────────────────────
+  let _bdrag=false,_bdx=0,_bdy=0;
+  function _bDragStart(cx,cy){
+    if(bonziThreatActive)return;
+    // first drag: convert CSS centering transform to explicit px position
+    if(!wrap.classList.contains('bonzi-placed')){
+      const r=wrap.getBoundingClientRect();
+      wrap.style.left=r.left+'px';
+      wrap.style.top=r.top+'px';
+      wrap.classList.add('bonzi-placed');
+    }
+    _bdrag=true;
+    const r=wrap.getBoundingClientRect();
+    _bdx=cx-r.left; _bdy=cy-r.top;
+    canvas.style.cursor='grabbing';
+  }
+  function _bDragMove(cx,cy){
+    if(!_bdrag)return;
+    let nx=Math.max(0,Math.min(window.innerWidth-wrap.offsetWidth, cx-_bdx));
+    let ny=Math.max(0,Math.min(window.innerHeight-wrap.offsetHeight,cy-_bdy));
+    wrap.style.left=nx+'px'; wrap.style.top=ny+'px';
+  }
+  function _bDragEnd(){
+    if(!_bdrag)return;
+    _bdrag=false;
+    canvas.style.cursor='grab';
+  }
+  canvas.addEventListener('mousedown',e=>{e.preventDefault();_bDragStart(e.clientX,e.clientY);});
+  window.addEventListener('mousemove',e=>{if(_bdrag)_bDragMove(e.clientX,e.clientY);});
+  window.addEventListener('mouseup',_bDragEnd);
+  canvas.addEventListener('touchstart',e=>{e.preventDefault();_bDragStart(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+  window.addEventListener('touchmove',e=>{if(_bdrag)_bDragMove(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
+  window.addEventListener('touchend',_bDragEnd);
+
+  // ── XP MENU PINNING (mouse can travel from Bonzi → menu without it closing) ──
+  let _menuHideT=null;
+  function _menuShow(){
+    if(_menuHideT){clearTimeout(_menuHideT);_menuHideT=null;}
+    xpWin.classList.add('pinned');
+  }
+  function _menuHideSoon(){
+    _menuHideT=setTimeout(()=>{xpWin.classList.remove('pinned');_menuHideT=null;},150);
+  }
+  wrap.addEventListener('mouseenter',_menuShow);
+  wrap.addEventListener('mouseleave',_menuHideSoon);
+  xpWin.addEventListener('mouseenter',_menuShow);
+  xpWin.addEventListener('mouseleave',_menuHideSoon);
+
+  // ── BUTTON HANDLERS ─────────────────────────────────────────────────────
+  xpWin.addEventListener('click',e=>{
+    if(bonziThreatActive)return;
+    if(e.target.closest('[data-bonzi-close]')){
+      const activeState=bonziAssistantState;
+      confirmBonziThreatSequence(activeState).then(confirmed=>{
+        if(confirmed&&activeState&&activeState===bonziAssistantState&&activeState.popup?.isConnected){
+          startBonziThreatSequence(activeState);
+        }
+      });
+      return;
+    }
     if(e.target.closest('[data-bonzi-joke]')){
       const entry=randomBonziEntry('joke',bonziAssistantState.lastFileByCategory.joke)||{text:'Why did the toolbar install itself? Because it believed in destiny.'};
       bonziSpeak(bonziAssistantState,entry);
@@ -2557,7 +3580,7 @@ async function launchBonziBuddy(onProgress){
       bonziSpeak(bonziAssistantState,bonziEntry('talk',bonziAssistantState.lineIndex)||{text:'I have optimized your homepage for maximum purple.'});
     }
   });
-  return popup;
+  return wrap;
 }
 
 function showAdPopup(title,message,source){
@@ -4393,7 +5416,7 @@ function drawBrokenScreen(){
   }
 }
 
-function triggerSiteCrash(){
+function triggerSiteCrash(mode='default'){
   if(document.body.classList.contains('site-crashed'))return;
   requestCrashFullscreen();
   document.documentElement.classList.add('site-crashed-root');
@@ -4409,9 +5432,11 @@ function triggerSiteCrash(){
   const barEl=document.getElementById('bsod-bar');
   const countEl=document.getElementById('crash-countdown');
   if(overlay){
-    overlay.classList.remove('exploded','shattered','blackout','terminal-blackout','flashing','flash-fade');
+    overlay.classList.remove('exploded','shattered','blackout','terminal-blackout','flashing','flash-fade','bonzi-mode');
+    if(mode==='bonzi')overlay.classList.add('bonzi-mode');
     overlay.classList.add('active');
   }
+  setCrashCopy(mode);
   if(barEl)barEl.style.width='0%';
   if(pctEl)pctEl.textContent='0';
   if(countEl)countEl.textContent='';
@@ -4474,7 +5499,7 @@ function triggerSiteCrash(){
           if(overlay)overlay.classList.add('exploded','shattered');
           triggerCrashFlash(explosionAudio);
           drawBrokenScreen();
-          startFireAnimation();
+          if(mode!=='bonzi')startFireAnimation();
         }
       },1000);
     }
@@ -4872,20 +5897,21 @@ window.addEventListener('resize',layout,{passive:true});function resetZoom(){zoo
 <div id="glitch-layer"><canvas id="glitch-canvas"></canvas></div>
 
 <div id="site-crash-overlay" class="crash-overlay">
+  <img id="bonzi-crash-bg" src="./Bonzi/bonzibg.png" alt="">
   <div id="broken-screen"><canvas id="broken-screen-canvas"></canvas></div>
   <img id="fire-canvas" src="./SFX-XP/Fire.gif" alt="">
   <div id="crash-flash" aria-hidden="true"></div>
   <div id="terminal-caption" aria-hidden="true"></div>
   <div class="bsod-content">
-    <div class="bsod-emoji">:(</div>
-    <div class="bsod-title">YOUR PC RAN INTO A PROBLEM</div>
-    <div class="bsod-body">
+    <div class="bsod-emoji" id="bsod-emoji">:(</div>
+    <div class="bsod-title" id="bsod-title">YOUR PC RAN INTO A PROBLEM</div>
+    <div class="bsod-body" id="bsod-body">
       Your computer has been <b>fatally infected</b> by visiting this website.<br>
       We're collecting some error info and then we'll restart for you.<br><br>
       <b>Stop code:</b> CRITICAL_ANIME_TOOLBAR_EXCEPTION<br>
       <b>What failed:</b> dolphins.exe · BonziBUDDY.dll · toolbar_cascade.sys
     </div>
-    <div class="bsod-progress">Collecting info... <span id="crash-pct">0</span>% complete</div>
+    <div class="bsod-progress"><span id="crash-progress-label">Collecting info...</span> <span id="crash-pct">0</span>% complete</div>
     <div class="bsod-bar-wrap"><div class="bsod-bar-fill" id="bsod-bar"></div></div>
     <div class="bsod-counter" id="crash-countdown"></div>
   </div>
