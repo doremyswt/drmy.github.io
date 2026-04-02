@@ -11,59 +11,64 @@
 <title>drmy's Windows XP Desktop</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
+html,body{height:100%;overflow:hidden}
 body{
-  overflow:hidden;
-  font:12px Tahoma,"Segoe UI",sans-serif;
+  font:12px/1.4 Tahoma,"Segoe UI",sans-serif;
   color:#123050;
-  background:#4d7cc2 url('xp-bliss.jpg') center center / cover no-repeat fixed;
+  background:#4d7cc2 url('xp-bliss.jpg') center center/cover no-repeat fixed;
 }
+/* ─── Desktop ─────────────────────────────────────────────── */
 .desktop{
   position:relative;
-  min-height:100vh;
-  padding:18px 16px 46px;
+  width:100%;
+  height:100vh;
   overflow:hidden;
 }
+/* ─── Desktop Icons ───────────────────────────────────────── */
 .desktop-icons{
   position:absolute;
   top:18px;
   left:14px;
   display:flex;
   flex-direction:column;
-  gap:14px;
+  gap:8px;
   z-index:2;
 }
 .desktop-icon{
-  width:86px;
+  width:80px;
   color:#fff;
   text-decoration:none;
-  text-shadow:1px 1px 0 rgba(0,0,0,.85);
+  text-shadow:1px 1px 2px rgba(0,0,0,.9),0 0 5px rgba(0,0,0,.7);
   background:transparent;
   border:0;
-  font:inherit;
+  font:12px Tahoma,"Segoe UI",sans-serif;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:6px;
-  padding:4px;
+  gap:4px;
+  padding:5px 3px 4px;
   cursor:pointer;
+  border-radius:2px;
+  user-select:none;
 }
 .desktop-icon:hover,
 .desktop-icon:focus-visible{
-  background:rgba(49,106,197,.32);
-  outline:1px dotted rgba(255,255,255,.95);
-  outline-offset:-3px;
+  background:rgba(49,106,197,.42);
+  outline:1px dotted rgba(255,255,255,.88);
+  outline-offset:-1px;
 }
+.desktop-icon:active{background:rgba(49,106,197,.62)}
 .icon-art{
-  width:42px;
-  height:38px;
+  width:34px;
+  height:34px;
   position:relative;
-  border-radius:7px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 2px 5px rgba(0,0,0,.28);
+  flex-shrink:0;
+  display:block;
 }
 .icon-art.browser{
   border-radius:50%;
-  background:radial-gradient(circle at 32% 30%,#fff3bc 0 13%,#5bb8ff 14% 55%,#005fb8 56% 100%);
+  background:radial-gradient(circle at 33% 28%,#fffad0 0 12%,#5bb8ff 13% 54%,#005fb8 55% 100%);
+  box-shadow:0 1px 4px rgba(0,0,0,.45);
 }
 .icon-art.browser::before{
   content:'e';
@@ -72,212 +77,312 @@ body{
   display:grid;
   place-items:center;
   color:#fff7d6;
-  font:italic 700 28px/1 Georgia,serif;
-  text-shadow:0 1px 0 rgba(0,0,0,.28);
+  font:italic 700 21px/1 Georgia,serif;
+  text-shadow:0 1px 0 rgba(0,0,0,.3);
 }
 .icon-art.folder{
-  background:linear-gradient(180deg,#ffe7a0 0%,#e2a91e 100%);
+  background:linear-gradient(155deg,#ffef9a 0%,#e8a90f 100%);
+  border-radius:1px 4px 2px 2px;
+  box-shadow:0 1px 4px rgba(0,0,0,.38);
 }
 .icon-art.folder::before{
   content:'';
   position:absolute;
-  top:3px;
-  left:6px;
-  width:18px;
-  height:8px;
-  border-radius:4px 4px 0 0;
-  background:#fff0be;
+  top:-3px;left:0;
+  width:14px;height:6px;
+  border-radius:3px 3px 0 0;
+  background:#ffef9a;
 }
 .icon-art.folder::after{
   content:'';
   position:absolute;
-  left:4px;
-  right:4px;
-  top:10px;
-  bottom:3px;
-  border-radius:4px;
-  background:linear-gradient(180deg,#ffd76b 0%,#d69717 100%);
+  left:2px;right:2px;top:4px;bottom:2px;
+  border-radius:1px 2px 2px 2px;
+  background:linear-gradient(180deg,#ffe777 0%,#d49412 100%);
 }
 .desktop-icon span:last-child{
-  line-height:1.2;
+  font-size:11px;
+  line-height:1.25;
   text-align:center;
+  max-width:78px;
 }
+/* ─── Windows ─────────────────────────────────────────────── */
 .window{
   position:absolute;
   display:none;
   flex-direction:column;
   overflow:hidden;
-  border:1px solid #0c3f78;
+  border:2px solid #0b3880;
   border-radius:7px 7px 0 0;
   background:#ece9d8;
-  box-shadow:0 16px 32px rgba(0,0,0,.32);
+  box-shadow:
+    inset 0 0 0 1px rgba(120,180,255,.4),
+    0 6px 18px rgba(0,0,0,.22),
+    0 18px 40px rgba(0,0,0,.28);
+  min-width:320px;
+  min-height:200px;
 }
 .window.open{display:flex}
-.window.focused{box-shadow:0 22px 40px rgba(0,0,0,.4)}
+.window.focused{
+  border-color:#0a3acc;
+  box-shadow:
+    inset 0 0 0 1px rgba(120,190,255,.55),
+    0 8px 24px rgba(0,0,0,.28),
+    0 24px 50px rgba(0,0,0,.36);
+}
+.window.maximized{
+  border-radius:0!important;
+  border-width:0!important;
+  box-shadow:none!important;
+}
 .window.forum{
   top:46px;
   left:126px;
   width:min(67vw,980px);
   height:min(78vh,860px);
-  min-width:640px;
 }
 .window.gallery{
   top:84px;
   left:min(57vw,780px);
   width:min(40vw,700px);
   height:min(70vh,760px);
-  min-width:390px;
 }
+/* ─── Titlebar ────────────────────────────────────────────── */
 .titlebar{
   display:flex;
   align-items:center;
-  gap:8px;
-  padding:4px 6px 4px 8px;
+  gap:6px;
+  padding:3px 4px 4px 6px;
   color:#fff;
   user-select:none;
   cursor:grab;
-  background:linear-gradient(180deg,#0a67d2 0%,#0f86e8 10%,#1668ca 44%,#0c57b3 100%);
+  flex-shrink:0;
+  min-height:28px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.16) 0%,transparent 6%),
+    linear-gradient(180deg,#1078ef 0%,#1288f8 4%,#1880e8 14%,#1268d0 50%,#0c5ac2 82%,#0a52b8 100%);
+  border-bottom:1px solid #0a48a8;
 }
 .window:not(.focused) .titlebar{
-  background:linear-gradient(180deg,#7196c8 0%,#4a76aa 100%);
+  background:linear-gradient(180deg,#9ab0c8 0%,#7898b8 50%,#6488a8 100%);
+  border-bottom-color:#4a7090;
 }
 .titlebar:active{cursor:grabbing}
 .title-icon{
-  width:16px;
-  height:16px;
-  flex:0 0 auto;
+  width:16px;height:16px;
+  flex:0 0 16px;
+  position:relative;
+  display:block;
 }
 .title-icon.ie{
   border-radius:50%;
   background:radial-gradient(circle at 35% 30%,#fff1bb 0 14%,#49b2ff 15% 52%,#005eb8 53% 100%);
 }
 .title-icon.folder{
-  position:relative;
-  border-radius:3px;
+  border-radius:2px;
   background:linear-gradient(180deg,#ffe39f 0%,#dc9a17 100%);
 }
 .title-icon.folder::before{
   content:'';
   position:absolute;
-  top:1px;
-  left:2px;
-  width:8px;
-  height:4px;
+  top:1px;left:2px;
+  width:8px;height:4px;
   background:#fff0bc;
   border-radius:2px 2px 0 0;
 }
 .title-icon.folder::after{
   content:'';
   position:absolute;
-  top:4px;
-  left:1px;
-  right:1px;
-  bottom:1px;
-  border-radius:2px;
+  top:4px;left:1px;right:1px;bottom:1px;
+  border-radius:1px;
   background:linear-gradient(180deg,#ffd86c 0%,#d99819 100%);
 }
 .titletext{
-  font-size:13px;
+  font-size:12px;
   font-weight:bold;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
+  flex:1;
+  text-shadow:0 1px 1px rgba(0,0,50,.5);
 }
 .controls{
   margin-left:auto;
   display:flex;
-  gap:4px;
+  gap:2px;
+  flex-shrink:0;
 }
 .winbtn{
-  width:21px;
-  height:21px;
-  border:1px solid rgba(255,255,255,.72);
-  border-radius:4px;
-  background:linear-gradient(180deg,#6bb8ff 0%,#2f7fd8 100%);
+  width:21px;height:21px;
+  border:1px solid rgba(0,0,0,.45);
+  border-radius:3px;
+  background:linear-gradient(180deg,#68beff 0%,#3898f0 45%,#2480dc 100%);
   color:#fff;
-  font:700 12px/1 Tahoma,sans-serif;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.55);
+  font:700 10px/1 Tahoma,sans-serif;
   cursor:pointer;
+  display:grid;
+  place-items:center;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.55),
+    inset 1px 0 0 rgba(255,255,255,.18);
+  text-shadow:0 1px 0 rgba(0,0,60,.5);
+}
+.winbtn:hover{
+  background:linear-gradient(180deg,#88d0ff 0%,#58b0ff 45%,#3898f0 100%);
+}
+.winbtn:active{
+  background:linear-gradient(180deg,#2070c0 0%,#1858a8 100%);
+  box-shadow:inset 0 2px 3px rgba(0,0,0,.28);
 }
 .winbtn.close{
-  background:linear-gradient(180deg,#ffb294 0%,#dd6034 100%);
+  background:linear-gradient(180deg,#ff9878 0%,#ec5020 45%,#d83810 100%);
 }
+.winbtn.close:hover{
+  background:linear-gradient(180deg,#ffb898 0%,#ff6838 45%,#ec5020 100%);
+}
+.winbtn.close:active{
+  background:linear-gradient(180deg,#b82000 0%,#901800 100%);
+}
+/* ─── Resize Handles ──────────────────────────────────────── */
+.resize-handle{
+  position:absolute;
+  z-index:500;
+}
+.resize-n {top:0;left:8px;right:8px;height:4px;cursor:n-resize}
+.resize-s {bottom:0;left:8px;right:8px;height:4px;cursor:s-resize}
+.resize-e {right:0;top:8px;bottom:8px;width:4px;cursor:e-resize}
+.resize-w {left:0;top:8px;bottom:8px;width:4px;cursor:w-resize}
+.resize-ne{top:0;right:0;width:10px;height:10px;cursor:ne-resize}
+.resize-nw{top:0;left:0;width:10px;height:10px;cursor:nw-resize}
+.resize-se{bottom:0;right:0;width:10px;height:10px;cursor:se-resize}
+.resize-sw{bottom:0;left:0;width:10px;height:10px;cursor:sw-resize}
+/* ─── Window Body ─────────────────────────────────────────── */
 .body{
   flex:1;
   min-height:0;
   background:#ece9d8;
+  overflow:hidden;
 }
+.window.forum .body{
+  display:flex;
+  flex-direction:column;
+}
+/* ─── IE Toolbar ──────────────────────────────────────────── */
 .ie-bars{
-  background:linear-gradient(180deg,#f7f1e1 0%,#dbd2bd 100%);
-  border-top:1px solid #fff;
-  border-bottom:1px solid #b9b19d;
-  padding:8px 10px 10px;
+  flex-shrink:0;
+  background:linear-gradient(180deg,#f8f4ec 0%,#e4ddd0 100%);
+  border-bottom:1px solid #b4a898;
+  padding:4px 6px 5px;
 }
 .toolbar{
   display:flex;
   align-items:center;
-  gap:6px;
-  flex-wrap:wrap;
+  gap:1px;
+  margin-bottom:4px;
 }
-.toolbar span{
-  min-width:54px;
-  padding:4px 8px;
-  border:1px solid #94a3b7;
+.tb-btn{
+  display:flex;
+  align-items:center;
+  gap:3px;
+  padding:3px 7px;
+  border:1px solid transparent;
   border-radius:3px;
-  background:linear-gradient(180deg,#ffffff 0%,#dfeaf7 100%);
-  color:#1f3854;
+  background:transparent;
+  color:#243c53;
+  font:11px Tahoma,sans-serif;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.tb-btn:hover{
+  border-color:#90a8c0;
+  background:linear-gradient(180deg,#fff 0%,#dceaf7 100%);
+}
+.tb-btn:active{
+  background:linear-gradient(180deg,#cce0f8 0%,#b8d0ec 100%);
+  border-color:#7898b8;
+}
+.tb-sep{
+  width:1px;height:22px;
+  background:linear-gradient(180deg,transparent,#aab8c8,transparent);
+  margin:0 3px;
+  flex-shrink:0;
 }
 .address-row{
   display:flex;
   align-items:center;
-  gap:8px;
-  margin-top:8px;
+  gap:6px;
   color:#243c53;
+}
+.address-label{
+  font-size:11px;
+  color:#4a5e70;
+  white-space:nowrap;
+  padding:0 2px;
 }
 .address-bar{
   flex:1;
   min-width:0;
   background:#fff;
-  border:1px solid #7f9db9;
-  padding:5px 8px;
-  box-shadow:inset 1px 1px 2px rgba(0,0,0,.1);
+  border:2px solid #7f9db9;
+  border-radius:0;
+  padding:2px 6px;
+  font:12px Tahoma,sans-serif;
+  box-shadow:inset 1px 1px 2px rgba(0,0,0,.14);
+  color:#000;
 }
 .forum-frame{
   display:block;
   width:100%;
-  height:100%;
+  flex:1;
+  min-height:0;
   border:0;
   background:#fff;
 }
+.ie-status{
+  flex-shrink:0;
+  padding:2px 8px;
+  border-top:1px solid #c0b4a0;
+  font-size:11px;
+  color:#4a5a68;
+  background:linear-gradient(180deg,#f0ece0 0%,#e4dece 100%);
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+/* ─── Gallery / Explorer ──────────────────────────────────── */
 .folder-shell{
   display:flex;
-  height:100%;
+  flex:1;
   min-height:0;
 }
 .folder-side{
-  width:170px;
-  flex:0 0 auto;
-  padding:14px 12px;
+  width:158px;
+  flex:0 0 158px;
+  padding:12px 10px;
   color:#fff;
-  background:linear-gradient(180deg,#7fb6f4 0%,#5091e1 24%,#7cb0ef 100%);
+  background:linear-gradient(180deg,#6eaef4 0%,#4888d8 22%,#6aaae8 100%);
+  overflow-y:auto;
+  border-right:1px solid #3c70b4;
 }
 .folder-side h3{
-  font-size:18px;
-  margin-bottom:10px;
-  text-shadow:0 1px 0 rgba(0,0,0,.24);
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:8px;
+  text-shadow:0 1px 0 rgba(0,0,0,.26);
 }
 .folder-side p{
-  font-size:12px;
+  font-size:11px;
   line-height:1.45;
-  margin-bottom:8px;
+  margin-bottom:6px;
+  opacity:.92;
 }
 .pill{
   display:inline-block;
-  margin-top:8px;
-  padding:3px 7px;
+  margin-top:4px;
+  padding:2px 7px;
   border-radius:999px;
-  background:rgba(255,255,255,.18);
-  font-size:11px;
+  background:rgba(255,255,255,.2);
+  font-size:10px;
 }
 .folder-main{
   flex:1;
@@ -286,27 +391,70 @@ body{
   flex-direction:column;
   background:#fff;
 }
+.folder-menubar{
+  display:flex;
+  align-items:center;
+  padding:1px 6px;
+  border-bottom:1px solid #d0d8e0;
+  background:linear-gradient(180deg,#f8f8f8 0%,#ececec 100%);
+  flex-shrink:0;
+}
+.folder-menubar span{
+  padding:3px 8px;
+  border-radius:2px;
+  font-size:12px;
+  color:#1b3b63;
+  cursor:default;
+}
+.folder-menubar span:hover{
+  background:#316ac5;
+  color:#fff;
+}
 .folder-toolbar{
   display:flex;
-  gap:14px;
   align-items:center;
-  padding:7px 12px;
-  border-bottom:1px solid #c9d8eb;
-  background:linear-gradient(180deg,#fdfefe 0%,#edf4fb 100%);
+  gap:1px;
+  padding:3px 6px;
+  border-bottom:1px solid #c8d4e0;
+  background:linear-gradient(180deg,#fafcff 0%,#ecf3f9 100%);
+  flex-shrink:0;
+}
+.ft-btn{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:3px 8px;
+  border:1px solid transparent;
+  border-radius:3px;
+  background:transparent;
+  font:12px Tahoma,sans-serif;
   color:#1b3b63;
+  cursor:pointer;
+}
+.ft-btn:hover{
+  background:linear-gradient(180deg,#fff 0%,#dde8f8 100%);
+  border-color:#7090b8;
+}
+.ft-sep{
+  width:1px;height:20px;
+  background:linear-gradient(180deg,transparent,#aab8c8,transparent);
+  margin:0 2px;
 }
 .folder-path{
-  padding:8px 12px;
-  border-bottom:1px solid #d9e3f0;
-  background:#f6faff;
+  padding:3px 10px;
+  border-bottom:1px solid #d0dce8;
+  background:#f4f8fc;
   color:#2b4d73;
+  font-size:11px;
+  flex-shrink:0;
 }
 .folder-content{
   flex:1;
   min-height:0;
   overflow:auto;
-  padding:14px;
+  padding:10px;
 }
+/* ─── Gallery Masonry ─────────────────────────────────────── */
 .gallery{
   position:relative;
   min-height:240px;
@@ -316,13 +464,14 @@ body{
   overflow:hidden;
   border:1px solid #c6d5e8;
   background:#fff;
-  box-shadow:0 2px 7px rgba(0,0,0,.12);
+  box-shadow:0 1px 4px rgba(0,0,0,.1);
 }
 .item img{
   width:100%;
   display:block;
   height:auto;
 }
+/* ─── Lightbox ─────────────────────────────────────────────── */
 .lightbox{
   position:fixed;
   inset:0;
@@ -330,7 +479,7 @@ body{
   display:none;
   align-items:center;
   justify-content:center;
-  z-index:999;
+  z-index:9999;
 }
 .lightbox.active{display:flex}
 .lightbox img{
@@ -342,111 +491,341 @@ body{
   position:absolute;
   display:grid;
   place-items:center;
-  width:42px;
-  height:42px;
+  width:42px;height:42px;
   border-radius:50%;
-  background:rgba(255,255,255,.16);
+  background:rgba(255,255,255,.15);
   color:#fff;
   font-size:28px;
   cursor:pointer;
   user-select:none;
+  border:none;
+  transition:background .15s;
 }
+.lb-btn:hover{background:rgba(255,255,255,.28)}
 .lb-close{top:18px;right:18px}
-.lb-prev{left:18px}
-.lb-next{right:18px}
+.lb-prev{left:18px;top:50%;transform:translateY(-50%)}
+.lb-next{right:18px;top:50%;transform:translateY(-50%)}
 .lb-counter{
   position:absolute;
-  bottom:18px;
-  left:50%;
+  bottom:18px;left:50%;
   transform:translateX(-50%);
-  padding:6px 12px;
+  padding:5px 14px;
   border-radius:999px;
-  background:rgba(0,0,0,.46);
+  background:rgba(0,0,0,.5);
   color:#fff;
+  font-size:12px;
+  white-space:nowrap;
 }
+/* ─── Taskbar ─────────────────────────────────────────────── */
 .taskbar{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:0;
+  position:fixed;
+  left:0;right:0;bottom:0;
   height:40px;
   display:flex;
   align-items:center;
-  gap:8px;
-  padding-right:8px;
-  background:linear-gradient(180deg,#2f79d3 0%,#0b5cb7 50%,#0a4ba2 100%);
-  box-shadow:0 -1px 0 rgba(255,255,255,.5) inset;
-  z-index:30;
+  gap:3px;
+  padding:0 4px 0 0;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.1) 0%,transparent 2px),
+    linear-gradient(180deg,#2a7ad4 0%,#1462bc 28%,#0c54aa 56%,#0a4898 100%);
+  border-top:1px solid #5a9adc;
+  z-index:1000;
 }
+/* ─── Start Button ────────────────────────────────────────── */
 .start{
   height:100%;
-  min-width:104px;
+  min-width:96px;
+  padding:0 14px 0 10px;
   border:0;
-  border-radius:0 10px 10px 0;
-  padding:0 18px;
+  border-radius:0 13px 13px 0;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.14) 0%,transparent 50%),
+    linear-gradient(180deg,#4ec84e 0%,#22a022 50%,#0e7e0e 100%);
   color:#fff;
-  background:linear-gradient(180deg,#4cc54c 0%,#1b8f1b 70%,#0f6d0f 100%);
-  font:italic 700 22px/1 "Trebuchet MS",Tahoma,sans-serif;
-  text-align:left;
+  font:italic 700 15px/1 "Trebuchet MS",Tahoma,sans-serif;
+  text-shadow:0 1px 2px rgba(0,0,0,.45);
+  cursor:pointer;
+  box-shadow:
+    2px 0 6px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.28),
+    inset 0 -1px 0 rgba(0,0,0,.15);
 }
+.start:hover{filter:brightness(1.1)}
+.start:active,.start.active{
+  filter:brightness(.88);
+  box-shadow:
+    2px 0 4px rgba(0,0,0,.3),
+    inset 0 2px 4px rgba(0,0,0,.2);
+}
+.start-flag{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1.5px;
+  width:14px;height:14px;
+  flex-shrink:0;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.4));
+}
+.start-flag span{border-radius:1px}
+.start-flag span:nth-child(1){background:#f25020}
+.start-flag span:nth-child(2){background:#80ba01}
+.start-flag span:nth-child(3){background:#05a6f0}
+.start-flag span:nth-child(4){background:#ffba08}
+/* ─── Task Buttons ────────────────────────────────────────── */
 .tasks{
   display:flex;
-  gap:6px;
+  gap:3px;
+  flex:1;
+  overflow:hidden;
+  padding-left:2px;
 }
 .task{
-  min-width:138px;
-  max-width:220px;
-  height:29px;
-  border:1px solid rgba(0,44,98,.7);
-  border-radius:4px;
-  background:linear-gradient(180deg,rgba(122,191,255,.95) 0%,rgba(44,120,205,.95) 100%);
-  color:#fff;
-  padding:0 12px;
-  text-align:left;
+  display:none;
+  align-items:center;
+  gap:6px;
+  min-width:120px;
+  max-width:190px;
+  height:28px;
+  border:1px solid rgba(0,25,80,.5);
+  border-radius:3px;
+  padding:0 8px;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
   cursor:pointer;
-  opacity:.72;
+  font:12px Tahoma,sans-serif;
+  color:#fff;
+  text-shadow:0 1px 0 rgba(0,0,50,.5);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.1) 0%,transparent 50%),
+    linear-gradient(180deg,#5aacf8 0%,#2c82d0 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22);
 }
-.task.open{opacity:1}
+.task.open{display:flex}
+.task:hover{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.2) 0%,transparent 50%),
+    linear-gradient(180deg,#78c0ff 0%,#48a0e8 100%);
+}
 .task.active{
-  color:#2b1a00;
-  background:linear-gradient(180deg,#f7d886 0%,#d69516 100%);
+  color:#1a1000;
+  text-shadow:none;
+  border-color:rgba(90,60,0,.4);
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.06) 0%,transparent 30%),
+    linear-gradient(180deg,#c8a428 0%,#e0ba28 30%,#d4aa1a 100%);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.18),inset 0 0 0 1px rgba(0,0,0,.08);
 }
+.task:active:not(.active){
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.25);
+  filter:brightness(.95);
+}
+.task-icon{
+  width:16px;height:16px;
+  flex-shrink:0;
+  position:relative;
+  display:block;
+}
+.task-icon.ie{
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff1bb 0 14%,#49b2ff 15% 52%,#005eb8 53% 100%);
+}
+.task-icon.folder{
+  background:linear-gradient(180deg,#ffe39f 0%,#dc9a17 100%);
+  border-radius:1px;
+}
+.task-icon.folder::before{
+  content:'';
+  position:absolute;
+  top:1px;left:1px;
+  width:8px;height:3px;
+  background:#fff0bc;
+  border-radius:1px 1px 0 0;
+}
+/* ─── System Tray ─────────────────────────────────────────── */
 .tray{
   margin-left:auto;
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:8px;
   padding:0 10px;
-  height:32px;
+  height:30px;
+  border:1px solid rgba(0,25,90,.38);
+  border-bottom:0;
   border-radius:4px 0 0 0;
   color:#fff;
-  background:linear-gradient(180deg,#5bc6ff 0%,#2195dd 100%);
+  background:linear-gradient(180deg,#4ab8f0 0%,#1898e2 50%,#1080cc 100%);
+  font-size:11px;
+  text-shadow:0 1px 0 rgba(0,0,50,.4);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
+  white-space:nowrap;
 }
+.tray-icon{
+  cursor:default;
+  opacity:.88;
+  font-size:13px;
+  line-height:1;
+}
+#clock{
+  border-left:1px solid rgba(255,255,255,.2);
+  padding-left:8px;
+  cursor:default;
+}
+/* ─── Start Menu ──────────────────────────────────────────── */
+.startmenu{
+  position:fixed;
+  bottom:40px;
+  left:0;
+  width:340px;
+  border:2px solid #0a3a8a;
+  border-radius:8px 8px 0 0;
+  overflow:hidden;
+  z-index:2000;
+  box-shadow:4px -2px 24px rgba(0,0,0,.55);
+}
+.sm-head{
+  background:linear-gradient(90deg,#1458c8 0%,#1060d0 100%);
+  padding:8px 14px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border-bottom:2px solid #0a3080;
+}
+.sm-avatar{
+  width:46px;height:46px;
+  border-radius:3px;
+  border:2px solid rgba(255,255,255,.45);
+  object-fit:cover;
+}
+.sm-username{
+  color:#fff;
+  font:700 16px Tahoma,sans-serif;
+  text-shadow:0 1px 1px rgba(0,0,0,.4);
+}
+.sm-body{
+  display:flex;
+  height:280px;
+}
+.sm-left{
+  flex:1;
+  background:#fff;
+  padding:6px 0;
+  border-right:2px solid #c0c8d8;
+  overflow-y:auto;
+}
+.sm-right{
+  width:128px;
+  background:#d8e4f8;
+  padding:6px 0;
+  overflow-y:auto;
+}
+.sm-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  width:100%;
+  padding:6px 14px;
+  border:0;
+  background:transparent;
+  font:12px Tahoma,sans-serif;
+  color:#1a1a1a;
+  text-align:left;
+  cursor:pointer;
+  text-decoration:none;
+}
+.sm-item:hover{
+  background:#316ac5;
+  color:#fff;
+}
+.sm-sep{
+  height:1px;
+  background:linear-gradient(90deg,transparent,#c0c8d8,transparent);
+  margin:5px 10px;
+}
+.sm-right-label{
+  font:700 11px Tahoma,sans-serif;
+  color:#1a3a6a;
+  padding:4px 12px 2px;
+  border-bottom:1px solid #b8c8e0;
+  margin-bottom:2px;
+}
+.sm-right-item{
+  display:block;
+  padding:5px 12px;
+  font:12px Tahoma,sans-serif;
+  color:#1a3a6a;
+  background:transparent;
+  border:0;
+  text-align:left;
+  width:100%;
+  cursor:pointer;
+  text-decoration:none;
+}
+.sm-right-item:hover{
+  background:#316ac5;
+  color:#fff;
+}
+.sm-foot{
+  background:linear-gradient(180deg,#1462cc 0%,#0a4aa4 100%);
+  padding:7px 12px;
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  border-top:2px solid #0a3080;
+}
+.sm-foot-btn{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 14px;
+  border:1px solid rgba(0,0,0,.35);
+  border-radius:4px;
+  background:linear-gradient(180deg,#5a9cec 0%,#2870d4 100%);
+  color:#fff;
+  font:12px Tahoma,sans-serif;
+  cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28);
+  text-shadow:0 1px 0 rgba(0,0,50,.4);
+}
+.sm-foot-btn:hover{filter:brightness(1.15)}
+.sm-foot-btn:active{filter:brightness(.88)}
+/* ─── Responsive ──────────────────────────────────────────── */
 @media(max-width:980px){
-  body{overflow:auto}
-  .desktop{padding:14px 10px 52px;overflow:auto}
+  html,body{height:auto;overflow:auto}
+  .desktop{height:auto;padding:14px 10px 56px}
   .desktop-icons{
-    position:relative;
-    top:auto;
-    left:auto;
-    flex-direction:row;
-    flex-wrap:wrap;
-    margin-bottom:12px;
+    position:relative;top:auto;left:auto;
+    flex-direction:row;flex-wrap:wrap;
+    padding:0 0 8px;
   }
   .window{
-    position:relative;
-    top:auto !important;
-    left:auto !important;
-    width:100% !important;
-    min-width:0 !important;
-    height:auto !important;
-    margin-bottom:14px;
+    position:relative!important;
+    top:auto!important;left:auto!important;
+    width:100%!important;min-width:0!important;
+    height:auto!important;
+    margin-bottom:12px;
+    border-radius:6px 6px 0 0;
   }
   .folder-shell{flex-direction:column}
-  .folder-side{width:auto}
+  .folder-side{width:auto;flex:0 0 auto}
+  .resize-handle{display:none}
+  .taskbar{position:fixed}
+}
+/* ─── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar{width:16px;height:16px}
+::-webkit-scrollbar-track{background:#f1ede3;border:1px solid #d0c8b8}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(90deg,#c8c0b0 0%,#a89888 100%);
+  border:1px solid #908070;
+  border-radius:2px;
+}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(90deg,#b8b0a0,#988878)}
+::-webkit-scrollbar-button{
+  background:#e8e0d0;
+  border:1px solid #a09080;
+  height:16px;width:16px;
 }
 </style>
 </head>
@@ -459,58 +838,81 @@ body{
     </button>
     <button class="desktop-icon" type="button" data-open-window="forum">
       <span class="icon-art browser" aria-hidden="true"></span>
-      <span>forum.html</span>
+      <span>Internet Explorer</span>
     </button>
-    <a class="desktop-icon" href="shadow.html">
-      <span class="icon-art browser" aria-hidden="true"></span>
-      <span>shadow.html</span>
-    </a>
   </div>
 
+  <!-- Internet Explorer Window -->
   <section class="window forum" data-window="forum">
+    <div class="resize-handle resize-n" data-resize="n"></div>
+    <div class="resize-handle resize-ne" data-resize="ne"></div>
+    <div class="resize-handle resize-e" data-resize="e"></div>
+    <div class="resize-handle resize-se" data-resize="se"></div>
+    <div class="resize-handle resize-s" data-resize="s"></div>
+    <div class="resize-handle resize-sw" data-resize="sw"></div>
+    <div class="resize-handle resize-w" data-resize="w"></div>
+    <div class="resize-handle resize-nw" data-resize="nw"></div>
     <div class="titlebar" data-drag-handle>
       <span class="title-icon ie" aria-hidden="true"></span>
-      <span class="titletext">forum.html - Microsoft Internet Explorer</span>
+      <span class="titletext">Internet Explorer</span>
       <div class="controls">
-        <button class="winbtn" type="button" data-minimize-window="forum" aria-label="Minimize">_</button>
-        <button class="winbtn close" type="button" data-close-window="forum" aria-label="Close">×</button>
+        <button class="winbtn" type="button" data-minimize-window="forum" aria-label="Minimize" title="Minimize">_</button>
+        <button class="winbtn" type="button" data-maximize-window="forum" aria-label="Maximize" title="Maximize">□</button>
+        <button class="winbtn close" type="button" data-close-window="forum" aria-label="Close" title="Close">✕</button>
       </div>
     </div>
     <div class="body">
       <div class="ie-bars">
         <div class="toolbar">
-          <span>Back</span>
-          <span>Forward</span>
-          <span>Search</span>
-          <span>Favorites</span>
+          <button class="tb-btn" title="Back">◀ Back</button>
+          <button class="tb-btn" title="Forward">▶ Forward</button>
+          <div class="tb-sep"></div>
+          <button class="tb-btn" title="Refresh">⟳ Refresh</button>
+          <button class="tb-btn" title="Home">⌂ Home</button>
+          <div class="tb-sep"></div>
+          <button class="tb-btn" title="Favorites">☆ Favorites</button>
         </div>
         <div class="address-row">
-          <span>Address</span>
+          <span class="address-label">Address</span>
           <div class="address-bar">https://drmy.art/forum.html</div>
         </div>
       </div>
-      <iframe class="forum-frame" src="forum.html" title="forum.html"></iframe>
+      <iframe class="forum-frame" src="forum.html" title="forum"></iframe>
+      <div class="ie-status">
+        <span>✓ Done</span>
+        <span style="margin-left:auto;padding-right:4px">Internet</span>
+      </div>
     </div>
   </section>
 
+  <!-- Gallery / My Pictures Window -->
   <section class="window gallery open" data-window="gallery">
+    <div class="resize-handle resize-n" data-resize="n"></div>
+    <div class="resize-handle resize-ne" data-resize="ne"></div>
+    <div class="resize-handle resize-e" data-resize="e"></div>
+    <div class="resize-handle resize-se" data-resize="se"></div>
+    <div class="resize-handle resize-s" data-resize="s"></div>
+    <div class="resize-handle resize-sw" data-resize="sw"></div>
+    <div class="resize-handle resize-w" data-resize="w"></div>
+    <div class="resize-handle resize-nw" data-resize="nw"></div>
     <div class="titlebar" data-drag-handle>
       <span class="title-icon folder" aria-hidden="true"></span>
       <span class="titletext">Gallery - My Pictures</span>
       <div class="controls">
-        <button class="winbtn" type="button" data-minimize-window="gallery" aria-label="Minimize">_</button>
-        <button class="winbtn close" type="button" data-close-window="gallery" aria-label="Close">×</button>
+        <button class="winbtn" type="button" data-minimize-window="gallery" aria-label="Minimize" title="Minimize">_</button>
+        <button class="winbtn" type="button" data-maximize-window="gallery" aria-label="Maximize" title="Maximize">□</button>
+        <button class="winbtn close" type="button" data-close-window="gallery" aria-label="Close" title="Close">✕</button>
       </div>
     </div>
     <div class="body folder-shell">
       <aside class="folder-side">
         <h3>Picture Tasks</h3>
         <p>The artwork archive opens as its own desktop folder app.</p>
-        <p>Double-click an image to open the lightbox viewer.</p>
+        <p>Click an image to open the lightbox viewer.</p>
         <div class="pill">open by default</div>
       </aside>
       <div class="folder-main">
-        <div class="folder-toolbar">
+        <div class="folder-menubar">
           <span>File</span>
           <span>Edit</span>
           <span>View</span>
@@ -518,7 +920,13 @@ body{
           <span>Tools</span>
           <span>Help</span>
         </div>
-        <div class="folder-path">My Pictures &gt; drmy &gt; gallery</div>
+        <div class="folder-toolbar">
+          <button class="ft-btn">◀ Back</button>
+          <button class="ft-btn">▶ Forward</button>
+          <div class="ft-sep"></div>
+          <button class="ft-btn">↑ Up</button>
+        </div>
+        <div class="folder-path">My Pictures › drmy › gallery</div>
         <div class="folder-content">
           <div class="gallery" id="gallery"></div>
         </div>
@@ -526,139 +934,297 @@ body{
     </div>
   </section>
 
+  <!-- Taskbar -->
   <div class="taskbar">
-    <button class="start" type="button">start</button>
-    <div class="tasks">
-      <button class="task" type="button" data-open-window="forum">forum.html</button>
-      <button class="task" type="button" data-open-window="gallery">Gallery</button>
+    <button class="start" type="button" id="start-btn" aria-label="Start" aria-expanded="false">
+      <span class="start-flag" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+      </span>
+      start
+    </button>
+    <div class="tasks" id="task-list">
+      <button class="task" type="button" data-open-window="forum">
+        <span class="task-icon ie" aria-hidden="true"></span>
+        Internet Explorer
+      </button>
+      <button class="task" type="button" data-open-window="gallery">
+        <span class="task-icon folder" aria-hidden="true"></span>
+        Gallery
+      </button>
     </div>
     <div class="tray">
-      <span>LAN</span>
-      <span>Vol</span>
-      <span id="clock">3:00 PM</span>
+      <span class="tray-icon" title="Local Area Connection">🌐</span>
+      <span class="tray-icon" title="Volume">🔊</span>
+      <span id="clock" title=""></span>
     </div>
   </div>
 </div>
 
+<!-- Start Menu -->
+<div class="startmenu" id="startmenu" hidden>
+  <div class="sm-head">
+    <img src="me2.png" class="sm-avatar" alt="drmy" onerror="this.style.display='none'">
+    <span class="sm-username">drmy</span>
+  </div>
+  <div class="sm-body">
+    <div class="sm-left">
+      <button class="sm-item" type="button" data-open-window="forum" data-closemenu>
+        <span class="task-icon ie" style="width:24px;height:24px" aria-hidden="true"></span>
+        Internet Explorer
+      </button>
+      <button class="sm-item" type="button" data-open-window="gallery" data-closemenu>
+        <span class="task-icon folder" style="width:24px;height:24px" aria-hidden="true"></span>
+        My Pictures
+      </button>
+      <div class="sm-sep"></div>
+    </div>
+    <div class="sm-right">
+      <div class="sm-right-label">Places</div>
+      <a class="sm-right-item" href="https://drmy.art" target="_blank">My Website</a>
+    </div>
+  </div>
+  <div class="sm-foot">
+    <button class="sm-foot-btn" id="sm-logoff">🔄 Log Off</button>
+    <button class="sm-foot-btn" id="sm-shutdown">⏻ Turn Off</button>
+  </div>
+</div>
+
+<!-- Lightbox -->
 <div class="lightbox" id="lightbox">
-  <div class="lb-btn lb-close" id="lb-close">×</div>
-  <div class="lb-btn lb-prev" id="lb-prev">‹</div>
-  <div class="lb-btn lb-next" id="lb-next">›</div>
+  <button class="lb-btn lb-close" id="lb-close" aria-label="Close">×</button>
+  <button class="lb-btn lb-prev" id="lb-prev" aria-label="Previous">‹</button>
+  <button class="lb-btn lb-next" id="lb-next" aria-label="Next">›</button>
   <img id="lightbox-img" alt="">
   <div class="lb-counter" id="lb-counter"></div>
 </div>
 
 <script>
 (function(){
-  const windows=[...document.querySelectorAll('.window[data-window]')];
-  const taskButtons=[...document.querySelectorAll('.task[data-open-window]')];
+  const wins=[...document.querySelectorAll('.window[data-window]')];
+  const taskBtns=[...document.querySelectorAll('.task[data-open-window]')];
+  const startBtn=document.getElementById('start-btn');
+  const startMenu=document.getElementById('startmenu');
   const clock=document.getElementById('clock');
   let topZ=200;
+  const isMaximized={};
+  const savedRect={};
 
-  function getWindow(name){
+  function getWin(name){
     return document.querySelector(`.window[data-window="${name}"]`);
   }
   function isOpen(win){
     return !!win&&win.classList.contains('open');
   }
+
   function syncTasks(){
-    taskButtons.forEach(btn=>{
-      const win=getWindow(btn.dataset.openWindow);
+    taskBtns.forEach(btn=>{
+      const win=getWin(btn.dataset.openWindow);
       const open=isOpen(win);
       btn.classList.toggle('open',open);
       btn.classList.toggle('active',open&&win.classList.contains('focused'));
     });
   }
-  function focusWindow(win){
+
+  function focusWin(win){
     if(!win||!isOpen(win))return;
     topZ+=1;
     win.style.zIndex=String(topZ);
-    windows.forEach(item=>item.classList.toggle('focused',item===win));
+    wins.forEach(w=>w.classList.toggle('focused',w===win));
     syncTasks();
     if(win.dataset.window==='gallery'&&typeof window.refreshGalleryLayout==='function'){
       requestAnimationFrame(window.refreshGalleryLayout);
     }
   }
-  function openWindow(name){
-    const win=getWindow(name);
+
+  function openWin(name){
+    const win=getWin(name);
     if(!win)return;
     win.classList.add('open');
-    focusWindow(win);
+    focusWin(win);
   }
-  function closeWindow(name){
-    const win=getWindow(name);
+
+  function closeWin(name){
+    const win=getWin(name);
     if(!win)return;
     win.classList.remove('open','focused');
+    delete isMaximized[name];
     syncTasks();
-    const next=windows.filter(isOpen).sort((a,b)=>(Number(a.style.zIndex)||0)-(Number(b.style.zIndex)||0)).pop();
-    if(next)focusWindow(next);
+    const next=wins.filter(isOpen)
+      .sort((a,b)=>(Number(a.style.zIndex)||0)-(Number(b.style.zIndex)||0)).pop();
+    if(next)focusWin(next);
   }
-  windows.forEach(win=>{
-    if(isOpen(win)){
-      topZ+=1;
-      win.style.zIndex=String(topZ);
-    }
-    win.addEventListener('mousedown',()=>focusWindow(win));
-    const handle=win.querySelector('[data-drag-handle]');
-    if(!handle)return;
-    handle.addEventListener('mousedown',event=>{
-      if(window.matchMedia('(max-width: 980px)').matches)return;
-      if(event.target.closest('.winbtn'))return;
-      focusWindow(win);
+
+  function toggleMaximize(name){
+    const win=getWin(name);
+    if(!win||!isOpen(win))return;
+    if(isMaximized[name]){
+      const r=savedRect[name];
+      if(r){
+        win.style.left=r.left+'px';
+        win.style.top=r.top+'px';
+        win.style.width=r.width+'px';
+        win.style.height=r.height+'px';
+      }
+      win.classList.remove('maximized');
+      delete isMaximized[name];
+    }else{
       const rect=win.getBoundingClientRect();
-      const startX=event.clientX;
-      const startY=event.clientY;
-      const baseLeft=rect.left;
-      const baseTop=rect.top;
-      function move(moveEvent){
-        const maxLeft=Math.max(0,window.innerWidth-rect.width);
-        const maxTop=Math.max(0,window.innerHeight-rect.height-42);
-        win.style.left=Math.min(maxLeft,Math.max(0,baseLeft+(moveEvent.clientX-startX)))+'px';
-        win.style.top=Math.min(maxTop,Math.max(0,baseTop+(moveEvent.clientY-startY)))+'px';
-      }
-      function up(){
-        window.removeEventListener('mousemove',move);
-        window.removeEventListener('mouseup',up);
-      }
-      window.addEventListener('mousemove',move);
-      window.addEventListener('mouseup',up);
+      savedRect[name]={left:rect.left,top:rect.top,width:rect.width,height:rect.height};
+      win.style.left='0';win.style.top='0';
+      win.style.width=window.innerWidth+'px';
+      win.style.height=(window.innerHeight-40)+'px';
+      win.classList.add('maximized');
+      isMaximized[name]=true;
+    }
+    focusWin(win);
+    if(name==='gallery'&&typeof window.refreshGalleryLayout==='function'){
+      requestAnimationFrame(window.refreshGalleryLayout);
+    }
+  }
+
+  /* ── Drag & Resize ─────────────────────────────────────── */
+  wins.forEach(win=>{
+    if(isOpen(win)){topZ+=1;win.style.zIndex=String(topZ);}
+    win.addEventListener('mousedown',()=>focusWin(win));
+
+    // Drag
+    const handle=win.querySelector('[data-drag-handle]');
+    if(handle){
+      handle.addEventListener('mousedown',e=>{
+        if(window.matchMedia('(max-width:980px)').matches)return;
+        if(e.target.closest('.winbtn'))return;
+        if(isMaximized[win.dataset.window])return;
+        focusWin(win);
+        const rect=win.getBoundingClientRect();
+        const sx=e.clientX,sy=e.clientY;
+        const bl=rect.left,bt=rect.top;
+        const iframes=win.querySelectorAll('iframe');
+        iframes.forEach(f=>f.style.pointerEvents='none');
+        function move(me){
+          const maxL=Math.max(0,window.innerWidth-rect.width);
+          const maxT=Math.max(0,window.innerHeight-rect.height-40);
+          win.style.left=Math.min(maxL,Math.max(0,bl+(me.clientX-sx)))+'px';
+          win.style.top=Math.min(maxT,Math.max(0,bt+(me.clientY-sy)))+'px';
+        }
+        function up(){
+          iframes.forEach(f=>f.style.pointerEvents='');
+          window.removeEventListener('mousemove',move);
+          window.removeEventListener('mouseup',up);
+        }
+        window.addEventListener('mousemove',move);
+        window.addEventListener('mouseup',up);
+      });
+      // Double-click title to maximize
+      handle.addEventListener('dblclick',e=>{
+        if(e.target.closest('.winbtn'))return;
+        toggleMaximize(win.dataset.window);
+      });
+    }
+
+    // Resize
+    win.querySelectorAll('[data-resize]').forEach(rh=>{
+      rh.addEventListener('mousedown',e=>{
+        e.stopPropagation();
+        if(window.matchMedia('(max-width:980px)').matches)return;
+        if(isMaximized[win.dataset.window])return;
+        focusWin(win);
+        const dir=rh.dataset.resize;
+        const rect=win.getBoundingClientRect();
+        const sx=e.clientX,sy=e.clientY;
+        const sw=rect.width,sh=rect.height,sl=rect.left,st=rect.top;
+        const MIN_W=320,MIN_H=200;
+        const iframes=win.querySelectorAll('iframe');
+        iframes.forEach(f=>f.style.pointerEvents='none');
+        function move(me){
+          const dx=me.clientX-sx,dy=me.clientY-sy;
+          let nw=sw,nh=sh,nl=sl,nt=st;
+          if(dir.includes('e'))nw=Math.max(MIN_W,sw+dx);
+          if(dir.includes('s'))nh=Math.max(MIN_H,sh+dy);
+          if(dir.includes('w')){nw=Math.max(MIN_W,sw-dx);nl=sl+(sw-nw);}
+          if(dir.includes('n')){nh=Math.max(MIN_H,sh-dy);nt=st+(sh-nh);}
+          win.style.width=nw+'px';win.style.height=nh+'px';
+          win.style.left=nl+'px';win.style.top=nt+'px';
+        }
+        function up(){
+          iframes.forEach(f=>f.style.pointerEvents='');
+          window.removeEventListener('mousemove',move);
+          window.removeEventListener('mouseup',up);
+          if(win.dataset.window==='gallery'&&typeof window.refreshGalleryLayout==='function'){
+            requestAnimationFrame(window.refreshGalleryLayout);
+          }
+        }
+        window.addEventListener('mousemove',move);
+        window.addEventListener('mouseup',up);
+      });
     });
   });
-  document.addEventListener('click',event=>{
-    const opener=event.target.closest('[data-open-window]');
+
+  /* ── Click Delegation ──────────────────────────────────── */
+  document.addEventListener('click',e=>{
+    // Close start menu when clicking outside
+    if(!e.target.closest('#startmenu')&&!e.target.closest('#start-btn')){
+      startMenu.hidden=true;
+      startBtn.classList.remove('active');
+      startBtn.setAttribute('aria-expanded','false');
+    }
+
+    const opener=e.target.closest('[data-open-window]');
     if(opener){
-      event.preventDefault();
-      openWindow(opener.dataset.openWindow);
-      return;
+      e.preventDefault();
+      const name=opener.dataset.openWindow;
+      // Taskbar task: toggle minimize when already focused
+      if(opener.classList.contains('task')){
+        const win=getWin(name);
+        if(isOpen(win)&&win.classList.contains('focused')){
+          closeWin(name);return;
+        }
+      }
+      if(opener.hasAttribute('data-closemenu')){
+        startMenu.hidden=true;
+        startBtn.classList.remove('active');
+        startBtn.setAttribute('aria-expanded','false');
+      }
+      openWin(name);return;
     }
-    const closer=event.target.closest('[data-close-window]');
-    if(closer){
-      event.preventDefault();
-      closeWindow(closer.dataset.closeWindow);
-      return;
-    }
-    const minimizer=event.target.closest('[data-minimize-window]');
-    if(minimizer){
-      event.preventDefault();
-      closeWindow(minimizer.dataset.minimizeWindow);
-    }
+
+    const closer=e.target.closest('[data-close-window]');
+    if(closer){e.preventDefault();closeWin(closer.dataset.closeWindow);return;}
+
+    const minimizer=e.target.closest('[data-minimize-window]');
+    if(minimizer){e.preventDefault();closeWin(minimizer.dataset.minimizeWindow);return;}
+
+    const maximizer=e.target.closest('[data-maximize-window]');
+    if(maximizer){e.preventDefault();toggleMaximize(maximizer.dataset.maximizeWindow);return;}
   });
-  window.addEventListener('message',event=>{
-    if(event.data&&event.data.type==='open-gallery')openWindow('gallery');
+
+  /* ── Start Button ──────────────────────────────────────── */
+  startBtn.addEventListener('click',()=>{
+    const open=startMenu.hidden;
+    startMenu.hidden=!open;
+    startBtn.classList.toggle('active',open);
+    startBtn.setAttribute('aria-expanded',String(open));
   });
+
+  /* ── iframe postMessage ────────────────────────────────── */
+  window.addEventListener('message',e=>{
+    if(e.data&&e.data.type==='open-gallery')openWin('gallery');
+  });
+
+  /* ── Clock ─────────────────────────────────────────────── */
   function updateClock(){
     if(!clock)return;
-    clock.textContent=new Date().toLocaleTimeString([],{
-      hour:'numeric',
-      minute:'2-digit'
-    });
+    const now=new Date();
+    clock.textContent=now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+    clock.title=now.toLocaleDateString([],{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   }
+
   syncTasks();
-  openWindow('gallery');
+  openWin('gallery');
   updateClock();
   setInterval(updateClock,30000);
 })();
 
+/* ── Gallery & Lightbox ──────────────────────────────────── */
 (function(){
   const galleryEl=document.getElementById('gallery');
   const lightbox=document.getElementById('lightbox');
@@ -693,25 +1259,17 @@ body{
     galleryEl.style.height=(Math.max(...hs)-GAP)+'px';
   }
   async function loadImages(){
-    try{
-      const r=await fetch('arch/images.json');
-      images=await r.json();
-    }catch{
-      images=[];
-    }
+    try{const r=await fetch('arch/images.json');images=await r.json();}
+    catch{images=[];}
     images.forEach((url,i)=>{
       const el=document.createElement('div');
       el.className='item';
       const img=document.createElement('img');
-      img.src=url;
-      img.loading='lazy';
-      img.alt='';
+      img.src=url;img.loading='lazy';img.alt='';
       img.ondblclick=()=>openLB(i);
       img.onclick=()=>openLB(i);
-      img.onload=layout;
-      img.onerror=layout;
-      el.appendChild(img);
-      galleryEl.appendChild(el);
+      img.onload=layout;img.onerror=layout;
+      el.appendChild(img);galleryEl.appendChild(el);
       items.push({el,img});
     });
     requestAnimationFrame(layout);
@@ -723,22 +1281,14 @@ body{
     lbImg.classList.remove('zoomed');
   }
   function openLB(i){
-    currentIndex=i;
-    lbImg.src=images[i];
+    currentIndex=i;lbImg.src=images[i];
     lbCounter.textContent=(i+1)+' / '+images.length;
-    lightbox.classList.add('active');
-    resetZoom();
+    lightbox.classList.add('active');resetZoom();
   }
-  const closeLB=()=>{
-    lightbox.classList.remove('active');
-    resetZoom();
-  };
-  const prevLB=()=>{
-    if(currentIndex>0)openLB(currentIndex-1);
-  };
-  const nextLB=()=>{
-    if(currentIndex<images.length-1)openLB(currentIndex+1);
-  };
+  const closeLB=()=>{lightbox.classList.remove('active');resetZoom();};
+  const prevLB=()=>{if(currentIndex>0)openLB(currentIndex-1);};
+  const nextLB=()=>{if(currentIndex<images.length-1)openLB(currentIndex+1);};
+
   window.refreshGalleryLayout=layout;
   window.addEventListener('resize',layout,{passive:true});
   document.getElementById('lb-close').onclick=closeLB;
@@ -747,23 +1297,22 @@ body{
   lbImg.addEventListener('click',e=>{
     if(isMobile())return;
     if(!zoomed){
-      zoomed=true;
-      lbImg.classList.add('zoomed');
+      zoomed=true;lbImg.classList.add('zoomed');
       const r=lbImg.getBoundingClientRect();
-      lbImg.style.transformOrigin=((e.clientX-r.left)/r.width*100).toFixed(1)+'% '+((e.clientY-r.top)/r.height*100).toFixed(1)+'%';
+      lbImg.style.transformOrigin=
+        ((e.clientX-r.left)/r.width*100).toFixed(1)+'% '+
+        ((e.clientY-r.top)/r.height*100).toFixed(1)+'%';
       lbImg.style.transform='scale(2.1)';
-    }else{
-      resetZoom();
-    }
+    }else{resetZoom();}
   });
   lbImg.addEventListener('mousemove',e=>{
     if(!zoomed||isMobile())return;
     const r=lbImg.getBoundingClientRect();
-    lbImg.style.transformOrigin=((e.clientX-r.left)/r.width*100).toFixed(1)+'% '+((e.clientY-r.top)/r.height*100).toFixed(1)+'%';
+    lbImg.style.transformOrigin=
+      ((e.clientX-r.left)/r.width*100).toFixed(1)+'% '+
+      ((e.clientY-r.top)/r.height*100).toFixed(1)+'%';
   });
-  lightbox.addEventListener('click',e=>{
-    if(e.target===lightbox)closeLB();
-  });
+  lightbox.addEventListener('click',e=>{if(e.target===lightbox)closeLB();});
   document.addEventListener('keydown',e=>{
     if(!lightbox.classList.contains('active'))return;
     if(e.key==='ArrowRight')nextLB();
