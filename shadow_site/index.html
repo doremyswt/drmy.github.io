@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>xX_shadow_Xx :: the truth they don't want you to know</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Special+Elite&family=Creepster&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#040404;
+  --bg2:#0a0a0a;
+  --bg3:#0d0206;
+  --red:#8b0000;
+  --red2:#cc0000;
+  --dim:#1a1a1a;
+  --text:#c8c8c8;
+  --muted:#666;
+  --accent:#6b0000;
+  --green:#003300;
+  --green2:#00aa00;
+  --border:#1f1f1f;
+  --blood:#5a0000;
+}
+
+html{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Special Elite',serif;
+  font-size:13px;
+  line-height:1.7;
+  scroll-behavior:smooth;
+}
+
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(80,0,0,.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 100%, rgba(40,0,0,.14) 0%, transparent 55%),
+    var(--bg);
+  overflow-x:hidden;
+  cursor:crosshair;
+}
+
+/* SCANLINE OVERLAY */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,.08) 2px,
+    rgba(0,0,0,.08) 4px
+  );
+  pointer-events:none;
+  z-index:9999;
+}
+
+/* FLICKER */
+@keyframes flicker{
+  0%,100%{opacity:1}
+  92%{opacity:1}
+  93%{opacity:.7}
+  94%{opacity:1}
+  97%{opacity:.85}
+  98%{opacity:1}
+}
+body{animation:flicker 8s step-end infinite}
+
+/* TOP BANNER */
+.top-bar{
+  background:var(--blood);
+  border-bottom:1px solid #3a0000;
+  padding:4px 0;
+  text-align:center;
+  font-family:'VT323',monospace;
+  font-size:13px;
+  color:#ff6666;
+  letter-spacing:2px;
+  overflow:hidden;
+  white-space:nowrap;
+}
+.marquee-inner{
+  display:inline-block;
+  animation:scroll-left 22s linear infinite;
+}
+@keyframes scroll-left{
+  from{transform:translateX(100vw)}
+  to{transform:translateX(-100%)}
+}
+
+/* HEADER */
+.site-header{
+  border-bottom:2px solid #1a0000;
+  padding:20px 0 16px;
+  text-align:center;
+  position:relative;
+  background:linear-gradient(180deg,#0d0000 0%,transparent 100%);
+}
+.site-title{
+  font-family:'VT323',monospace;
+  font-size:52px;
+  color:#8b0000;
+  letter-spacing:4px;
+  text-shadow:0 0 20px rgba(139,0,0,.6),0 0 60px rgba(139,0,0,.2);
+  line-height:1;
+}
+.site-subtitle{
+  font-family:'VT323',monospace;
+  font-size:16px;
+  color:#444;
+  letter-spacing:3px;
+  margin-top:4px;
+}
+.site-nav{
+  margin-top:14px;
+  display:flex;
+  justify-content:center;
+  gap:0;
+  border-top:1px solid #1a0000;
+  border-bottom:1px solid #1a0000;
+  background:#060606;
+}
+.site-nav a{
+  font-family:'VT323',monospace;
+  font-size:15px;
+  color:#555;
+  text-decoration:none;
+  padding:6px 18px;
+  letter-spacing:2px;
+  border-right:1px solid #1a0000;
+  transition:color .15s,background .15s;
+}
+.site-nav a:first-child{border-left:1px solid #1a0000}
+.site-nav a:hover{color:#cc0000;background:#0d0000}
+
+/* EYE LOGO */
+.eye-logo{
+  font-size:36px;
+  display:block;
+  margin:0 auto 8px;
+  animation:eye-pulse 4s ease-in-out infinite;
+  filter:drop-shadow(0 0 12px rgba(139,0,0,.7));
+}
+@keyframes eye-pulse{
+  0%,100%{transform:scaleY(1)}
+  50%{transform:scaleY(.1)}
+  52%{transform:scaleY(1)}
+}
+
+/* PAGE WRAP */
+.page-wrap{
+  max-width:880px;
+  margin:0 auto;
+  padding:24px 20px 60px;
+  display:grid;
+  grid-template-columns:1fr 220px;
+  gap:20px;
+  align-items:start;
+}
+
+/* SIDEBAR */
+.sidebar{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.side-box{
+  border:1px solid #1a0000;
+  background:var(--bg2);
+}
+.side-box-head{
+  background:#0d0000;
+  border-bottom:1px solid #1a0000;
+  font-family:'VT323',monospace;
+  font-size:14px;
+  color:#8b0000;
+  padding:5px 10px;
+  letter-spacing:2px;
+}
+.side-box-body{
+  padding:8px 10px;
+  font-size:11px;
+  color:#555;
+  line-height:1.6;
+}
+.side-box-body a{color:#6b0000;text-decoration:none}
+.side-box-body a:hover{color:#cc0000;text-decoration:underline}
+.side-list{list-style:none;padding:0}
+.side-list li{
+  border-bottom:1px solid #111;
+  padding:5px 0;
+  font-size:11px;
+  color:#555;
+}
+.side-list li::before{content:'▸ ';color:#3a0000}
+.side-list li a{color:#5a0000;text-decoration:none}
+.side-list li a:hover{color:#aa0000}
+
+/* VISITOR COUNTER */
+.counter-box{
+  text-align:center;
+  padding:12px;
+  border:1px solid #1a0000;
+  background:var(--bg2);
+}
+.counter-title{
+  font-family:'VT323',monospace;
+  font-size:13px;
+  color:#3a0000;
+  letter-spacing:2px;
+  margin-bottom:6px;
+}
+.counter-digits{
+  font-family:'VT323',monospace;
+  font-size:28px;
+  color:#8b0000;
+  letter-spacing:4px;
+  text-shadow:0 0 10px rgba(139,0,0,.5);
+}
+.counter-note{
+  font-size:10px;
+  color:#2a0000;
+  margin-top:4px;
+  font-family:'VT323',monospace;
+}
+
+/* MAIN CONTENT */
+.main-col{display:flex;flex-direction:column;gap:18px}
+
+/* SECTION HEADER */
+.section-head{
+  background:linear-gradient(90deg,#0d0000 0%,#080808 100%);
+  border:1px solid #1a0000;
+  border-left:3px solid #8b0000;
+  padding:7px 12px;
+  font-family:'VT323',monospace;
+  font-size:18px;
+  color:#8b0000;
+  letter-spacing:2px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.section-head .deco{font-size:14px;color:#3a0000}
+
+/* POST / ENTRY CARD */
+.entry{
+  border:1px solid #150000;
+  background:var(--bg2);
+  margin-top:-1px;
+}
+.entry-header{
+  background:#060000;
+  border-bottom:1px solid #150000;
+  padding:5px 10px;
+  font-family:'VT323',monospace;
+  font-size:12px;
+  color:#3a0000;
+  letter-spacing:1px;
+  display:flex;
+  justify-content:space-between;
+}
+.entry-header .entry-date{color:#2a0000}
+.entry-header .entry-cat{
+  color:#5a0000;
+  border:1px solid #2a0000;
+  padding:0 5px;
+  font-size:10px;
+}
+.entry-title{
+  padding:10px 12px 4px;
+  font-family:'VT323',monospace;
+  font-size:20px;
+  color:#aa0000;
+  letter-spacing:1px;
+  text-shadow:0 0 8px rgba(139,0,0,.3);
+  border-bottom:1px solid #0d0000;
+  margin-bottom:10px;
+}
+.entry-body{
+  padding:4px 12px 14px;
+  font-size:12px;
+  color:#666;
+  line-height:1.8;
+}
+.entry-body p{margin-bottom:10px}
+.entry-body b{color:#884444}
+.entry-body .spoiler{
+  background:#0d0000;
+  color:#0d0000;
+  border:1px solid #1a0000;
+  padding:0 6px;
+  cursor:pointer;
+  font-size:11px;
+  transition:color .2s;
+  user-select:none;
+}
+.entry-body .spoiler:hover{color:#aa0000}
+.entry-body .spoiler.revealed{color:#aa0000}
+.entry-body blockquote{
+  border-left:2px solid #1a0000;
+  padding:4px 10px;
+  background:#060000;
+  margin:8px 0;
+  font-style:italic;
+  color:#4a4a4a;
+  font-size:11px;
+}
+.entry-body .warning{
+  border:1px solid #1a0000;
+  background:#060000;
+  padding:6px 10px;
+  margin:8px 0;
+  font-family:'VT323',monospace;
+  font-size:13px;
+  color:#5a0000;
+  letter-spacing:1px;
+}
+.entry-body .warning::before{content:'⚠ '}
+.entry-tags{
+  padding:4px 12px 10px;
+  display:flex;
+  gap:4px;
+  flex-wrap:wrap;
+}
+.tag{
+  font-family:'VT323',monospace;
+  font-size:11px;
+  color:#2a0000;
+  border:1px solid #1a0000;
+  padding:1px 6px;
+  background:#060000;
+  letter-spacing:1px;
+}
+.entry-footer{
+  border-top:1px solid #0d0000;
+  padding:5px 12px;
+  font-family:'VT323',monospace;
+  font-size:11px;
+  color:#2a0000;
+  display:flex;
+  justify-content:space-between;
+  letter-spacing:1px;
+}
+.entry-footer span{cursor:pointer}
+.entry-footer span:hover{color:#660000}
+
+/* REPLIES SECTION */
+.replies{
+  border:1px solid #0d0000;
+  border-top:none;
+  background:#050505;
+}
+.replies-head{
+  padding:5px 12px;
+  font-family:'VT323',monospace;
+  font-size:12px;
+  color:#2a0000;
+  border-bottom:1px solid #0d0000;
+  letter-spacing:1px;
+}
+.reply{
+  padding:8px 12px;
+  border-bottom:1px solid #0a0000;
+  display:grid;
+  grid-template-columns:90px 1fr;
+  gap:10px;
+  align-items:start;
+}
+.reply:last-child{border-bottom:none}
+.reply-user{
+  text-align:center;
+  font-family:'VT323',monospace;
+  font-size:11px;
+}
+.reply-pfp{
+  width:60px;height:60px;
+  border:1px solid #1a0000;
+  background:#0a0000;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+  margin:0 auto 4px;
+}
+.reply-name{color:#5a0000;display:block;font-size:12px}
+.reply-rank{color:#2a0000;display:block;font-size:10px}
+.reply-body{font-size:11px;color:#555;line-height:1.7}
+.reply-meta{
+  font-family:'VT323',monospace;
+  font-size:10px;
+  color:#2a0000;
+  margin-bottom:4px;
+  letter-spacing:1px;
+}
+
+/* GLITCH TEXT */
+.glitch{
+  position:relative;
+  display:inline-block;
+}
+.glitch::before,.glitch::after{
+  content:attr(data-text);
+  position:absolute;
+  top:0;left:0;
+  color:inherit;
+}
+.glitch::before{
+  animation:glitch-1 3.5s infinite;
+  clip-path:polygon(0 0,100% 0,100% 35%,0 35%);
+  color:#ff0000;
+  opacity:.7;
+}
+.glitch::after{
+  animation:glitch-2 3.5s infinite;
+  clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%);
+  color:#00ffff;
+  opacity:.4;
+}
+@keyframes glitch-1{
+  0%,100%{transform:none;opacity:0}
+  94%{transform:none;opacity:0}
+  95%{transform:translate(-2px,0);opacity:.7}
+  96%{transform:translate(2px,0);opacity:.7}
+  97%{transform:none;opacity:0}
+}
+@keyframes glitch-2{
+  0%,100%{transform:none;opacity:0}
+  93%{transform:none;opacity:0}
+  94%{transform:translate(2px,0);opacity:.4}
+  95.5%{transform:translate(-2px,0);opacity:.4}
+  96%{transform:none;opacity:0}
+}
+
+/* BLINKING CURSOR */
+.cursor{
+  display:inline-block;
+  width:8px;height:14px;
+  background:#8b0000;
+  vertical-align:middle;
+  animation:blink .7s step-end infinite;
+  margin-left:2px;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* PROFILE CARD (sidebar) */
+.profile-mini{
+  border:1px solid #1a0000;
+  background:var(--bg2);
+}
+.profile-mini-head{
+  background:#0d0000;
+  border-bottom:1px solid #1a0000;
+  padding:5px 10px;
+  font-family:'VT323',monospace;
+  font-size:13px;
+  color:#8b0000;
+  letter-spacing:2px;
+}
+.profile-mini-body{
+  padding:12px;
+  text-align:center;
+}
+.profile-mini-pfp{
+  width:80px;height:80px;
+  border:1px solid #2a0000;
+  background:#0a0000;
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;
+  margin:0 auto 8px;
+  position:relative;
+  animation:eye-pulse 5s ease-in-out infinite 1s;
+}
+.profile-mini-name{
+  font-family:'VT323',monospace;
+  font-size:16px;
+  color:#8b0000;
+  letter-spacing:2px;
+  display:block;
+  margin-bottom:2px;
+}
+.profile-mini-status{
+  font-size:10px;
+  color:#2a0000;
+  font-family:'VT323',monospace;
+  letter-spacing:1px;
+}
+.profile-mini-stats{
+  margin-top:8px;
+  font-family:'VT323',monospace;
+  font-size:11px;
+  color:#2a0000;
+  letter-spacing:1px;
+  border-top:1px solid #0d0000;
+  padding-top:8px;
+  text-align:left;
+}
+.profile-mini-stats div{padding:2px 0}
+
+/* STATUS INDICATOR */
+.status-dot{
+  display:inline-block;
+  width:6px;height:6px;
+  background:#3a0000;
+  border-radius:50%;
+  margin-right:4px;
+  animation:blink 2s step-end infinite;
+}
+
+/* LAST SEEN */
+.last-seen{
+  text-align:center;
+  font-family:'VT323',monospace;
+  font-size:10px;
+  color:#1a0000;
+  margin-top:6px;
+  letter-spacing:1px;
+}
+
+/* BACK LINK */
+.back-link{
+  display:inline-block;
+  font-family:'VT323',monospace;
+  font-size:14px;
+  color:#3a0000;
+  text-decoration:none;
+  padding:5px 12px;
+  border:1px solid #1a0000;
+  background:var(--bg2);
+  letter-spacing:2px;
+  margin-bottom:12px;
+}
+.back-link:hover{color:#8b0000;border-color:#3a0000}
+
+/* FOOTER */
+.site-footer{
+  border-top:1px solid #0d0000;
+  padding:14px 0;
+  text-align:center;
+  font-family:'VT323',monospace;
+  font-size:12px;
+  color:#1a0000;
+  letter-spacing:2px;
+}
+
+/* NOISE overlay */
+.noise{
+  position:fixed;
+  inset:0;
+  opacity:.03;
+  pointer-events:none;
+  z-index:9998;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px 200px;
+  animation:noise-anim .15s steps(2) infinite;
+}
+@keyframes noise-anim{
+  0%{background-position:0 0}
+  25%{background-position:-20px 10px}
+  50%{background-position:10px -15px}
+  75%{background-position:-10px 20px}
+  100%{background-position:5px -5px}
+}
+
+/* BLINK ANIM for text */
+.blink{animation:blink .9s step-end infinite}
+.slowblink{animation:blink 2.4s step-end infinite}
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+
+<!-- MARQUEE TOP -->
+<div class="top-bar">
+  <span class="marquee-inner">
+    ⚠ YOU ARE BEING WATCHED ⚠ &nbsp;&nbsp;&nbsp; this site has been visited by something that should not exist &nbsp;&nbsp;&nbsp; 
+    ⚠ DO NOT READ ALONE AT NIGHT ⚠ &nbsp;&nbsp;&nbsp; report 7 confirmed [REDACTED] since 2003 &nbsp;&nbsp;&nbsp; 
+    ⚠ THEY KNOW YOU ARE HERE ⚠ &nbsp;&nbsp;&nbsp; sleep is not safe &nbsp;&nbsp;&nbsp;
+  </span>
+</div>
+
+<!-- HEADER -->
+<div class="site-header">
+  <span class="eye-logo">👁</span>
+  <div class="site-title">
+    <span class="glitch" data-text="xX_shadow_Xx">xX_shadow_Xx</span>
+  </div>
+  <div class="site-subtitle">:: the truth they don't want you to know :: est. 2007 ::</div>
+  <nav class="site-nav">
+    <a href="#">[ HOME ]</a>
+    <a href="#">[ THEORIES ]</a>
+    <a href="#">[ EVIDENCE ]</a>
+    <a href="#">[ SIGHTINGS ]</a>
+    <a href="#">[ CONTACT ]</a>
+  </nav>
+</div>
+
+<!-- MAIN PAGE WRAP -->
+<div class="page-wrap">
+
+  <!-- MAIN COLUMN -->
+  <main class="main-col">
+
+    <a href="javascript:window.close()" class="back-link">◀ BACK TO FORUM</a>
+
+    <!-- SECTION: PINNED -->
+    <div class="section-head"><span class="deco">📌</span> PINNED THEORIES <span class="cursor"></span></div>
+
+    <!-- ENTRY 1 -->
+    <div class="entry">
+      <div class="entry-header">
+        <span>posted: 2007.09.13 &mdash; 03:14</span>
+        <span class="entry-cat">[ CONFIRMED ]</span>
+      </div>
+      <div class="entry-title">The Face On Your Screen At 3AM — What It Actually Is</div>
+      <div class="entry-body">
+        <p>ok so i know everyone says i'm crazy but i've been tracking this for <b>6 months</b> and i have screenshots. if you are awake at exactly 3:00am and stare at a blank screen, sometimes — not always — something stares back.</p>
+        <p>i first noticed it in 2006. my monitor was off but i could see something in the reflection. a face. no features except a smile. i thought it was me at first. it wasn't.</p>
+        <div class="warning">DO NOT attempt to photograph it directly. three people have tried. two of them stopped posting.</div>
+        <p>my theory: whatever it is, it travels through screens. not literally — more like it <b>uses the signal</b>. old CRT monitors were worse for this. something about the refresh rate at 60hz creates a "window" for about 4 minutes starting at exactly 3:00:00am.</p>
+        <p>i've been calling it <b>the Smiler</b>. it doesn't do anything. it just watches. the terrifying part is that it's been watching since long before monitors existed — there are woodcut illustrations from the 1400s that show the same face, same smile, appearing in mirrors and still water at night.</p>
+        <p>if you see it, close your eyes. do not smile back. <span class="spoiler" onclick="this.classList.add('revealed')">[ click to reveal: it smiles wider if you acknowledge it ]</span></p>
+      </div>
+      <div class="entry-tags">
+        <span class="tag">#smiler</span>
+        <span class="tag">#3am</span>
+        <span class="tag">#confirmed</span>
+        <span class="tag">#dont-look</span>
+      </div>
+      <div class="entry-footer">
+        <span>💀 666 views</span>
+        <span>13 replies ▾</span>
+        <span>last reply: <span class="blink">just now</span></span>
+      </div>
+    </div>
+
+    <!-- REPLIES -->
+    <div class="replies">
+      <div class="replies-head">— REPLIES (showing 3 of 13) —</div>
+      <div class="reply">
+        <div class="reply-user">
+          <div class="reply-pfp">🌑</div>
+          <span class="reply-name">void_watcher</span>
+          <span class="reply-rank">lurker</span>
+        </div>
+        <div class="reply-body">
+          <div class="reply-meta">2007.09.13 &mdash; 04:01</div>
+          i saw it last night. i didn't want to believe your post but i left my monitor on and sat in the dark. at exactly 3am the screensaver turned off by itself. the screen was just a dark grey. and then<br><br>
+          i'm not going to finish this sentence. if you know you know.
+        </div>
+      </div>
+      <div class="reply">
+        <div class="reply-user">
+          <div class="reply-pfp">😶</div>
+          <span class="reply-name">deleted_usr</span>
+          <span class="reply-rank">[removed]</span>
+        </div>
+        <div class="reply-body">
+          <div class="reply-meta">2007.09.13 &mdash; 03:47</div>
+          <i>[this post has been removed by the user]</i>
+        </div>
+      </div>
+      <div class="reply">
+        <div class="reply-user">
+          <div class="reply-pfp">🕯</div>
+          <span class="reply-name">nightcrawler88</span>
+          <span class="reply-rank">member</span>
+        </div>
+        <div class="reply-body">
+          <div class="reply-meta">2007.09.14 &mdash; 22:13</div>
+          the woodcut thing is real. i found a scan of a 1487 manuscript in a university archive. the image is... yeah. it's the same smile. the file corrupted when i tried to save it. three times.
+        </div>
+      </div>
+    </div>
+
+    <!-- ENTRY 2 -->
+    <div class="entry" style="margin-top:18px">
+      <div class="entry-header">
+        <span>posted: 2007.08.02 &mdash; 01:33</span>
+        <span class="entry-cat">[ ONGOING ]</span>
+      </div>
+      <div class="entry-title">AIM Messages From Accounts That Don't Exist</div>
+      <div class="entry-body">
+        <p>this has happened to me <b>four times</b> now. an AIM account with no buddy info, no profile, no avatar, messages me out of nowhere. the screen name is always different but it always follows this pattern:</p>
+        <blockquote>
+          [random letters] + [a number between 1 and 13] + [the word "awake" or "watching"]<br>
+          example: hR4watching &nbsp;|&nbsp; tmk9awake &nbsp;|&nbsp; xzl1watching
+        </blockquote>
+        <p>the messages are always short. the first time it just said "you left the light on." my light <b>was on</b>. the second time: "we counted 4 in your house." there are 4 people in my house.</p>
+        <p>i blocked the accounts but the messages still come through somehow. AIM doesn't work that way. you cannot receive messages from blocked accounts. i checked. i asked an admin on a tech forum and they said <span class="spoiler" onclick="this.classList.add('revealed')">[ click to reveal: "those accounts don't exist in our system. they never did." ]</span></p>
+        <div class="warning">If you receive a message that just says "GO TO SLEEP" — do not reply. do not close the window. leave it open. closing it is apparently worse.</div>
+        <p>my current theory is that these aren't people. they're something using the messaging infrastructure like a <b>carrier signal</b>. they know your environment. they're counting things. what they're counting for, i don't know yet.</p>
+      </div>
+      <div class="entry-tags">
+        <span class="tag">#AIM</span>
+        <span class="tag">#messages</span>
+        <span class="tag">#they-know</span>
+        <span class="tag">#watching</span>
+      </div>
+      <div class="entry-footer">
+        <span>💀 1,313 views</span>
+        <span>27 replies ▾</span>
+        <span>last reply: 2007.09.11</span>
+      </div>
+    </div>
+
+    <!-- ENTRY 3 -->
+    <div class="entry" style="margin-top:18px">
+      <div class="entry-header">
+        <span>posted: 2007.07.17 &mdash; 00:00</span>
+        <span class="entry-cat">[ UNRESOLVED ]</span>
+      </div>
+      <div class="entry-title">The Chain Email That Predicts When You'll Read It</div>
+      <div class="entry-body">
+        <p>i know. chain emails are a joke. i thought so too until i got the one titled <b>"THIS IS NOT A CHAIN EMAIL."</b></p>
+        <p>the body of the email described, in accurate detail, what i was wearing when i read it. blue hoodie, one sock. it described the room. it said the time was 11:47pm. it was 11:47pm.</p>
+        <p>it said: <i>"You are sitting near something that does not cast a shadow. Look."</i></p>
+        <p>there was a coffee mug on my desk. under the lamp. <b>it had no shadow.</b></p>
+        <p>i have no explanation for the mug. i've tested it since. normal shadow. only that night. i forwarded the email to exactly 0 people because the email said "forward this to nobody. just close it and go to bed." which is not how chain emails work.</p>
+        <blockquote>
+          the email ended with: "We've been watching this house since [year of my birth]. You already know us. You just haven't looked at the right time."
+        </blockquote>
+        <p><span class="spoiler" onclick="this.classList.add('revealed')">[ click to reveal: the email's sent timestamp was 13 minutes in the future ]</span></p>
+      </div>
+      <div class="entry-tags">
+        <span class="tag">#chain-email</span>
+        <span class="tag">#shadow</span>
+        <span class="tag">#impossible</span>
+        <span class="tag">#time</span>
+      </div>
+      <div class="entry-footer">
+        <span>💀 404 views</span>
+        <span>9 replies ▾</span>
+        <span>last reply: <span class="slowblink">2007.07.17 &mdash; 00:13</span></span>
+      </div>
+    </div>
+
+    <!-- ENTRY 4 -->
+    <div class="entry" style="margin-top:18px">
+      <div class="entry-header">
+        <span>posted: 2007.06.06 &mdash; 06:06</span>
+        <span class="entry-cat">[ DO NOT SHARE ]</span>
+      </div>
+      <div class="entry-title">The Stairs In My House That Weren't There Last Week</div>
+      <div class="entry-body">
+        <p>this one is harder to explain without sounding completely unhinged. but i'm posting it anyway.</p>
+        <p>my house has one staircase. last tuesday i woke up at 3am (again) and there were two. the second one was at the end of the hallway where the linen closet used to be. the steps were identical to the original staircase — same carpet, same banister — but they went <b>down</b>, even though our house has no basement.</p>
+        <p>i did not go down them. i went back to my room and locked the door. when i checked at 6am they were gone. the linen closet was back. the towels were inside, undisturbed.</p>
+        <div class="warning">I have since found 3 other reports of this exact phenomenon on this forum and two others. Different houses. Same hallway placement. Same direction (always down). No basement.</div>
+        <p>some people call these <b>Backstairs</b>. the theory is that certain houses develop them when something has been paying attention to the location long enough. like a path being worn into a carpet by repeated footsteps, except the footsteps are from <i>something walking through the space between places.</i></p>
+        <p><span class="spoiler" onclick="this.classList.add('revealed')">[ click to reveal: one user who went down reported they came back up three days later with no memory. they posted once more — just "it's bigger than you think" — and never logged in again ]</span></p>
+      </div>
+      <div class="entry-tags">
+        <span class="tag">#backstairs</span>
+        <span class="tag">#architecture</span>
+        <span class="tag">#liminal</span>
+        <span class="tag">#dont-go-down</span>
+      </div>
+      <div class="entry-footer">
+        <span>💀 999 views</span>
+        <span>6 replies ▾</span>
+        <span>last reply: <span class="blink">[deleted]</span></span>
+      </div>
+    </div>
+
+    <div style="font-family:'VT323',monospace;font-size:12px;color:#1a0000;letter-spacing:2px;text-align:center;padding:16px 0">
+      — END OF PAGE — SCROLL UP — YOU SHOULDN'T STILL BE READING —
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- PROFILE -->
+    <div class="profile-mini">
+      <div class="profile-mini-head">WEBMASTER</div>
+      <div class="profile-mini-body">
+        <div class="profile-mini-pfp">👁</div>
+        <span class="profile-mini-name">xX_shadow_Xx</span>
+        <span class="profile-mini-status"><span class="status-dot"></span>online (probably)</span>
+        <div class="profile-mini-stats">
+          <div>posts: 13</div>
+          <div>joined: 2007.XX.XX</div>
+          <div>location: [REDACTED]</div>
+          <div>mood: <span style="color:#5a0000">watching</span></div>
+        </div>
+      </div>
+      <div class="last-seen">last login: 2007.09.13 03:14</div>
+    </div>
+
+    <!-- VISITOR COUNTER -->
+    <div class="counter-box">
+      <div class="counter-title">YOU ARE VISITOR</div>
+      <div class="counter-digits" id="counter">0000000</div>
+      <div class="counter-note">since the beginning</div>
+    </div>
+
+    <!-- RECENT SIGHTINGS -->
+    <div class="side-box">
+      <div class="side-box-head">RECENT SIGHTINGS</div>
+      <div class="side-box-body">
+        <ul class="side-list">
+          <li>The Smiler (monitor reflection) — 14 reports this week</li>
+          <li>Shadow on second floor, no source — 3 reports</li>
+          <li>AIM messages, no sender — 8 reports</li>
+          <li>Backstairs — <span class="blink">1 new report</span></li>
+          <li>Object without shadow — ongoing</li>
+          <li>Face in static — 5 reports</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- LINKS -->
+    <div class="side-box">
+      <div class="side-box-head">RELATED SITES</div>
+      <div class="side-box-body">
+        <ul class="side-list">
+          <li><a href="#">the quiet ones — documentation</a></li>
+          <li><a href="#">mirror-watch project</a></li>
+          <li><a href="#">AIM ghost accounts tracker</a></li>
+          <li><a href="#">backstairs map (US only)</a></li>
+          <li><a href="#">██████████.net [BLOCKED]</a></li>
+        </ul>
+        <div style="margin-top:8px;font-size:10px;color:#1a0000;font-family:'VT323',monospace;letter-spacing:1px">
+          ⚠ one of these links is not what it appears<br>we don't know which one
+        </div>
+      </div>
+    </div>
+
+    <!-- RULES -->
+    <div class="side-box">
+      <div class="side-box-head">SITE RULES</div>
+      <div class="side-box-body" style="font-family:'VT323',monospace;font-size:11px;color:#2a0000;letter-spacing:1px;line-height:1.8">
+        1. DO NOT post their names<br>
+        2. DO NOT share location<br>
+        3. DO NOT read after 3am<br>
+        4. DO NOT look directly at<br>&nbsp;&nbsp;&nbsp;the static<br>
+        5. <span class="blink">DO NOT smile back</span>
+      </div>
+    </div>
+
+    <!-- CLOCK -->
+    <div class="side-box">
+      <div class="side-box-head">CURRENT TIME</div>
+      <div class="side-box-body" style="text-align:center">
+        <div style="font-family:'VT323',monospace;font-size:26px;color:#5a0000;letter-spacing:3px" id="clock">--:--:--</div>
+        <div style="font-family:'VT323',monospace;font-size:10px;color:#1a0000;letter-spacing:2px;margin-top:4px" id="safe-msg">calculating...</div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<div class="site-footer">
+  xX_shadow_Xx's theories &nbsp;|&nbsp; est. 2007 &nbsp;|&nbsp; 
+  <span class="slowblink">best viewed in IE6 at 800x600 in the dark</span>
+  &nbsp;|&nbsp; no unauthorized archiving &nbsp;|&nbsp; they're already watching
+</div>
+
+<script>
+// Visitor counter
+(function(){
+  var base = 66613;
+  var n = base + Math.floor(Math.random()*300);
+  document.getElementById('counter').textContent = String(n).padStart(7,'0');
+})();
+
+// Clock + safe message
+function updateClock(){
+  var now = new Date();
+  var h = String(now.getHours()).padStart(2,'0');
+  var m = String(now.getMinutes()).padStart(2,'0');
+  var s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent = h+':'+m+':'+s;
+  var msg = '';
+  var hour = now.getHours();
+  var min = now.getMinutes();
+  if(hour === 3 && min < 4){
+    msg = '⚠ NOT SAFE TO BE HERE ⚠';
+    document.getElementById('safe-msg').style.color = '#8b0000';
+    document.getElementById('safe-msg').style.animation = 'blink .4s step-end infinite';
+  } else if(hour >= 0 && hour < 5){
+    msg = 'proceed with caution';
+    document.getElementById('safe-msg').style.color = '#3a0000';
+  } else {
+    msg = 'safe window: ' + (3*60 - (hour*60+min)) % (24*60) + ' min';
+    document.getElementById('safe-msg').style.color = '#1a0000';
+  }
+  document.getElementById('safe-msg').textContent = msg;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// Spoiler click already handled inline
+</script>
+</body>
+</html>
