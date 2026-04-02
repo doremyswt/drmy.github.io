@@ -12,20 +12,20 @@
 <meta name="twitter:image" content="https://drmy.art/banner.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>★ drmy's homepage ★</title>
+<title>drmy's Art Forum - Board Index</title>
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Kosugi+Maru&family=VT323&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  --bg:#f5f3ee;
-  --bg2:#edeae3;
+  --bg:#e5e5e5;
+  --bg2:#d8d8d8;
   --text:#333;
-  --border-main:#8b6914;
-  --link:#0033cc;
-  --link-visited:#6600aa;
+  --border-main:#7a8fa6;
+  --link:#036;
+  --link-visited:#604;
   --red:#cc0000;
-  --blue:#003399;
+  --blue:#1a3a5c;
   --green:#006633;
   --pink:#cc3399;
   --orange:#cc6600;
@@ -34,6 +34,13 @@
   --banner-gold:#ffd700;
   --banner-red:#ff3333;
   --banner-blue:#3366ff;
+  --forum-header:#1a3a5c;
+  --forum-header2:#24537a;
+  --forum-cat:#3b6998;
+  --forum-row1:#f2f6fa;
+  --forum-row2:#e8eef5;
+  --forum-border:#b0c4d8;
+  --forum-post-bg:#fcfcff;
 }
 
 html{
@@ -44,16 +51,14 @@ html{
 
 body{
   background-color:var(--bg);
-  background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(180,160,120,.08) 23px, rgba(180,160,120,.08) 24px),
-    repeating-linear-gradient(90deg, transparent, transparent 23px, rgba(180,160,120,.08) 23px, rgba(180,160,120,.08) 24px);
+  background-image:none;
   color:var(--text);
-  font-family:'DotGothic16','MS Gothic','ＭＳ ゴシック',monospace;
-  font-size:15px;
-  line-height:1.7;
+  font-family:Verdana,Geneva,'DotGothic16',sans-serif;
+  font-size:12px;
+  line-height:1.6;
   min-height:100vh;
   overflow-x:hidden;
-  image-rendering:pixelated;
+  image-rendering:auto;
 }
 html.site-crashed-root,
 body.site-crashed{
@@ -66,38 +71,40 @@ a{color:var(--link);text-decoration:underline}
 a:visited{color:var(--link-visited)}
 a:hover{color:var(--red);text-decoration:none}
 
-/* ═══ TOP BANNER ═══ */
+/* ═══ TOP BANNER (FORUM HEADER) ═══ */
 .top-banner{
-  background:linear-gradient(180deg,#1a0a3a 0%,#0a1a4a 40%,#0a2a2a 100%);
-  border-bottom:3px double #ffd700;
-  padding:8px 0;
-  text-align:center;
+  background:linear-gradient(180deg,var(--forum-header) 0%,var(--forum-header2) 100%);
+  border-bottom:2px solid #102a44;
+  padding:0;
+  text-align:left;
   position:sticky;top:0;z-index:100;
 }
 .top-banner-inner{
-  max-width:1080px;margin:0 auto;padding:0 16px;
+  max-width:1100px;margin:0 auto;padding:10px 20px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
 }
 .banner-stars{
-  color:#ffd700;font-size:13px;letter-spacing:4px;
-  font-family:'VT323',monospace;
+  display:none;
 }
 .banner-title{
-  font-family:'VT323',monospace;
-  font-size:46px;
-  letter-spacing:6px;
-  background:linear-gradient(180deg,#ffd700 0%,#ff8800 30%,#ff3366 60%,#ff66cc 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  text-shadow:none;
-  filter:drop-shadow(1px 1px 0 rgba(0,0,0,.5));
+  font-family:Verdana,Geneva,sans-serif;
+  font-size:26px;
+  font-weight:bold;
+  letter-spacing:1px;
+  background:none;
+  -webkit-background-clip:unset;-webkit-text-fill-color:#fff;background-clip:unset;
+  text-shadow:1px 1px 2px rgba(0,0,0,.4);
+  filter:none;
   line-height:1.2;
+  color:#fff;
 }
 .banner-sub{
-  font-family:'DotGothic16',monospace;font-size:13px;
-  color:#88ccff;letter-spacing:3px;margin-top:2px;
+  font-family:Verdana,sans-serif;font-size:11px;
+  color:#8bb8dc;letter-spacing:0;margin-top:2px;
 }
 .banner-marquee{
-  font-family:'VT323',monospace;font-size:18px;
-  color:#66ffcc;margin-top:4px;overflow:hidden;white-space:nowrap;
+  font-family:Verdana,sans-serif;font-size:11px;
+  color:#8bb8dc;margin-top:4px;overflow:hidden;white-space:nowrap;
 }
 .banner-marquee-inner{
   display:inline-block;
@@ -107,115 +114,145 @@ a:hover{color:var(--red);text-decoration:none}
   0%{transform:translateX(100%)}
   100%{transform:translateX(-100%)}
 }
+/* ═══ LOGIN PANEL ═══ */
+.forum-login{
+  display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0;
+}
+.forum-login input[type="text"],
+.forum-login input[type="password"]{
+  font-family:Verdana,sans-serif;font-size:11px;
+  padding:3px 6px;border:1px solid #456;
+  background:#f0f4f8;width:130px;
+}
+.forum-login-row{display:flex;gap:6px;align-items:center}
+.forum-login label{color:#8bb8dc;font-size:10px;white-space:nowrap}
+.forum-login button{
+  font-family:Verdana,sans-serif;font-size:11px;font-weight:bold;
+  padding:3px 12px;background:linear-gradient(180deg,#5a8ab5,#3b6998);
+  border:1px solid #2a5070;color:#fff;cursor:pointer;
+}
+.forum-login button:hover{background:linear-gradient(180deg,#6a9ac5,#4b79a8)}
+.forum-login-links{font-size:10px;color:#7aa8cc}
+.forum-login-links a{color:#a0d0f0;text-decoration:none}
+.forum-login-links a:hover{text-decoration:underline}
 
-/* ═══ NAV BAR ═══ */
+/* ═══ NAV BAR (FORUM TABS) ═══ */
 .nav-bar{
-  background:var(--bg2);
-  border-bottom:2px solid #8b6914;
-  padding:4px 0;
-  text-align:center;
+  background:linear-gradient(180deg,#4a7aa8,#3b6998);
+  border-bottom:1px solid #2a5070;
+  padding:0;
+  text-align:left;
+  max-width:1100px;margin:0 auto;
+  display:flex;align-items:stretch;
 }
 .nav-bar a{
-  display:inline-block;
-  font-family:'VT323',monospace;
-  font-size:20px;
-  color:var(--blue);
+  display:inline-flex;align-items:center;
+  font-family:Verdana,sans-serif;
+  font-size:11px;font-weight:bold;
+  color:#fff;
   text-decoration:none;
-  padding:4px 12px;
-  border:1px solid transparent;
-  margin:0 2px;
+  padding:6px 14px;
+  border:none;
+  margin:0;
+  background:rgba(255,255,255,.08);
+  border-right:1px solid rgba(0,0,0,.15);
 }
 .nav-bar a:hover{
-  background:#ffd700;
-  color:#000;
-  border:1px solid #8b6914;
+  background:rgba(255,255,255,.2);
+  color:#fff;
+  border:none;
 }
-.nav-sep{color:#999;font-size:10px;user-select:none}
+.nav-bar a:visited{color:#fff}
+.nav-sep{display:none}
 
 /* ═══ MAIN WRAPPER ═══ */
 .page-wrap{
-  width:clamp(900px, 42vw, 1180px);
-  max-width:calc(100vw - 32px);
+  width:100%;
+  max-width:1100px;
   min-width:0;
   margin:0 auto;
-  padding:22px 24px 30px;
+  padding:12px 0 30px;
   position:relative;
   z-index:3;
 }
 
-/* ═══ PROFILE CARD ═══ */
+/* ═══ PROFILE CARD (FORUM USER PANEL) ═══ */
 .profile-card{
-  border:2px solid #8b6914;
-  background:linear-gradient(180deg,#fffff0 0%,#fff8e8 100%);
-  margin-bottom:20px;
-  box-shadow:3px 3px 0 rgba(0,0,0,.12);
+  border:1px solid var(--forum-border);
+  background:var(--forum-post-bg);
+  margin-bottom:8px;
+  box-shadow:none;
 }
 .profile-card-header{
-  background:linear-gradient(90deg,#003399,#006699,#003399);
+  background:linear-gradient(180deg,var(--forum-cat),var(--forum-header));
   color:#fff;
-  font-family:'VT323',monospace;
-  font-size:23px;
-  padding:7px 12px;
-  letter-spacing:2px;
-  border-bottom:1px solid #002266;
+  font-family:Verdana,sans-serif;
+  font-size:12px;font-weight:bold;
+  padding:6px 10px;
+  letter-spacing:0;
+  border-bottom:1px solid #2a5070;
   display:flex;align-items:center;gap:6px;
 }
-.profile-card-header .blink-star{animation:blink-star .8s step-end infinite;color:#ffd700;font-size:14px}
+.profile-card-header .blink-star{animation:blink-star .8s step-end infinite;color:#ffd700;font-size:11px}
 @keyframes blink-star{0%,100%{opacity:1}50%{opacity:0}}
 .profile-card-body{
-  display:flex;gap:24px;padding:22px;align-items:flex-start;flex-wrap:wrap;
+  display:flex;gap:0;padding:0;align-items:stretch;flex-wrap:nowrap;
 }
 .avatar-area{
   flex-shrink:0;
-  display:flex;flex-direction:column;align-items:center;gap:6px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  width:160px;
+  padding:10px;
+  background:var(--forum-row1);
+  border-right:1px solid var(--forum-border);
 }
 .avatar{
-  width:132px;height:132px;
+  width:120px;height:120px;
   border-radius:0;
-  border:2px solid #cc6600;
+  border:1px solid #999;
   object-fit:cover;
   display:block;
   cursor:pointer;
-  image-rendering:pixelated;
+  image-rendering:auto;
   transition:none;
   filter:none;
 }
 .avatar:hover{
-  outline:2px dashed #ff3366;
-  outline-offset:2px;
+  outline:1px solid #369;
+  outline-offset:1px;
 }
 .avatar-caption{
-  font-family:'VT323',monospace;font-size:20px;
-  color:var(--pink);text-align:center;
+  font-family:Verdana,sans-serif;font-size:10px;
+  color:var(--forum-cat);text-align:center;
   cursor:pointer;
   user-select:none;
 }
 .avatar-caption:hover{
   color:var(--red);
-  text-decoration:underline dotted;
+  text-decoration:underline;
 }
-.profile-info{flex:1;min-width:200px}
+.profile-info{flex:1;min-width:200px;padding:12px 16px}
 .profile-name{
-  font-family:'VT323',monospace;
-  font-size:46px;
-  color:var(--red);
-  letter-spacing:2px;
-  line-height:1;
+  font-family:Verdana,sans-serif;
+  font-size:18px;font-weight:bold;
+  color:var(--forum-header);
+  letter-spacing:0;
+  line-height:1.3;
 }
-.profile-name .kanji{color:var(--purple);font-size:28px;vertical-align:middle;margin-left:10px}
+.profile-name .kanji{color:var(--purple);font-size:14px;vertical-align:middle;margin-left:6px}
 .profile-tagline{
-  font-size:16px;color:var(--teal);
-  border-left:3px solid var(--teal);
-  padding-left:8px;margin:6px 0 12px;
+  font-size:11px;color:#888;
+  border-left:2px solid var(--forum-border);
+  padding-left:6px;margin:4px 0 8px;
 }
 .profile-links{
-  display:flex;flex-wrap:wrap;gap:6px;
+  display:flex;flex-wrap:wrap;gap:4px;
 }
 .profile-links a{
   display:inline-block;
-  font-family:'VT323',monospace;
-  font-size:18px;
-  padding:3px 10px;
+  font-family:Verdana,sans-serif;
+  font-size:10px;
+  padding:2px 8px;
   border:1px solid;
   text-decoration:none;
   background:#fff;
@@ -230,47 +267,46 @@ a:hover{color:var(--red);text-decoration:none}
 .profile-links a.vg:hover{background:#ff6633;color:#fff}
 .comm-badge{
   display:inline-block;
-  font-family:'VT323',monospace;font-size:15px;
-  background:#ff3366;color:#fff;
-  padding:0 5px;margin-left:4px;
+  font-family:Verdana,sans-serif;font-size:9px;
+  background:#c33;color:#fff;
+  padding:0 4px;margin-left:3px;
   animation:blink-star 1s step-end infinite;
   vertical-align:middle;
 }
 
-/* ═══ SECTION HEADERS ═══ */
+/* ═══ SECTION HEADERS (FORUM CATEGORY) ═══ */
 .section-head{
-  border:2px solid #8b6914;
-  background:linear-gradient(90deg,#8b0000,#cc3300,#8b0000);
-  color:#ffd700;
-  font-family:'VT323',monospace;
-  font-size:28px;
-  letter-spacing:3px;
-  padding:5px 12px;
-  margin:26px 0 14px;
-  box-shadow:2px 2px 0 rgba(0,0,0,.15);
+  border:1px solid var(--forum-border);
+  background:linear-gradient(180deg,var(--forum-cat),var(--forum-header));
+  color:#fff;
+  font-family:Verdana,sans-serif;
+  font-size:12px;font-weight:bold;
+  letter-spacing:0;
+  padding:6px 10px;
+  margin:12px 0 0;
+  box-shadow:none;
   display:flex;align-items:center;gap:6px;
 }
-.section-head .deco{font-size:12px;color:#ffcc00}
+.section-head .deco{font-size:9px;color:#8bb8dc}
 
 /* ═══ GALLERY ═══ */
 .gallery{
   position:relative;
-  margin-bottom:20px;
+  margin-bottom:8px;
 }
 .item{
   position:absolute;
-  border:2px solid #8b6914;
+  border:1px solid var(--forum-border);
   background:#fff;
-  padding:3px;
+  padding:2px;
   cursor:pointer;
   transition:none;
-  box-shadow:2px 2px 0 rgba(0,0,0,.1);
+  box-shadow:none;
   filter:none;
 }
 .item:hover{
-  border-color:var(--red);
-  outline:1px dashed #ff6600;
-  outline-offset:2px;
+  border-color:#369;
+  outline:none;
   z-index:5;
 }
 .item img{width:100%;height:auto;display:block;image-rendering:auto}
@@ -292,49 +328,52 @@ a:hover{color:var(--red);text-decoration:none}
 @media(hover:hover)and(pointer:fine){.lightbox img{cursor:zoom-in;}.lightbox img.zoomed{cursor:zoom-out;}}
 .lb-btn{
   position:absolute;
-  background:#003399;
-  border:2px solid #ffd700;
-  color:#ffd700;
+  background:var(--forum-header);
+  border:1px solid var(--forum-border);
+  color:#fff;
   width:32px;height:32px;
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-family:'VT323',monospace;font-size:18px;
+  cursor:pointer;font-family:Verdana,sans-serif;font-size:16px;
   top:50%;transform:translateY(-50%);
 }
-.lb-btn:hover{background:#ffd700;color:#003399}
+.lb-btn:hover{background:var(--forum-cat);color:#fff}
 .lb-close{top:12px;right:12px;transform:none;font-size:14px}
 .lb-prev{left:8px}.lb-next{right:8px}
 .lb-counter{
   position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
-  font-family:'VT323',monospace;font-size:16px;
-  color:#ffd700;background:#003399;
-  padding:2px 12px;border:1px solid #ffd700;
+  font-family:Verdana,sans-serif;font-size:11px;
+  color:#fff;background:var(--forum-header);
+  padding:3px 12px;border:1px solid var(--forum-border);
 }
 @media(hover:none)and(pointer:coarse){.lb-prev,.lb-next{display:none}}
 
 /* ═══ VISITOR COUNTER / FOOTER ═══ */
 .footer-wrap{
-  border-top:3px double #8b6914;
-  margin-top:28px;
-  padding:14px 0;
-  text-align:center;
+  border:1px solid var(--forum-border);
+  border-top:none;
+  margin-top:0;
+  padding:10px 12px;
+  text-align:left;
+  background:var(--forum-row1);
+  font-size:11px;
 }
 .visitor-counter{
   display:inline-block;
-  background:#000;color:#00ff00;
-  font-family:'VT323',monospace;font-size:22px;
-  padding:4px 12px;
-  border:1px inset #666;
-  margin:4px 0;
-  letter-spacing:2px;
+  background:#1a3a5c;color:#8bb8dc;
+  font-family:Verdana,sans-serif;font-size:11px;font-weight:bold;
+  padding:2px 8px;
+  border:1px solid #2a5070;
+  margin:2px 0;
+  letter-spacing:1px;
 }
 .footer-text{
-  font-size:13px;color:#999;margin-top:6px;
+  font-size:10px;color:#888;margin-top:4px;
 }
 .footer-links{
-  margin-top:6px;
-  font-size:14px;
+  margin-top:4px;
+  font-size:11px;
 }
-.footer-links a{color:var(--teal);margin:0 6px}
+.footer-links a{color:#369;margin:0 4px}
 
 /* ═══ RAINBOW TEXT ═══ */
 .rainbow{
@@ -345,44 +384,45 @@ a:hover{color:var(--red);text-decoration:none}
 /* ═══ MINI DECORATIONS ═══ */
 .deco-hr{
   border:none;
-  height:4px;
-  background:repeating-linear-gradient(90deg,#ff3366 0,#ff3366 8px,#ffd700 8px,#ffd700 16px,#33ccff 16px,#33ccff 24px,#66ff66 24px,#66ff66 32px);
-  margin:12px 0;
+  height:1px;
+  background:var(--forum-border);
+  margin:6px 0;
 }
 
 .update-box{
-  border:1px solid #999;
-  background:#fffff8;
-  padding:12px;
-  margin:12px 0;
-  font-size:17px;
-  max-height:150px;
+  border:1px solid var(--forum-border);
+  border-top:none;
+  background:var(--forum-post-bg);
+  padding:8px 12px;
+  margin:0;
+  font-size:11px;
+  max-height:120px;
   overflow-y:auto;
 }
-.update-box .date{color:var(--red);font-weight:bold;margin-right:6px}
+.update-box .date{color:#369;font-weight:bold;margin-right:6px}
 .update-box .msg{color:#333}
 
 .guestbook-btn{
   display:inline-block;
-  font-family:'VT323',monospace;font-size:24px;
-  background:linear-gradient(180deg,#ffee88,#ffcc00);
-  border:2px outset #cc9900;
-  color:#663300;
-  padding:6px 18px;
+  font-family:Verdana,sans-serif;font-size:11px;font-weight:bold;
+  background:linear-gradient(180deg,#5a8ab5,#3b6998);
+  border:1px solid #2a5070;
+  color:#fff;
+  padding:4px 14px;
   cursor:pointer;
   text-decoration:none;
-  margin:6px 0;
+  margin:4px 0;
 }
 .guestbook-btn:hover{
-  background:linear-gradient(180deg,#ffcc00,#ffaa00);
-  color:#441100;
+  background:linear-gradient(180deg,#6a9ac5,#4b79a8);
+  color:#fff;
 }
 
 .kanji-watermark{
   position:fixed;
   pointer-events:none;user-select:none;
   font-family:'DotGothic16',monospace;
-  color:rgba(139,105,20,.04);
+  color:rgba(26,58,92,.03);
   font-size:120px;
   z-index:0;
   line-height:1;
@@ -539,7 +579,7 @@ a:hover{color:var(--red);text-decoration:none}
 .site-layout{
   max-width:1960px;
   margin:0 auto;
-  padding:18px clamp(160px, 13vw, 290px) 52px;
+  padding:0 clamp(160px, 13vw, 290px) 30px;
   position:relative;
 }
 .ad-cloud{
@@ -1659,13 +1699,111 @@ body.coolbar-on{padding-top:34px}
 
 /* ═══ RESPONSIVE ═══ */
 @media(max-width:680px){
-  .page-wrap{width:min(96vw, 920px);padding:10px}
-  .profile-card-body{padding:12px;gap:14px}
-  .banner-title{font-size:30px;letter-spacing:3px}
-  .nav-bar a{font-size:17px;padding:3px 8px}
-  .profile-name{font-size:34px}
-  .section-head{font-size:20px}
+  .page-wrap{width:min(96vw, 920px);padding:6px}
+  .profile-card-body{flex-direction:column}
+  .avatar-area{width:100%;border-right:none;border-bottom:1px solid var(--forum-border)}
+  .banner-title{font-size:18px}
+  .top-banner-inner{flex-direction:column;text-align:center}
+  .forum-login{align-items:center}
+  .nav-bar{flex-wrap:wrap}
+  .nav-bar a{font-size:10px;padding:4px 8px}
+  .profile-name{font-size:14px}
+  .section-head{font-size:11px}
+  .forum-post{flex-direction:column}
+  .forum-post-user{width:100%;border-right:none;border-bottom:1px solid var(--forum-border);flex-direction:row;gap:10px}
 }
+
+/* ═══ FORUM POSTS ═══ */
+.forum-breadcrumb{
+  font-size:11px;color:#666;padding:6px 0;
+}
+.forum-breadcrumb a{color:#369;text-decoration:none}
+.forum-breadcrumb a:hover{text-decoration:underline}
+
+.forum-table{
+  width:100%;border:1px solid var(--forum-border);border-collapse:collapse;margin-bottom:2px;
+}
+.forum-table th{
+  background:linear-gradient(180deg,var(--forum-cat),var(--forum-header));
+  color:#fff;font-size:11px;font-weight:bold;
+  padding:5px 10px;text-align:left;
+  border:1px solid #2a5070;
+}
+.forum-table td{
+  padding:5px 10px;font-size:11px;
+  border:1px solid var(--forum-border);
+  vertical-align:top;
+}
+.forum-table tr:nth-child(odd) td{background:var(--forum-row1)}
+.forum-table tr:nth-child(even) td{background:var(--forum-row2)}
+.forum-table td a{color:#369;text-decoration:none}
+.forum-table td a:hover{text-decoration:underline}
+.forum-table .topic-icon{width:16px;text-align:center;font-size:14px}
+.forum-table .topic-title{font-weight:bold}
+.forum-table .topic-desc{color:#666;font-size:10px;margin-top:2px}
+.forum-table .topic-author{color:#888;font-size:10px}
+.forum-table .topic-stats{color:#888;font-size:10px;white-space:nowrap}
+
+.forum-post{
+  display:flex;border:1px solid var(--forum-border);border-top:none;
+  background:var(--forum-post-bg);
+}
+.forum-post:first-child{border-top:1px solid var(--forum-border)}
+.forum-post-user{
+  width:150px;flex-shrink:0;
+  padding:8px;
+  background:var(--forum-row1);
+  border-right:1px solid var(--forum-border);
+  text-align:center;
+  font-size:10px;color:#666;
+}
+.forum-post-user .post-username{
+  font-size:12px;font-weight:bold;color:var(--forum-header);display:block;margin-bottom:4px;
+}
+.forum-post-user .post-rank{
+  font-size:9px;color:#888;font-style:italic;display:block;margin-bottom:4px;
+}
+.forum-post-user .post-avatar{
+  width:80px;height:80px;border:1px solid #ccc;object-fit:cover;display:block;margin:0 auto 6px;
+}
+.forum-post-user .post-joined{font-size:9px;color:#aaa;display:block}
+.forum-post-user .post-count{font-size:9px;color:#aaa;display:block}
+.forum-post-body{
+  flex:1;padding:8px 12px;font-size:12px;line-height:1.6;
+}
+.forum-post-header{
+  font-size:10px;color:#888;border-bottom:1px solid #eee;padding-bottom:4px;margin-bottom:6px;
+}
+.forum-post-sig{
+  margin-top:12px;padding-top:8px;border-top:1px dashed #ccc;
+  font-size:10px;color:#888;font-style:italic;
+}
+
+.forum-stats-bar{
+  background:var(--forum-row1);
+  border:1px solid var(--forum-border);
+  padding:8px 12px;margin-top:8px;
+  font-size:10px;color:#666;
+}
+.forum-stats-bar b{color:var(--forum-header)}
+.forum-online{
+  margin-top:4px;padding-top:4px;border-top:1px solid var(--forum-border);
+  font-size:10px;color:#888;
+}
+.forum-online .online-dot{color:#0a0;font-weight:bold}
+
+/* ═══ EASTER EGG STYLES ═══ */
+.easter-egg-jtk{
+  cursor:pointer;
+  transition:filter 0.3s;
+}
+.easter-egg-jtk:hover{
+  filter:contrast(2) brightness(0.5);
+}
+.forum-post-spoiler{
+  background:#111;color:#111;padding:1px 4px;cursor:pointer;font-size:11px;
+}
+.forum-post-spoiler:hover{color:#ff4444}
 </style>
 </head>
 <body>
@@ -1694,21 +1832,39 @@ body.coolbar-on{padding-top:34px}
 <div class="kanji-watermark" style="top:15%;left:-2%;transform:rotate(-12deg)">勘冴</div>
 <div class="kanji-watermark" style="top:50%;right:-2%;transform:rotate(8deg);font-size:90px">悔しい</div>
 
-<!-- ═══ TOP BANNER ═══ -->
+<!-- ═══ FORUM HEADER ═══ -->
 <div class="top-banner">
   <div class="top-banner-inner">
-    <div class="banner-stars">★ ☆ ★ ☆ ★ ☆ ★ ☆ ★ ☆ ★</div>
-    <div class="banner-title">drmy's homepage</div>
-    <div class="banner-sub">· est. always ·</div>
-    <div class="banner-marquee"><span class="banner-marquee-inner">☆ welcome to my page!! ☆ commissions on VGEN ☆ feel free to browse ☆ ようこそ！☆ お絵描き ☆ コーヒーが好きです ☆ ZUTOMAYO ☆</span></div>
+    <div>
+      <div class="banner-stars"></div>
+      <div class="banner-title">drmy's Art Forum</div>
+      <div class="banner-sub">est. always &middot; Pair of Brushes &middot; ドレミの美術フォーラム</div>
+    </div>
+    <div class="forum-login">
+      <div class="forum-login-row">
+        <label>Username:</label>
+        <input type="text" placeholder="guest" disabled>
+        <label>Password:</label>
+        <input type="password" placeholder="****" disabled>
+        <button disabled>Login</button>
+      </div>
+      <div class="forum-login-links">
+        <a href="#" onclick="return false">Register</a> &middot;
+        <a href="#" onclick="return false">Forgot password?</a> &middot;
+        <span style="color:#6a9">Logged in as: <b>Anonymous</b></span>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ═══ NAV BAR ═══ -->
-<div class="nav-bar">
-  <a href="#">TOP</a><span class="nav-sep">|</span>
-  <a href="#gallery-section">GALLERY</a><span class="nav-sep">|</span>
-  <a href="https://vgen.co/doremy" target="_blank">COMMISSIONS</a><span class="nav-sep">|</span>
+<!-- ═══ NAV BAR (FORUM TABS) ═══ -->
+<div class="nav-bar" style="max-width:1100px;margin:0 auto">
+  <a href="#">Board Index</a><span class="nav-sep">|</span>
+  <a href="#gallery-section">Gallery</a><span class="nav-sep">|</span>
+  <a href="https://vgen.co/doremy" target="_blank">Commissions</a><span class="nav-sep">|</span>
+  <a href="#" onclick="return false" style="opacity:.6">Members</a>
+  <a href="#" onclick="return false" style="opacity:.6">FAQ</a>
+  <a href="#" onclick="return false" style="opacity:.6">Search</a>
 </div>
 
 <div class="site-layout">
@@ -1915,33 +2071,33 @@ body.coolbar-on{padding-top:34px}
 
 <div class="page-wrap">
 
-  <!-- ═══ WELCOME ═══ -->
-  <hr class="deco-hr">
-  <div style="text-align:center;padding:10px 0">
-    <span style="font-family:'VT323',monospace;font-size:34px" class="rainbow">★ Welcome to drmy's Art Page! ★</span><br>
-    <span style="font-size:17px;color:#888">Last updated: 2007 · best viewed at 1024×768</span>
+  <!-- ═══ BREADCRUMB ═══ -->
+  <div class="forum-breadcrumb">
+    <a href="#">Board Index</a> &raquo; <a href="#">Art &amp; Creative</a> &raquo; drmy's Corner
   </div>
-  <hr class="deco-hr">
 
-  <!-- ═══ PROFILE ═══ -->
+  <!-- ═══ USER PROFILE (FORUM PANEL) ═══ -->
   <div class="profile-card">
     <div class="profile-card-header">
-      <span class="blink-star">★</span> PROFILE <span class="blink-star">★</span>
+      <span class="blink-star">★</span> User Control Panel <span class="blink-star">★</span>
     </div>
     <div class="profile-card-body">
       <div class="avatar-area">
-        <div id="avatar-btn" title="click to play game ☕" style="cursor:pointer">
+        <div id="avatar-btn" title="click to play game" style="cursor:pointer">
           <img src="me2.png" class="avatar" alt="drmy">
         </div>
-        <span class="avatar-caption" id="click-me-caption">☆ click me! ☆</span>
-        <span class="avatar-caption" style="font-size:11px;margin-top:2px">art: <a href="https://twitter.com/leukoryx" target="_blank" style="color:inherit;text-decoration:underline">@leukoryx</a></span>
+        <span class="avatar-caption" id="click-me-caption">click me!</span>
+        <span class="avatar-caption" style="font-size:9px;margin-top:2px">art: <a href="https://twitter.com/leukoryx" target="_blank" style="color:inherit;text-decoration:underline">@leukoryx</a></span>
+        <span style="font-size:9px;color:#888;display:block;margin-top:4px">Rank: <b style="color:#369">Administrator</b></span>
+        <span style="font-size:9px;color:#888;display:block">Posts: 1,847</span>
+        <span style="font-size:9px;color:#888;display:block">Joined: est. always</span>
       </div>
       <div class="profile-info">
         <div class="profile-name">drmy <span class="kanji">ドレミ</span></div>
-        <div class="profile-tagline">· est. always</div>
-        <div style="margin:12px 0;font-size:19px;color:#666">
-          ☕ coffee enthusiast · artist · ZUTOMAYO fan<br>
-          よろしくお願いします！
+        <div class="profile-tagline">est. always &middot; coffee enthusiast &middot; artist &middot; ZUTOMAYO fan</div>
+        <div style="margin:8px 0;font-size:12px;color:#666">
+          よろしくお願いします！<br>
+          Commissions open on VGen. Gallery below.
         </div>
         <div class="profile-links">
           <a class="tw" href="https://twitter.com/doremyswt" target="_blank">Twitter</a>
@@ -1949,45 +2105,263 @@ body.coolbar-on{padding-top:34px}
           <a class="ig" href="https://instagram.com/doremyswt" target="_blank">Instagram</a>
           <a class="vg" href="https://vgen.co/doremy" target="_blank">VGen<span class="comm-badge">NEW!</span></a>
         </div>
+        <div style="margin-top:8px;font-size:10px;color:#999;border-top:1px dashed #ccc;padding-top:6px">
+          <i>"The right amount of coffee is always one more." &mdash; drmy</i>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ═══ UPDATES ═══ -->
-  <div class="section-head"><span class="deco">■</span> UPDATES <span class="deco">■</span></div>
+  <!-- ═══ ANNOUNCEMENTS ═══ -->
+  <div class="section-head"><span class="deco">&#9632;</span> Announcements <span class="deco">&#9632;</span></div>
   <div class="update-box">
-    <div><span class="date">2007.XX.XX</span><span class="msg">- commissions on VGen</span></div>
-    <div><span class="date">2006.XX.XX</span><span class="msg">- new artwork uploaded!</span></div>
-    <div><span class="date">2005.XX.XX</span><span class="msg">- site redesigned ☆</span></div>
+    <div><span class="date">[2007.XX.XX]</span><span class="msg">Commissions now open on VGen! Check the link above.</span></div>
+    <div><span class="date">[2006.XX.XX]</span><span class="msg">New artwork uploaded to the gallery.</span></div>
+    <div><span class="date">[2005.XX.XX]</span><span class="msg">Forum redesigned. Welcome to the new look!</span></div>
   </div>
 
+  <!-- ═══ FORUM THREAD LIST ═══ -->
+  <div class="section-head"><span class="deco">&#9632;</span> Recent Threads <span class="deco">&#9632;</span></div>
+  <table class="forum-table">
+    <tr><th class="topic-icon"></th><th>Topic</th><th style="width:80px">Replies</th><th style="width:80px">Views</th><th style="width:140px">Last Post</th></tr>
+    <tr>
+      <td class="topic-icon">&#128204;</td>
+      <td><a href="#" onclick="return false" class="topic-title">[STICKY] Welcome! Rules &amp; FAQ - Read before posting</a><div class="topic-desc">Please read the rules before posting. Be respectful.</div><div class="topic-author">by <b>drmy</b></div></td>
+      <td class="topic-stats">0</td><td class="topic-stats">1,204</td><td class="topic-stats">2005.01.01<br>by drmy</td>
+    </tr>
+    <tr>
+      <td class="topic-icon">&#128293;</td>
+      <td><a href="#" onclick="return false" class="topic-title">&#127861; New commission batch open on VGen!</a><div class="topic-desc">Slots available. Coffee-themed illustrations welcome.</div><div class="topic-author">by <b>drmy</b></div></td>
+      <td class="topic-stats">24</td><td class="topic-stats">892</td><td class="topic-stats">2007.XX.XX<br>by coffeebean42</td>
+    </tr>
+    <tr>
+      <td class="topic-icon">&#128172;</td>
+      <td><a href="#" onclick="return false" class="topic-title">&#127752; Share your art here! - General thread</a><div class="topic-desc">Post your latest creations. All skill levels welcome.</div><div class="topic-author">by <b>glitter_n3ko</b></div></td>
+      <td class="topic-stats">156</td><td class="topic-stats">4,291</td><td class="topic-stats">2007.XX.XX<br>by pixel_fairy</td>
+    </tr>
+    <tr>
+      <td class="topic-icon">&#128172;</td>
+      <td><a href="#" onclick="return false" class="topic-title">&#127925; ZUTOMAYO appreciation thread</a><div class="topic-desc">&#12378;&#12387;&#12392;&#30495;&#22812;&#20013;&#12391;&#12418;&#22818;&#12434;&#35211;&#12390;&#12356;&#12427;</div><div class="topic-author">by <b>zt_fan_03</b></div></td>
+      <td class="topic-stats">89</td><td class="topic-stats">2,108</td><td class="topic-stats">2007.XX.XX<br>by midi_knight</td>
+    </tr>
+    <tr>
+      <td class="topic-icon" style="color:#c00">&#9888;</td>
+      <td><a href="#" onclick="return false" class="topic-title" style="color:#900">has anyone else seen that face on their screen at 3am??</a><div class="topic-desc">i swear something flashed on my monitor. looked like a smile. im not crazy right</div><div class="topic-author">by <b>xX_shadow_Xx</b></div></td>
+      <td class="topic-stats">47</td><td class="topic-stats">6,613</td><td class="topic-stats">2007.XX.XX<br>by <span style="color:#900">anonymous</span></td>
+    </tr>
+    <tr>
+      <td class="topic-icon">&#128172;</td>
+      <td><a href="#" onclick="return false" class="topic-title">&#12304;&#38609;&#35527;&#12305;&#26085;&#26412;&#35486;&#12391;&#35441;&#12375;&#12414;&#12375;&#12423;&#12358;&#65281;</a><div class="topic-desc">&#26085;&#26412;&#35486;&#12473;&#12524;&#12483;&#12489;&#12391;&#12377;&#12290;&#33521;&#35486;&#12418;OK&#12391;&#12377;&#12290;</div><div class="topic-author">by <b>sakura_mochi</b></div></td>
+      <td class="topic-stats">73</td><td class="topic-stats">1,847</td><td class="topic-stats">2007.XX.XX<br>by drmy</td>
+    </tr>
+    <tr>
+      <td class="topic-icon">&#128172;</td>
+      <td><a href="#" onclick="return false" class="topic-title">removed herobrine from the forum CSS</a><div class="topic-desc">changelog: fixed. please stop reporting white-eyed avatars in the memberlist</div><div class="topic-author">by <b>drmy</b></div></td>
+      <td class="topic-stats">31</td><td class="topic-stats">3,710</td><td class="topic-stats">2007.XX.XX<br>by herobrine</td>
+    </tr>
+  </table>
+
   <!-- ═══ GALLERY ═══ -->
-  <div class="section-head" id="gallery-section"><span class="deco">■</span> GALLERY <span class="deco">■</span></div>
+  <div class="section-head" id="gallery-section"><span class="deco">&#9632;</span> Gallery - Artwork Archive <span class="deco">&#9632;</span></div>
   <div class="gallery" id="gallery"></div>
 
+  <!-- ═══ FORUM POSTS (EASTER EGGS + JAPANESE) ═══ -->
+  <div class="section-head"><span class="deco">&#9632;</span> Recent Posts <span class="deco">&#9632;</span></div>
+
+  <!-- Post 1: Normal welcome post -->
+  <div class="forum-post" style="border-top:1px solid var(--forum-border)">
+    <div class="forum-post-user">
+      <span class="post-username">drmy</span>
+      <span class="post-rank">Administrator</span>
+      <div style="width:80px;height:80px;border:1px solid #ccc;margin:0 auto 4px;background:var(--forum-header);display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px">&#9749;</div>
+      <span class="post-joined">Joined: always</span>
+      <span class="post-count">Posts: 1,847</span>
+    </div>
+    <div class="forum-post-body">
+      <div class="forum-post-header">Posted: 2007.XX.XX at 14:22 &middot; Subject: <b>Welcome to the forum!</b></div>
+      Hey everyone, welcome to the newly redesigned forum. I've moved everything over from the old Xanga layout.<br><br>
+      Feel free to browse the gallery, check out my commissions on VGen, and sign the guestbook below.<br><br>
+      Rules are simple: be nice, no hotlinking, and please don't feed the BonziBUDDY.
+      <div class="forum-post-sig">"The right amount of coffee is always one more." &mdash; drmy<br>
+      <a href="https://twitter.com/doremyswt" target="_blank" style="color:#369">Twitter</a> &middot;
+      <a href="https://www.pixiv.net/en/users/105940981" target="_blank" style="color:#369">Pixiv</a> &middot;
+      <a href="https://vgen.co/doremy" target="_blank" style="color:#369">VGen</a></div>
+    </div>
+  </div>
+
+  <!-- Post 2: Japanese post -->
+  <div class="forum-post">
+    <div class="forum-post-user">
+      <span class="post-username">sakura_mochi</span>
+      <span class="post-rank">Regular Member</span>
+      <div style="width:80px;height:80px;border:1px solid #ccc;margin:0 auto 4px;background:#ffe0f0;display:flex;align-items:center;justify-content:center;font-size:28px">&#127800;</div>
+      <span class="post-joined">Joined: 2006.03</span>
+      <span class="post-count">Posts: 342</span>
+    </div>
+    <div class="forum-post-body">
+      <div class="forum-post-header">Posted: 2007.XX.XX at 15:08 &middot; Subject: <b>&#12501;&#12457;&#12540;&#12521;&#12512;&#12364;&#26032;&#12375;&#12367;&#12394;&#12387;&#12383;&#65281;</b></div>
+      &#12489;&#12524;&#12511;&#12373;&#12435;&#12289;&#12501;&#12457;&#12540;&#12521;&#12512;&#12398;&#12522;&#12487;&#12470;&#12452;&#12531;&#12362;&#12388;&#12363;&#12428;&#12373;&#12414;&#12391;&#12377;&#65281;&#12377;&#12372;&#12367;&#35211;&#12420;&#12377;&#12367;&#12394;&#12426;&#12414;&#12375;&#12383;&#12290;<br><br>
+      &#21069;&#12398;Xanga&#12415;&#12383;&#12356;&#12394;&#12487;&#12470;&#12452;&#12531;&#12418;&#22909;&#12365;&#12384;&#12387;&#12383;&#12369;&#12393;&#12289;&#12371;&#12398;&#25522;&#31034;&#26495;&#12473;&#12479;&#12452;&#12523;&#12398;&#26041;&#12364;&#20351;&#12356;&#12420;&#12377;&#12356;&#12391;&#12377;&#12397;&#12290;&#12462;&#12515;&#12521;&#12522;&#12540;&#12418;&#12365;&#12428;&#12356;&#12395;&#34920;&#31034;&#12373;&#12428;&#12390;&#12356;&#12414;&#12377;&#65281;<br><br>
+      &#12381;&#12428;&#12363;&#12425;&#12289;&#26032;&#12375;&#12356;&#12467;&#12540;&#12498;&#12540;&#12398;&#12452;&#12521;&#12473;&#12488;&#12289;&#26412;&#24403;&#12395;&#32032;&#25973;&#12391;&#12377;&#12397;&#12290;&#9749;
+      <div class="forum-post-sig">&#127800; &#12373;&#12367;&#12425;&#12418;&#12385; &#127800;<br>&#12362;&#32117;&#25551;&#12365;&#22823;&#22909;&#12365;&#65281; &#12378;&#12387;&#12392;&#30495;&#22812;&#20013;&#12501;&#12449;&#12531;&#12290;</div>
+    </div>
+  </div>
+
+  <!-- Post 3: JTK easter egg -->
+  <div class="forum-post">
+    <div class="forum-post-user">
+      <span class="post-username" style="color:#900">xX_shadow_Xx</span>
+      <span class="post-rank">New Member</span>
+      <div style="width:80px;height:80px;border:1px solid #ccc;margin:0 auto 4px;background:#111;display:flex;align-items:center;justify-content:center;font-size:28px" class="easter-egg-jtk" title="don't stare too long...">&#128065;</div>
+      <span class="post-joined">Joined: 2007.XX</span>
+      <span class="post-count">Posts: 13</span>
+    </div>
+    <div class="forum-post-body">
+      <div class="forum-post-header">Posted: 2007.XX.XX at 03:14 &middot; Subject: <b style="color:#900">go to sleep</b></div>
+      ok so i found this image on a creepypasta thread and im pretty sure its cursed. my friend sent it to me at like 2am and said "he told me to share it"<br><br>
+      i cant stop thinking about it. that face. that smile. <span class="forum-post-spoiler">jeff the killer.jpg</span><br><br>
+      has anyone else been getting weird messages on AIM from accounts with no profile?? one of them just said <span class="forum-post-spoiler">GO TO SLEEP</span> and then signed off<br><br>
+      im probably just being paranoid lol but like... dont open chain emails from people you dont know. especially the ones that say you have to forward to 10 people or <span class="forum-post-spoiler">he comes to your room at night</span><br><br>
+      EDIT: ok the image wont upload to the forum. it keeps corrupting. maybe thats a good thing
+      <div class="forum-post-sig">&#9760; dont trust the smiling ones &#9760;<br><span style="font-size:9px;color:#666">i type in lowercase because caps lock is for people who sleep at night</span></div>
+    </div>
+  </div>
+
+  <!-- Post 4: Full Japanese post -->
+  <div class="forum-post">
+    <div class="forum-post-user">
+      <span class="post-username">&#22812;&#26356;&#12363;&#12375;_07</span>
+      <span class="post-rank">Member</span>
+      <div style="width:80px;height:80px;border:1px solid #ccc;margin:0 auto 4px;background:#0a0a2e;display:flex;align-items:center;justify-content:center;font-size:28px">&#127769;</div>
+      <span class="post-joined">Joined: 2006.11</span>
+      <span class="post-count">Posts: 89</span>
+    </div>
+    <div class="forum-post-body">
+      <div class="forum-post-header">Posted: 2007.XX.XX at 02:47 &middot; Subject: <b>&#28145;&#22812;&#12398;&#33853;&#26360;&#12365; &#8212; &#30496;&#12428;&#12394;&#12356;&#22812;&#12395;</b></div>
+      &#30495;&#22812;&#20013;&#12395;&#12371;&#12398;&#12501;&#12457;&#12540;&#12521;&#12512;&#12434;&#35211;&#12388;&#12369;&#12414;&#12375;&#12383;&#12290;&#35504;&#12363;&#36215;&#12365;&#12390;&#12356;&#12414;&#12377;&#12363;&#65311;<br><br>
+      &#26368;&#36817;&#12289;&#32117;&#12434;&#25551;&#12367;&#12371;&#12392;&#12364;&#38627;&#12375;&#12356;&#12391;&#12377;&#12290;&#12452;&#12531;&#12473;&#12500;&#12524;&#12540;&#12471;&#12519;&#12531;&#12364;&#28040;&#12360;&#12383;&#12415;&#12383;&#12356;&#12395;&#24863;&#12376;&#12414;&#12377;&#12290;&#12391;&#12418;&#12289;&#12371;&#12398;&#12501;&#12457;&#12540;&#12521;&#12512;&#12398;&#12462;&#12515;&#12521;&#12522;&#12540;&#12434;&#35211;&#12390;&#12356;&#12383;&#12425;&#12289;&#12414;&#12383;&#25551;&#12365;&#12383;&#12367;&#12394;&#12426;&#12414;&#12375;&#12383;&#12290;<br><br>
+      &#12467;&#12540;&#12498;&#12540;&#12434;&#39154;&#12415;&#12394;&#12364;&#12425;&#12289;&#12422;&#12387;&#12367;&#12426;&#32117;&#12434;&#25551;&#12367;&#12290;&#12381;&#12358;&#12356;&#12358;&#22812;&#12364;&#22909;&#12365;&#12391;&#12377;&#12290;<br><br>
+      &#12489;&#12524;&#12511;&#12373;&#12435;&#12398;&#32117;&#12399;&#12356;&#12388;&#12418;&#28201;&#12363;&#12356;&#27671;&#25345;&#12385;&#12395;&#12394;&#12426;&#12414;&#12377;&#12290;&#12371;&#12428;&#12363;&#12425;&#12418;&#38929;&#24373;&#12387;&#12390;&#12367;&#12384;&#12373;&#12356;&#12290;&#9749;&#9825;
+      <div class="forum-post-sig">&#127769; &#30496;&#12428;&#12394;&#12356;&#22812;&#12399;&#12289;&#32117;&#12434;&#25551;&#12367;&#22812; &#127769;</div>
+    </div>
+  </div>
+
+  <!-- Post 5: Herobrine easter egg -->
+  <div class="forum-post">
+    <div class="forum-post-user">
+      <span class="post-username">notch_fanboy_99</span>
+      <span class="post-rank">Member</span>
+      <div style="width:80px;height:80px;border:1px solid #ccc;margin:0 auto 4px;background:#5a8a3a;display:flex;align-items:center;justify-content:center;font-size:24px">&#9935;</div>
+      <span class="post-joined">Joined: 2006.08</span>
+      <span class="post-count">Posts: 204</span>
+    </div>
+    <div class="forum-post-body">
+      <div class="forum-post-header">Posted: 2007.XX.XX at 22:51 &middot; Subject: <b>RE: removed herobrine from the forum CSS</b></div>
+      dude im telling you i saw a user called "herobrine" in the online users list last night. no profile, no posts, joined date was just "????"<br><br>
+      i clicked on the profile and my browser froze for like 10 seconds. when it came back the user was gone<br><br>
+      also has anyone noticed the kanji watermarks on the page sometimes look... different? like they shift when you scroll. im probably just tired<br><br>
+      @drmy are you SURE you removed herobrine from the CSS? because i checked the source code and there's some stuff in there that looks <span class="forum-post-spoiler">suspicious</span>
+      <div class="forum-post-sig">&#9935; i play on peaceful mode because the mobs scare me &#9935;<br>
+      <span style="font-size:9px;color:#aaa">Minecraft Forum refugee since 2006</span></div>
+    </div>
+  </div>
+
+  <!-- Post 6: Creepypasta chain mail era post -->
+  <div class="forum-post">
+    <div class="forum-post-user">
+      <span class="post-username">glitter_n3ko</span>
+      <span class="post-rank">Senior Member</span>
+      <div style="width:80px;height:80px;border:1px solid #ccc;margin:0 auto 4px;background:#ffe0ff;display:flex;align-items:center;justify-content:center;font-size:28px">&#128049;</div>
+      <span class="post-joined">Joined: 2005.12</span>
+      <span class="post-count">Posts: 1,203</span>
+    </div>
+    <div class="forum-post-body">
+      <div class="forum-post-header">Posted: 2007.XX.XX at 18:33 &middot; Subject: <b>FWD: FWD: FWD: RE: this is NOT a joke!!!!!</b></div>
+      OK SO my friend got this email and she forwarded it to me and it said:<br><br>
+      <div style="background:#f8f0e0;border:1px solid #ddd;padding:8px;margin:6px 0;font-size:11px;font-style:italic">
+      "This message has been circulating since 1999. A girl named Carmen was pushed down a sewer and died. If you don't forward this to 15 people by midnight, Carmen will appear in your bathroom mirror tonight. THIS IS REAL. A boy in Indiana didn't forward it and he found scratches on his mirror the next morning."
+      </div>
+      i know its probably fake but i forwarded it JUST IN CASE. better safe than sorry right??? &#128517;<br><br>
+      also has anyone else seen that "smile dog" image going around?? DO NOT open it. my cousin's friend's brother opened it and his computer crashed and he couldn't sleep for a week<br><br>
+      anyway drmy your new art is super cute!! love the coffee theme &#9749;&#10084;
+      <div class="forum-post-sig">&#10024;&#10024;&#10024; ~*~ glitter_n3ko ~*~ &#10024;&#10024;&#10024;<br>
+      <span style="color:#f6c">rawr XD</span> &middot; proud scene kid since 2004 &middot; <span style="color:#f6c">&#9829;&#9829;&#9829;</span><br>
+      <span style="font-size:9px">my chemical romance saved my life</span></div>
+    </div>
+  </div>
+
+  <!-- Post 7: Another Japanese post -->
+  <div class="forum-post">
+    <div class="forum-post-user">
+      <span class="post-username">&#12467;&#12540;&#12498;&#12540;&#22909;&#12365;</span>
+      <span class="post-rank">Member</span>
+      <div style="width:80px;height:80px;border:1px solid #ccc;margin:0 auto 4px;background:#3a2a1a;display:flex;align-items:center;justify-content:center;font-size:28px">&#9749;</div>
+      <span class="post-joined">Joined: 2007.01</span>
+      <span class="post-count">Posts: 56</span>
+    </div>
+    <div class="forum-post-body">
+      <div class="forum-post-header">Posted: 2007.XX.XX at 16:05 &middot; Subject: <b>&#12467;&#12540;&#12498;&#12540;&#12434;&#39154;&#12415;&#12394;&#12364;&#12425;&#32117;&#12434;&#25551;&#12367;&#12398;&#12364;&#26368;&#39640;</b></div>
+      &#20170;&#26085;&#12418;&#12459;&#12501;&#12455;&#12391;&#32117;&#12434;&#25551;&#12356;&#12390;&#12356;&#12414;&#12377;&#12290;&#12489;&#12524;&#12511;&#12373;&#12435;&#12398;&#12467;&#12540;&#12498;&#12540;&#12452;&#12521;&#12473;&#12488;&#12395;&#24433;&#38911;&#12373;&#12428;&#12390;&#12289;&#31169;&#12418;&#12467;&#12540;&#12498;&#12540;&#12434;&#12486;&#12540;&#12510;&#12395;&#12375;&#12383;&#32117;&#12434;&#25551;&#12365;&#22987;&#12417;&#12414;&#12375;&#12383;&#12290;<br><br>
+      &#12371;&#12398;&#12501;&#12457;&#12540;&#12521;&#12512;&#12399;&#26412;&#24403;&#12395;&#23621;&#24515;&#22320;&#12364;&#12356;&#12356;&#12391;&#12377;&#12397;&#12290;&#21476;&#12365;&#33391;&#12365;&#12452;&#12531;&#12479;&#12540;&#12493;&#12483;&#12488;&#12398;&#38640;&#22258;&#27671;&#12364;&#22909;&#12365;&#12391;&#12377;&#12290;<br><br>
+      &#27425;&#12399;&#12378;&#12387;&#12392;&#30495;&#22812;&#20013;&#12398;&#26354;&#12434;&#32884;&#12365;&#12394;&#12364;&#12425;&#25551;&#12365;&#12383;&#12356;&#12394;&#12290;&#127925;
+      <div class="forum-post-sig">&#9749; &#12467;&#12540;&#12498;&#12540;&#12399;&#20154;&#29983;&#12398;&#12460;&#12477;&#12522;&#12531; &#9749;</div>
+    </div>
+  </div>
+
+  <!-- Post 8: "This Man" / internet mystery easter egg -->
+  <div class="forum-post">
+    <div class="forum-post-user">
+      <span class="post-username" style="color:#666">anonymous</span>
+      <span class="post-rank" style="color:#aaa">Guest</span>
+      <div style="width:80px;height:80px;border:1px solid #ccc;margin:0 auto 4px;background:#ddd;display:flex;align-items:center;justify-content:center;font-size:28px;color:#999">?</div>
+      <span class="post-joined">Joined: N/A</span>
+      <span class="post-count">Posts: 1</span>
+    </div>
+    <div class="forum-post-body">
+      <div class="forum-post-header">Posted: 2007.XX.XX at 04:44 &middot; Subject: <b>have you seen this man in your dreams?</b></div>
+      <div style="background:#f5f0e0;border:1px dashed #999;padding:8px;margin:6px 0;font-size:11px;text-align:center">
+        <div style="font-size:18px;margin-bottom:4px">EVER DREAM THIS MAN?</div>
+        <div style="width:60px;height:60px;border:2px solid #666;margin:0 auto;background:#e0d8c0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#666">[IMAGE<br>REMOVED]</div>
+        <div style="margin-top:4px">Every night throughout the world hundreds of people dream about this face.</div>
+      </div>
+      since 2006 at least 2000 people have claimed to have seen this man in their dreams. he never speaks. he just watches.<br><br>
+      i think he might be an admin on this forum. the post count is always 1 but the account was created before the forum existed<br><br>
+      <span style="font-size:10px;color:#999">this post will be deleted in 24 hours</span>
+      <div class="forum-post-sig"></div>
+    </div>
+  </div>
+
   <!-- ═══ GUESTBOOK ═══ -->
-  <div class="section-head"><span class="deco">■</span> GUESTBOOK <span class="deco">■</span></div>
-  <div style="text-align:center;padding:14px 0">
-    <span style="font-size:18px;color:#888">Leave a message! (coming soon...)</span><br>
-    <button class="guestbook-btn" onclick="alert('☕ Thanks for visiting!')">✎ Sign Guestbook</button>
+  <div class="section-head"><span class="deco">&#9632;</span> Guestbook <span class="deco">&#9632;</span></div>
+  <div style="padding:10px 12px;background:var(--forum-post-bg);border:1px solid var(--forum-border);border-top:none;font-size:11px">
+    <span style="color:#888">Leave a message! (Registration required - coming soon...)</span><br>
+    <button class="guestbook-btn" onclick="alert('Thanks for visiting! - drmy')">Post Reply</button>
+    <span style="font-size:10px;color:#aaa;margin-left:8px">You must be logged in to post.</span>
+  </div>
+
+  <!-- ═══ FORUM STATISTICS ═══ -->
+  <div class="forum-stats-bar">
+    <b>Board Statistics</b><br>
+    Total posts: <b>4,291</b> &middot; Total topics: <b>187</b> &middot; Total members: <b>342</b> &middot; Our newest member: <b>coffeebean42</b><br>
+    Visitor #: <div class="visitor-counter" id="visitor-counter">000000</div>
+    <div class="forum-online">
+      <span class="online-dot">&#9679;</span> Users online: <b>7</b> &mdash;
+      drmy, sakura_mochi, glitter_n3ko, <span style="color:#aaa">4 guests</span>,
+      <span style="color:#666;font-style:italic" title="he was removed from the CSS. probably.">herobrine(?)</span>
+    </div>
   </div>
 
   <!-- ═══ FOOTER ═══ -->
   <div class="footer-wrap">
-    <hr class="deco-hr">
-    <div style="font-size:17px;color:#888">You are visitor number:</div>
-    <div class="visitor-counter" id="visitor-counter">000000</div>
     <div class="footer-links">
       <a href="https://twitter.com/doremyswt" target="_blank">Twitter</a>
       <a href="https://www.pixiv.net/en/users/105940981" target="_blank">Pixiv</a>
       <a href="https://instagram.com/doremyswt" target="_blank">Instagram</a>
       <a href="https://vgen.co/doremy" target="_blank">VGen</a>
     </div>
-    <div class="footer-text">drmy · brewed with care · ☕<br>
-      <span style="color:#bbb">Est. always — <span class="rainbow" style="font-size:13px">Thank you for visiting!</span></span>
-    </div>
-    <div style="margin-top:6px">
-      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="88" height="31" alt="" style="border:1px solid #ccc;background:linear-gradient(90deg,#003,#006);opacity:.3" title="placeholder badge">
+    <div class="footer-text">
+      Powered by drmy Forum Software &middot; Est. always<br>
+      <span style="color:#aaa">All times are UTC &middot; <a href="#" onclick="return false" style="color:#999">Delete all board cookies</a></span>
     </div>
   </div>
 </div><!-- end page-wrap -->
