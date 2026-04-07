@@ -1,14 +1,14 @@
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
-    import {onMount, tick, unmount } from 'svelte';
-    import { runningPrograms,systemVolume, zIndex, hardDrive, queueProgram } from '../../../lib/store'
-    import {get,set} from 'idb-keyval';
-    
-    
+    import {onMount, onDestroy } from 'svelte';
+    import { runningPrograms, zIndex, hardDrive, contextMenu } from '../../../lib/store'
+    import {get} from 'idb-keyval';
+    import * as fs from '../../../lib/fs';
+    import FileSaver from 'file-saver';
 
     export let id;
     export let window;
-    export let get_self = () => null;
+    export let self;
     export let parentNode;
     export let fs_item;
     export let exec_path;
@@ -35,9 +35,18 @@
         });
     })
 
+    onDestroy(() => {
+        if(panzoom_instance?.dispose){
+            panzoom_instance.dispose();
+        }
+        if($contextMenu?.type == 'ImageViewer'){
+            contextMenu.set(null);
+        }
+    })
+
     export async function destroy(){
-        runningPrograms.update(programs => programs.filter(p => p != get_self()));
-        unmount(get_self());
+        runningPrograms.update(programs => programs.filter(p => p != self));
+        self.$destroy();
     }
 
     export let options = {
@@ -64,6 +73,31 @@
             url = URL.createObjectURL(file);
         }
         img_node.src = url;
+    }
+
+    async function downloadCurrentImage(){
+        if(fs_item == null) return;
+
+        if(fs_item.storage_type == 'local'){
+            let file = await fs.get_file(fs_item.id);
+            FileSaver.saveAs(file, fs_item.name);
+            return;
+        }
+
+        FileSaver.saveAs(fs_item.url, fs_item.name);
+    }
+
+    function showImageContextMenu(ev){
+        ev.preventDefault();
+        contextMenu.set(null);
+        contextMenu.set({
+            x: ev.x,
+            y: ev.y,
+            type: 'ImageViewer',
+            originator: {
+                download: downloadCurrentImage
+            }
+        });
     }
 
     async function on_key_pressed(e){
@@ -131,7 +165,8 @@
 
 <Window options={options} bind:this={window} on_click_close={destroy}>
     <div slot="content" class="absolute inset-1 flex flex-col bg-slate-100">
-        <div class="grow w-full overflow-hidden flex items-center justify-center p-2 outline-none">
+        <div class="grow w-full overflow-hidden flex items-center justify-center p-2 outline-none"
+            on:contextmenu={showImageContextMenu}>
             <img bind:this={img_node} class="max-w-full max-h-full outline-none" alt="">
         </div>
         <div class="h-[40px] shrink-0 flex items-center">

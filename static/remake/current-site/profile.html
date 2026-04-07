@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>drmy's Art Forum - Profile</title>
+<link rel="stylesheet" href="thread-pages.css">
+<script src="thread-data.js" defer></script>
+<style>
+.profile-wrap{
+  width:min(900px,calc(100vw - 32px));
+  margin:0 auto;
+  padding:20px 0 60px;
+}
+.profile-card{
+  display:flex;
+  gap:24px;
+  align-items:flex-start;
+  background:var(--forum-row1);
+  border:1px solid var(--forum-border);
+  border-radius:4px;
+  padding:24px;
+  margin-bottom:20px;
+}
+.profile-avatar{
+  width:96px;
+  height:96px;
+  border-radius:4px;
+  object-fit:cover;
+  flex-shrink:0;
+  border:2px solid var(--forum-border);
+}
+.profile-info{flex:1}
+.profile-username{font-size:22px;font-weight:bold;color:var(--text);margin-bottom:4px}
+.profile-rank{font-size:12px;color:#7a6a9a;margin-bottom:8px}
+.profile-subtitle{margin-bottom:12px}
+.profile-stats{display:flex;gap:24px;flex-wrap:wrap;font-size:11px;color:#7a6a9a;margin-bottom:12px}
+.profile-stats b{color:var(--text)}
+.profile-sig{font-size:11px;border-top:1px solid var(--forum-border);padding-top:10px;color:#7a6a9a;line-height:1.7}
+.profile-bio{
+  background:var(--forum-row2);border:1px solid var(--forum-border);border-radius:4px;
+  padding:16px;margin-bottom:20px;font-size:12px;line-height:1.8;color:var(--text);
+}
+.profile-bio h3{font-size:12px;font-weight:bold;color:#6d55d8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.profile-not-found{text-align:center;padding:60px 20px;color:#9a8ab6;font-size:13px}
+/* inline-flex override for profile context; sparkle-spin comes from thread-pages.css */
+.forum-badge-line{display:inline-flex;align-items:center;gap:2px;vertical-align:middle;margin-left:4px}
+.post-subtitle-label{font-size:10px;font-weight:bold;color:inherit;margin-right:2px;opacity:.75}
+/* login panel */
+.forum-login{display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0}
+.forum-login input[type="text"],.forum-login input[type="password"]{
+  font-family:Verdana,sans-serif;font-size:11px;padding:3px 6px;border:1px solid #8e78e0;background:#fff;width:130px;
+}
+.forum-login-row{display:flex;gap:6px;align-items:center}
+.forum-login label{color:#f8f4ff;font-size:10px;white-space:nowrap}
+.forum-login button{
+  font-family:Verdana,sans-serif;font-size:11px;font-weight:bold;padding:3px 12px;
+  background:linear-gradient(180deg,#ffd8ef,#ff90c8);border:1px solid #b463c2;color:#7a2c88;cursor:pointer;
+}
+.forum-login-links{font-size:10px;color:#fff1ff}
+.forum-login-links a{color:#fffbd0;text-decoration:none}</style>
+</head>
+<body>
+<div class="top-banner">
+  <div class="top-banner-inner">
+    <div>
+      <div class="banner-stars"></div>
+      <div class="banner-title">drmy's Art Forum</div>
+      <div class="banner-sub">est. always &middot; Pair of Brushes &middot; ドレミの美術フォーラム</div>
+    </div>
+    <div class="forum-login">
+      <div class="forum-login-row">
+        <label>Username:</label>
+        <input type="text" placeholder="guest" disabled>
+        <label>Password:</label>
+        <input type="password" placeholder="****" disabled>
+        <button disabled>Login</button>
+      </div>
+      <div class="forum-login-links">
+        <a href="#" onclick="return false">Register</a> &middot;
+        <a href="#" onclick="return false">Forgot password?</a> &middot;
+        <span style="color:#6a9">Logged in as: <b>Anonymous</b></span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="nav-bar">
+  <a href="forum.html">Board Index</a>
+  <a href="threads.html">Thread Hub</a>
+  <a href="https://vgen.co/doremy" target="_blank">Commissions</a>
+  <a href="#" onclick="return false" style="opacity:.6">Members</a>
+  <a href="#" onclick="return false" style="opacity:.6">FAQ</a>
+  <a href="#" onclick="return false" style="opacity:.6">Search</a>
+</div>
+
+<div class="profile-wrap">
+  <div id="profile-root"></div>
+</div>
+
+<script defer>
+(function() {
+  function spinRow(count) {
+    return Array.from({ length: count || 2 }, function() {
+      return '<span class="sparkle-spin" aria-hidden="true"></span>';
+    }).join('');
+  }
+  function badgeBlock(label, tone, count) {
+    return '<span class="post-subtitle-label">' + label + '</span>' +
+           '<span class="forum-badge-line ' + (tone||'lavender') + '">' + spinRow(count) + '</span>';
+  }
+
+  var PROFILES = {
+    drmy: {
+      rank: 'Administrator',
+      joined: '2007.XX.XX',
+      count: '1,847',
+      avatar: './me2.png',
+      avatarStyle: 'border:2px solid #111;box-shadow:0 0 10px rgba(0,0,0,.55)',
+      usernameStyle: '',
+      subtitleHtml: badgeBlock('Admin', 'black', 7),
+      signatureHtml: 'coffee gets cold faster than i do.<br><small>mod notice: keep giant signatures under control</small>',
+      bio: 'site admin and artist. draws mostly at night. takes commissions sometimes. runs this place out of spite and affection in roughly equal measure.',
+      interests: 'art, things that look broken but still work, coffee that is already cold'
+    },
+    x_glitter_n3ko_x: {
+      rank: 'angel princess elite',
+      joined: '2005.12',
+      count: '1,203',
+      avatar: './pfps/glitter.png',
+      avatarStyle: 'border:2px solid #ffb5e8;box-shadow:0 0 10px rgba(255,145,214,.45)',
+      usernameStyle: 'color:#ff71c8;text-shadow:0 0 6px rgba(255,160,225,.8),1px 1px 0 #fff',
+      subtitleHtml: badgeBlock('Pink Elite', 'pink', 4),
+      signatureHtml: '<span style="color:#ff78cf">✨✨✨</span> <span style="color:#ff9de2">~*~ x_glitter_n3ko_x ~*~</span> <span style="color:#ff78cf">✨✨✨</span><br><span style="color:#ff71c8">rawr XD</span> &middot; <span style="color:#ffb4ec">bunny clips 4ever</span> &middot; <span style="color:#ff87d7">sugar pink disaster</span> &middot; <span style="color:#ff71c8">♥♥♥</span><br><span style="color:#c772ff">currently listening to sad songs and making everything cuter (｡･ω･｡)</span>',
+      bio: 'forum admin\'s unofficial co-admin whether he wants her to be or not. extremely online. knows where all the best blinkies are. has very strong opinions about gif compression.',
+      interests: 'pink things, bunny clips, sparkly cursors, sad songs, redesigning profiles at 1am, dramatic colour schemes'
+    },
+    pixel_fairy: {
+      rank: 'Regular Member',
+      joined: '2006.02',
+      count: '418',
+      avatar: './pfps/pixel2.png',
+      subtitleHtml: badgeBlock('Pixel Club', 'lavender', 2),
+      signatureHtml: '&#10024; pixel fairy dust and low resolution magic &#10024;<br><span style="font-size:9px;color:#999">currently ruining my eyesight one 176x220 graphic at a time</span>',
+      bio: 'pixel artist and flip phone wallpaper enthusiast. makes tiny things that hit surprisingly hard.',
+      interests: '88x31 buttons, pixel art, flip phone graphics, frogs in suits'
+    },
+    sakura_mochi: {
+      rank: 'Regular Member',
+      joined: '2006.03',
+      count: '342',
+      avatar: './pfps/sakura.png',
+      subtitleHtml: badgeBlock('Sketch Bloom', 'pink', 2),
+      signatureHtml: '&#127800; &#12373;&#12367;&#12425;&#12418;&#12385; &#127800;<br>&#12362;&#32117;&#25551;&#12365;&#22823;&#22909;&#12365;&#65281; &#12378;&#12387;&#12392;&#30495;&#22812;&#20013;&#12391;&#12356;&#12356;&#12398;&#12395;&#12290;&#12501;&#12449;&#12531;&#12290;',
+      bio: 'art student who draws between study sessions. finishes things slowly but they usually turn out ok. has very good taste in vending machine scenery.',
+      interests: 'nature scenes, finished art, cats near machines'
+    },
+    '夜更かし_07': {
+      rank: 'Member',
+      joined: '2006.11',
+      count: '89',
+      avatar: './pfps/yofukashi.png',
+      subtitleHtml: badgeBlock('Night Crew', 'blue', 2),
+      signatureHtml: '&#127769; 眠れない夜は、絵を描く夜 &#127769;',
+      bio: '夜に絵を描くことが多いです。暗いキャラクターやゴス系のイラストが好きです。日本語で気楽に話しかけてください。',
+      interests: '夜更かし、暗い絵、ゴスファッション、静かな音楽'
+    },
+    'コーヒー好き': {
+      rank: 'Member',
+      joined: '2007.01',
+      count: '56',
+      avatar: './pfps/coffee.png',
+      subtitleHtml: badgeBlock('Cafe Club', 'gold', 2),
+      signatureHtml: '&#9749; &#12467;&#12540;&#12498;&#12540;&#12399;&#20154;&#29983;&#12398;&#12460;&#12477;&#12522;&#12531; &#9749;',
+      bio: 'here for the art threads and the cafe vibes. draws while caffeinated. will talk about coffee for longer than is probably reasonable.',
+      interests: 'coffee, cafe aesthetics, warm colour palettes, ambient noise'
+    },
+    dialup_drifter: {
+      rank: 'Member',
+      joined: '2006.08',
+      count: '204',
+      avatar: './pfps/dialup.png',
+      subtitleHtml: badgeBlock('56k Club', 'silver', 2),
+      signatureHtml: '&#9776; connecting... please wait... &#9776;<br><span style="font-size:9px;color:#888">56k and proud of it</span>',
+      bio: 'still on dial-up and somehow keeping up. has very strong opinions about download queue management. showed up in the winamp skins thread and never left.',
+      interests: 'winamp, dial-up culture, slow internet philosophy, downloading things overnight'
+    },
+    midi_knight: {
+      rank: 'Member',
+      joined: '2005.09',
+      count: '277',
+      avatar: './pfps/midi.png',
+      subtitleHtml: badgeBlock('Winamp Hours', 'blue', 2),
+      signatureHtml: '&#9835; now playing: untitled_demo_final2.mp3 &#9835;<br><span style="font-size:9px;color:#95a6d8">yes i still download skins from suspicious websites</span>',
+      bio: 'musician and winamp loyalist. draws while listening to music. collects suspicious skins. probably responsible for at least two malware scares.',
+      interests: 'MIDI, winamp skins, rainy playlists, obscure file formats, playing things on loop'
+    },
+    ghostwatcher88: {
+      rank: 'Member',
+      joined: '2007.XX',
+      count: '27',
+      avatar: './pfps/ghost.png',
+      subtitleHtml: badgeBlock('Night Watch', 'silver', 2),
+      signatureHtml: '<span style="font-size:9px;color:#888">if i vanish please tell people it was probably a browser issue</span>',
+      bio: 'lurks. occasionally surfaces to post something extremely specific about the face-3am thread. was here before you and will be here after.',
+      interests: 'late night browsing, unsolved mysteries, browser quirks, things that move when they shouldn\'t'
+    },
+    xX_shadow_Xx: {
+      rank: 'New Member',
+      joined: '2007.XX',
+      count: '13',
+      subtitleHtml: badgeBlock('Do Not Sleep', 'silver', 2),
+      signatureHtml: '&#9760; dont trust the smiling ones &#9760;<br><span style="font-size:9px;color:#666">i type in lowercase because caps lock is for people who sleep at night</span>',
+      bio: null,
+      interests: null
+    },
+    zt_fan_03: {
+      rank: 'Member',
+      joined: '2006.10',
+      count: '221',
+      avatar: './pfps/thread-static.png',
+      subtitleHtml: badgeBlock('Forum Kid', 'lavender', 2),
+      signatureHtml: '&#127925; ずっと真夜中でいいのに。&#127925;',
+      bio: 'ZUTOMAYO fan and general late-night internet creature. started this account to have somewhere to talk about music. still here.',
+      interests: 'ZUTOMAYO, late night playlists, tangled lyrics, being awake when you shouldn\'t be'
+    },
+    mintjelly_88: {
+      rank: 'Member',
+      joined: '2006.09',
+      count: '156',
+      avatar: './pfps/thread-fairy.png',
+      subtitleHtml: badgeBlock('Forum Kid', 'lavender', 2),
+      signatureHtml: '&#10024; mint condition &#10024;',
+      bio: 'here for the art. lurks galleries, occasionally posts. has strong opinions about color balance.',
+      interests: 'digital art, color theory, tiny details that nobody else notices'
+    },
+    modem_decay: {
+      rank: 'Member',
+      joined: '2006.07',
+      count: '118',
+      avatar: './pfps/thread-dream.png',
+      subtitleHtml: badgeBlock('Forum Kid', 'lavender', 2),
+      signatureHtml: '<span style="font-size:9px;color:#999">static is just the sound the internet makes when it\'s thinking</span>',
+      bio: 'been online since before it was cool to be online at 3am. CRT loyalist. knows too much about phosphor burn-in.',
+      interests: 'CRT monitors, analog noise, things that flicker, late-night browsing'
+    }
+  };
+
+  var root = document.getElementById('profile-root');
+  if (!root) return;
+
+  var params = new URLSearchParams(window.location.search);
+  var username = params.get('u') || '';
+
+  var profile = PROFILES[username];
+
+  if (!profile) {
+    root.innerHTML =
+      '<div class="profile-not-found">' +
+        '<p style="font-size:20px;margin-bottom:8px">&#128269;</p>' +
+        '<p>profile not found for <b>' + (username ? escapeHtml(username) : 'unknown user') + '</b></p>' +
+        '<p style="margin-top:8px"><a href="forum.html">back to forum</a></p>' +
+      '</div>';
+    return;
+  }
+
+  document.title = username + ' — drmy\'s art forum';
+
+  var avatarHtml = profile.avatar
+    ? '<img class="profile-avatar" src="' + profile.avatar + '" alt="' + escapeHtml(username) + ' avatar"' +
+      (profile.avatarStyle ? ' style="' + profile.avatarStyle + '"' : '') + '>'
+    : '<div class="profile-avatar" style="background:#e8e0f8;display:flex;align-items:center;justify-content:center;font-size:32px">&#128100;</div>';
+
+  var bioSection = profile.bio
+    ? '<div class="profile-bio"><h3>about</h3>' + profile.bio + '</div>'
+    : '';
+
+  var interestsSection = profile.interests
+    ? '<div class="profile-bio"><h3>interests</h3>' + profile.interests + '</div>'
+    : '';
+
+  var sigSection = profile.signatureHtml
+    ? '<div class="profile-sig">' + profile.signatureHtml + '</div>'
+    : '';
+
+  root.innerHTML =
+    '<div class="forum-breadcrumb"><a href="forum.html">forum</a> &rsaquo; member profiles &rsaquo; ' + escapeHtml(username) + '</div>' +
+    '<div class="profile-card">' +
+      avatarHtml +
+      '<div class="profile-info">' +
+        '<div class="profile-username"' + (profile.usernameStyle ? ' style="' + profile.usernameStyle + '"' : '') + '>' + escapeHtml(username) + '</div>' +
+        '<div class="profile-rank">' + escapeHtml(profile.rank || 'Member') + '</div>' +
+        (profile.subtitleHtml ? '<div class="profile-subtitle">' + profile.subtitleHtml + '</div>' : '') +
+        '<div class="profile-stats">' +
+          '<span><b>joined</b><br>' + escapeHtml(profile.joined || '—') + '</span>' +
+          '<span><b>posts</b><br>' + escapeHtml(profile.count || '0') + '</span>' +
+        '</div>' +
+        sigSection +
+      '</div>' +
+    '</div>' +
+    bioSection +
+    interestsSection;
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+})();
+</script>
+</body>
+</html>

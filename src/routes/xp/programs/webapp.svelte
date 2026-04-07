@@ -6,12 +6,12 @@
     import short from 'short-uuid';
     import * as finder from '../../../lib/finder'
     import DumbProgress from '../../../lib/components/xp/DumbProgress.svelte';
-    import {onMount, unmount, mount} from 'svelte';
+    import {onMount} from 'svelte';
     
 
     export let id;
     export let window;
-    export let get_self = () => null;
+    export let self;
     export let parentNode;
     export let webapp;
     let webapp_url;
@@ -26,8 +26,8 @@
     })
 
     export async function destroy(){
-        runningPrograms.update(programs => programs.filter(p => p != get_self()));
-        unmount(get_self());
+        runningPrograms.update(programs => programs.filter(p => p != self));
+        self.$destroy();
     }
 
     let ws_size = {width: document.querySelector('#work-space').offsetWidth, height: document.querySelector('#work-space').offsetHeight};
@@ -133,11 +133,15 @@
             const OpenModal = (
                 await import("../../../lib/components/xp/OpenModal.svelte")
             ).default;
-            let modal;
-            modal = mount(OpenModal, {
+            let modal = new OpenModal({
                 target: node_ref,
-                props: { filetypes, filetypes_desc, multiple, get_self: () => modal, on_open: (items) => { resolve(items); unmount(modal); } },
+                props: { filetypes, filetypes_desc, multiple },
             });
+            modal.self = modal;
+            modal.on_open = () => {
+                resolve(modal.selected_items);
+                modal.destroy();
+            };
         });
     }
 
@@ -151,11 +155,19 @@
             const SaveModal = (
                 await import("../../../lib/components/xp/SaveModal.svelte")
             ).default;
-            let modal;
-            modal = mount(SaveModal, {
+            let modal = new SaveModal({
                 target: node_ref,
-                props: { filetypes, selected_filetype: current_filetype, id, get_self: () => modal, on_save: (data) => { resolve(data); unmount(modal); } },
+                props: { filetypes, selected_filetype: current_filetype, id },
             });
+            modal.self = modal;
+            modal.on_save = () => {
+                resolve({
+                    parent_id: modal.parent_id,
+                    filename: modal.filename,
+                    selected_filetype: modal.selected_filetype,
+                });
+                modal.destroy();
+            };
         });
     }
 
@@ -179,7 +191,7 @@
     }
 
     function transform(url){
-        url = new URL(url);
+        url = new URL(url, utils.browser_window().location.origin);
         url.searchParams.set('program_id', id);
         url.searchParams.set('parent_origin', utils.browser_window().location.origin);
         return url.href;

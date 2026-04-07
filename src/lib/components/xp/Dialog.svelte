@@ -1,5 +1,4 @@
 <script>
-    import { unmount } from 'svelte';
     import * as utils from '../../utils';
 
     import _, { find, isEqual } from 'lodash';
@@ -7,7 +6,7 @@
     import Button from './Button.svelte';
     
 
-    export let get_self = () => null;
+    export let self;
     export let title = '';
     export let message = '';
     export let icon = '';
@@ -16,13 +15,14 @@
 
 
     export function destroy(){
-        unmount(get_self());
+        console.log(self);
+        self.$destroy();
     }
 
 
 </script>
 
-<div class="dialog absolute inset-0 bg-slate-50/10 rounded-t-lg" style:z-index="100000" on:click|self={(e) => {
+<div class="z-20 dialog absolute inset-0 bg-slate-50/10 rounded-t-lg" on:click|self={(e) => {
     e.target.querySelector('div').classList.add('animate-blink');
     setTimeout(() => {
         e.target.querySelector('div').classList.remove('animate-blink');

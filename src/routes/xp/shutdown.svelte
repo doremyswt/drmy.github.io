@@ -1,5 +1,5 @@
 <script>
-    import {onMount, createEventDispatcher, unmount} from 'svelte';
+    import {onMount, createEventDispatcher} from 'svelte';
     import * as utils from '../../lib/utils';
     import { hardDrive } from '../../lib/store';
     import {get, set} from 'idb-keyval';
@@ -21,7 +21,7 @@
     })
 
     export function destroy(){
-        unmount(self);
+        self.$destroy();
     }
     
 </script>

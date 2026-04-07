@@ -1,6 +1,5 @@
 <script>
     import { contextMenu, wallpaper, hardDrive } from '../../lib/store';
-    import { get as store_get } from 'svelte/store';
     import { bliss_wallpaper, wallpapers_folder } from '../../lib/system';
     import * as utils from '../../lib/utils';
     import {get, set} from 'idb-keyval';
@@ -10,7 +9,7 @@
     let cached_url = '';
 
     async function get_wallpaper_url(w){
-        let fs_item = store_get(hardDrive)[w]; // read without subscribing — avoids re-render on hardDrive changes
+        let fs_item = $hardDrive[w];
         console.log(fs_item)
         let url = null;
 

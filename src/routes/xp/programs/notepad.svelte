@@ -1,7 +1,6 @@
 <svelte:options accessors={true} />
 
 <script>
-    import { unmount, mount } from 'svelte';
     import Window from "../../../lib/components/xp/Window.svelte";
     import {
         runningPrograms,
@@ -18,7 +17,7 @@
 
     export let id;
     export let window;
-    export let get_self = () => null;
+    export let self;
     export let parentNode;
     export let fs_item;
     export let exec_path;
@@ -184,8 +183,8 @@
     }
 
     function close_program() {
-        runningPrograms.update((programs) => programs.filter((p) => p != get_self()));
-        unmount(get_self());
+        runningPrograms.update((programs) => programs.filter((p) => p != self));
+        self.$destroy();
     }
 
     async function pick_file({ filetypes_desc, filetypes }) {
@@ -203,11 +202,15 @@
             const OpenModal = (
                 await import("../../../lib/components/xp/OpenModal.svelte")
             ).default;
-            let modal;
-            modal = mount(OpenModal, {
+            let modal = new OpenModal({
                 target: node_ref,
-                props: { filetypes, filetypes_desc, get_self: () => modal, on_open: (items) => { resolve(items); unmount(modal); } },
+                props: { filetypes, filetypes_desc },
             });
+            modal.self = modal;
+            modal.on_open = () => {
+                resolve(modal.selected_items);
+                modal.destroy();
+            };
         });
     }
 
@@ -270,11 +273,19 @@
             const SaveModal = (
                 await import("../../../lib/components/xp/SaveModal.svelte")
             ).default;
-            let modal;
-            modal = mount(SaveModal, {
+            let modal = new SaveModal({
                 target: node_ref,
-                props: { filetypes, selected_filetype: current_filetype, id, get_self: () => modal, on_save: (data) => { resolve(data); unmount(modal); } },
+                props: { filetypes, selected_filetype: current_filetype, id },
             });
+            modal.self = modal;
+            modal.on_save = () => {
+                resolve({
+                    parent_id: modal.parent_id,
+                    filename: modal.filename,
+                    selected_filetype: modal.selected_filetype,
+                });
+                modal.destroy();
+            };
         });
     }
 
@@ -312,8 +323,7 @@
                 },
             },
         ];
-        let dialog;
-        dialog = mount(Dialog, {
+        let dialog = new Dialog({
             target: node_ref,
             props: {
                 icon,
@@ -321,9 +331,9 @@
                 message,
                 buttons,
                 button_align: "center",
-                get_self: () => dialog,
             },
         });
+        dialog.self = dialog;
     }
 
     async function setup_notepad() {

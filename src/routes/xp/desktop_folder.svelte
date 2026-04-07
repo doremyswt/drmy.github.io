@@ -4,12 +4,13 @@
     import * as utils from '../../lib/utils';
     import { doctypes, icons, desktop_folder, previewable_exts } from '../../lib/system';
     import * as fs from '../../lib/fs';
-    const {click_outside, long_press, double_tap} = utils;
-    import { tick } from 'svelte';
+    const {click_outside} = utils;
+    import {  onMount, tick } from 'svelte';
     import short from 'short-uuid';
     import {get, set} from 'idb-keyval';
     import { filter, map, transform } from 'lodash';
-        import RecycleBin from '../../lib/components/xp/RecycleBin.svelte';
+    import DragSelect from 'dragselect';
+    import RecycleBin from '../../lib/components/xp/RecycleBin.svelte';
     import { parse_dir } from '../../lib/dir_parser';
     import Previewable from '../../lib/components/xp/Previewable.svelte';
     
@@ -24,80 +25,90 @@
         .filter(el => el != null);
 
     let is_focus = true;
-    let item_long_pressed = false;
     let node_ref;
     let cell_size = 80;
+    const desktop_grid_step = 96;
 
     export let renaming = false;
 
-    // Drag state: shared between rubber-band select and icon repositioning
-    let _drag_start = null; // {x, y, on_item, item_el, item_fs_id, item_tx, item_ty}
-    let _drag_moved = false;
-    let rb_visible = false;
-    let rb_left = 0, rb_top = 0, rb_width = 0, rb_height = 0;
+    const ds = new DragSelect({
+        customStyles: false,
+        draggability: true
+    });
 
-    function parse_translate(str) {
-        if (!str) return {x: 0, y: 0};
-        let m = str.match(/translate(?:3d)?\(([^,]+)px,\s*([^,)]+)px/);
-        return m ? {x: parseFloat(m[1]), y: parseFloat(m[2])} : {x: 0, y: 0};
-    }
+    ds.subscribe('callback', (e) => {
+        if(!node_ref) return;
+        hardDrive.update(data => {
+            const draggedIds = new Set(e.items.map(n => n.getAttribute('fs-id')).filter(Boolean));
+            const containerRect = node_ref.getBoundingClientRect();
 
-    function on_mousedown(e) {
-        if (e.button !== 0) return;
-        _drag_moved = false;
-        let item_el = e.target.closest('.fs-item');
-        if (item_el) {
-            let t = parse_translate(item_el.style.transform);
-            _drag_start = {x: e.clientX, y: e.clientY, on_item: true, item_el, item_fs_id: item_el.getAttribute('fs-id'), item_tx: t.x, item_ty: t.y};
-        } else {
-            _drag_start = {x: e.clientX, y: e.clientY, on_item: false};
-        }
-    }
+            // Build occupied slots using actual visual positions of non-dragged icons.
+            // Raw transform values can't be compared directly because each icon has a
+            // different flex-layout base offset, so two icons with equal transforms can
+            // visually overlap. getBoundingClientRect gives the true screen position.
+            const occupiedSlots = new Map(); // "snapX,snapY" -> fs_id
+            for(let node of node_ref.querySelectorAll('.fs-item')){
+                let fs_id = node.getAttribute('fs-id');
+                if(!fs_id || draggedIds.has(fs_id) || !data[fs_id]) continue;
+                let r = node.getBoundingClientRect();
+                let sx = snapToGrid(r.left - containerRect.left);
+                let sy = snapToGrid(r.top  - containerRect.top);
+                occupiedSlots.set(`${sx},${sy}`, fs_id);
+            }
 
-    function on_mousemove(e) {
-        if (!_drag_start) return;
-        let dx = e.clientX - _drag_start.x, dy = e.clientY - _drag_start.y;
-        if (!_drag_moved && dx*dx + dy*dy < 25) return;
-        _drag_moved = true;
-        if (_drag_start.on_item) {
-            _drag_start.item_el.style.transform = `translate(${_drag_start.item_tx + dx}px, ${_drag_start.item_ty + dy}px)`;
-        } else {
-            rb_visible = true;
-            let cr = node_ref.getBoundingClientRect();
-            let [sx, sy, cx, cy] = [_drag_start.x, _drag_start.y, e.clientX, e.clientY];
-            let rbc = {left: Math.min(sx,cx), right: Math.max(sx,cx), top: Math.min(sy,cy), bottom: Math.max(sy,cy)};
-            rb_left = rbc.left - cr.left; rb_top = rbc.top - cr.top;
-            rb_width = rbc.right - rbc.left; rb_height = rbc.bottom - rbc.top;
-            let sel = [];
-            for (let el of node_ref.querySelectorAll('.fs-item')) {
-                let r = el.getBoundingClientRect();
-                if (r.left < rbc.right && r.right > rbc.left && r.top < rbc.bottom && r.bottom > rbc.top) {
-                    let fid = el.getAttribute('fs-id');
-                    if ($hardDrive[fid] != null) sel.push(fid);
+            for(let node of e.items){
+                let fs_id = node.getAttribute('fs-id');
+                if(!fs_id || !data[fs_id]) continue;
+
+                let snapped = snapNodeTransform(node);
+
+                // Re-read visual position after snap for reliable slot key.
+                let r = node.getBoundingClientRect();
+                let sx = snapToGrid(r.left - containerRect.left);
+                let sy = snapToGrid(r.top  - containerRect.top);
+                let key = `${sx},${sy}`;
+
+                if(occupiedSlots.has(key)){
+                    // Slot taken — revert node to its last saved position.
+                    let prev = data[fs_id]['desktop_css_transform'] || '';
+                    node.style.transform = prev;
+                } else {
+                    data[fs_id]['desktop_css_transform'] = snapped;
+                    occupiedSlots.set(key, fs_id);
                 }
             }
-            $selectingItems = sel;
-        }
-    }
+            return data;
+        });
+        $selectingItems = e.items
+        .map(el => el.getAttribute('fs-id'))
+        .filter(el => $hardDrive[el] != null);
+    });
+    const observer = new MutationObserver(mutations => {
+        ds.setSettings({
+            selectables: node_ref ? node_ref.querySelectorAll('.fs-item') : []
+        })
+    });
 
-    function on_mouseup() {
-        if (!_drag_start) return;
-        if (_drag_start.on_item && _drag_moved) {
-            let fid = _drag_start.item_fs_id;
-            if ($hardDrive[fid] != null) $hardDrive[fid]['desktop_css_transform'] = _drag_start.item_el.style.transform;
-        }
-        rb_visible = false;
-        _drag_start = null;
-    }
-
+    onMount(async () => {
+        ds.setSettings({
+            selectables: node_ref.querySelectorAll('.fs-item'),
+            area: node_ref
+        })
+        observer.observe(node_ref, {attributes: false, childList: true, characterData: false, subtree:true});
+        snapDesktopIcons();
+        
+    })
+    
 
     function on_rightclick(ev, item){
         let selected = $selectingItems.includes(item.id);
-        if (!selected) {
+        let el = node_ref.querySelector(`.fs-item[fs-id="${item.id}"]`);
+
+        if(!selected && el && el.classList.contains('fs-item')){
             if(ev.metaKey || ev.ctrlKey){
-                $selectingItems = [...$selectingItems, item.id];
+                ds.addSelection([el], true);
             } else {
-                $selectingItems = [item.id];
+                ds.setSelection([el], true);
             }
         }
 
@@ -118,17 +129,12 @@
     }
 
     function clear_selection(){
-        $selectingItems = [];
+        console.log('clear_selection');
+        ds.clearSelection(true);
     }
 
 
-    let _last_open = 0;
     function open(id){
-        // debounce: double_tap and dblclick may both fire on mobile
-        const now = Date.now();
-        if (now - _last_open < 400) return;
-        _last_open = now;
-
         is_focus = false;
         clear_selection();
         let fs_item = $hardDrive[id];
@@ -214,7 +220,8 @@
         } else if(e.key == 'v'){
             fs.paste(id);
         } else if(e.key == 'a'){
-            $selectingItems = items.map(el => el.id);
+            let els = node_ref.querySelectorAll('.fs-item');
+            ds.setSelection(els, true);
         }
     }
 
@@ -245,33 +252,87 @@
         return null;
     }
 
+    function snapDesktopIcons(){
+        if(!node_ref) return;
+
+        hardDrive.update(data => {
+            for(let node of node_ref.querySelectorAll('.fs-item')){
+                let fs_id = node.getAttribute('fs-id');
+                if(fs_id == null) continue;
+                if(data[fs_id] == null) continue;
+
+                data[fs_id].desktop_css_transform = snapNodeTransform(node, data[fs_id].desktop_css_transform);
+            }
+            return data;
+        });
+    }
+
+    function snapNodeTransform(node, fallbackTransform = ''){
+        let {x, y} = parseTranslate(node?.style?.transform || fallbackTransform);
+        let snappedX = snapToGrid(x);
+        let snappedY = snapToGrid(y);
+        let snappedTransform = buildTranslate(snappedX, snappedY);
+
+        if(node){
+            node.style.transform = snappedTransform;
+        }
+
+        return snappedTransform;
+    }
+
+    function snapToGrid(value){
+        return Math.round(value / desktop_grid_step) * desktop_grid_step;
+    }
+
+    function buildTranslate(x, y){
+        if(x == 0 && y == 0){
+            return '';
+        }
+        return `translate(${x}px, ${y}px)`;
+    }
+
+    function parseTranslate(transform){
+        if(utils.is_empty(transform)){
+            return {x: 0, y: 0};
+        }
+
+        try {
+            let matrix = new DOMMatrixReadOnly(transform);
+            return {x: matrix.m41, y: matrix.m42};
+        } catch (error) {}
+
+        let match = transform.match(/translate(?:3d)?\(\s*(-?\d+(?:\.\d+)?)px(?:,\s*(-?\d+(?:\.\d+)?)px)?/i);
+        if(match){
+            return {
+                x: Number(match[1] || 0),
+                y: Number(match[2] || 0)
+            };
+        }
+
+        return {x: 0, y: 0};
+    }
+
 </script>
 
 
 <div class="absolute z-0 inset-0 overflow-hidden bg-transparent"
     on:drop={on_drop} on:dragover={on_drop_over}
-    on:mousedown={on_mousedown}
-    on:click={(e) => { is_focus = true; if (!e.target.closest('.fs-item') && !_drag_moved) { $selectingItems = []; } }}
+    on:click={() => is_focus = true}
     use:click_outside on:click_outside={() => {
         is_focus = false;
     }}
     on:contextmenu|self={show_void_menu}
-    use:long_press on:long_press|self={(e) => { if (!item_long_pressed) show_void_menu({x: e.detail.x, y: e.detail.y}); }}
     bind:this={node_ref}>
 
     <div class="top-0 left-0 bottom-0 absolute flex flex-col flex-wrap" 
         class:hidden={id == null}>
         {#each items as item, index (item.id)}
 
-            <div fs-id="{item.id}" class="relative fs-item w-[150px] flex-shrink-0 flex-grow-0 overflow-hidden m-2 inline-flex flex-col items-center font-MSSS"
+            <div fs-id="{item.id}" class="relative fs-item w-[150px] flex-shrink-0 flex-grow-0 overflow-hidden m-2 inline-flex flex-col items-center font-MSSS" 
                 on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
-                on:click={(e) => { if (_drag_moved) return; let fs_id = e.currentTarget.getAttribute('fs-id'); if (e.ctrlKey || e.metaKey) { $selectingItems = $selectingItems.includes(fs_id) ? $selectingItems.filter(id => id !== fs_id) : [...$selectingItems, fs_id]; } else { $selectingItems = [fs_id]; } }}
-                use:long_press on:long_press={(e) => { item_long_pressed = true; setTimeout(() => item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}
-                use:double_tap on:double_tap={() => open(item.id)}
                 style:transform="{item.desktop_css_transform}"
                 style:width="{cell_size}px"
-                style:height="{cell_size}px"
-                style:touch-action="manipulation">
+                style:height="{cell_size}px">
                 {#if previewable_exts.includes(item.ext)}
                     <Previewable size={40} default_icon={file_icon(item)} fs_id={item.id}></Previewable>
                 {:else}
@@ -284,7 +345,7 @@
                 <p class="px-1 mx-0.5 text-[11px] break-words line-clamp-2 text-ellipsis leading-tight text-center text-white
                     {$selectingItems?.includes(item.id) && is_focus ? 'bg-blue-600 text-slate-50' : ''}"
                     style="text-shadow: 1px 1px 2px black;">
-                    {item.executable ? item.basename : item.name}
+                    {item.display_name || (item.executable ? item.basename : item.name)}
                 </p>
                 {#if $selectingItems.includes(item.id) && renaming}
                     <textarea
@@ -304,13 +365,7 @@
 
     <RecycleBin style="width: {cell_size}px;height: {cell_size}px;"></RecycleBin>
 
-    {#if rb_visible}
-        <div class="absolute pointer-events-none border border-blue-500 bg-blue-500/20"
-            style:left="{rb_left}px" style:top="{rb_top}px" style:width="{rb_width}px" style:height="{rb_height}px">
-        </div>
-    {/if}
-
 </div>
 
 <svelte:options accessors={true}></svelte:options>
-<svelte:window on:keydown={on_keydown} on:mousemove={on_mousemove} on:mouseup={on_mouseup}></svelte:window>
+<svelte:window on:keydown={on_keydown}></svelte:window>

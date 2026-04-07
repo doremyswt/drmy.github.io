@@ -71,8 +71,8 @@
                     name: 'Make a new folder',
                     icon: 'NewFolder.png',
                     action: () => {
-                        if(id){
-                            fs.new_fs_item('folder', '', 'New Folder', id);
+                        if(my_computer_instance.viewer.id){
+                            fs.new_fs_item('folder', '', 'New Folder', my_computer_instance.viewer.id);
                         }
                     }
                 },

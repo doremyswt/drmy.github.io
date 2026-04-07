@@ -1,5 +1,5 @@
 <script>
-    import { onMount, onDestroy, mount } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
     import { queueProgram, systemVolume } from '../../lib/store';
     import TrayIcon from '../../lib/components/xp/TrayIcon.svelte';
 
@@ -20,10 +20,11 @@
     async function open_volume_adjust(e){
         console.log(e);
         const Program = (await import('./programs/volume_adjust.svelte')).default;
-        let program = mount(Program, {
+        let program = new Program({
             target: document.body,
-            props:{position: {bottom: e.pageY-20, left: e.pageX}, get_self: () => program}
+            props:{position: {bottom: e.pageY-20, left: e.pageX}}
         });
+        program.self = program;
     }
 
 </script>

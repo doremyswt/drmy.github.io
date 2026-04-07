@@ -1,5 +1,5 @@
 <script>
-    import {onMount, unmount} from 'svelte';
+    import {onMount} from 'svelte';
     import TitleBar from './TitleBar.svelte';
     import * as utils from '../../utils';
     import _ from 'lodash';
@@ -31,7 +31,7 @@
     
 
     let on_click_close = () => {
-        unmount(self);
+        self.$destroy();
     }
 
     export let on_click_maximize = () => {

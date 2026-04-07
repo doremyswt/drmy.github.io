@@ -1,6 +1,6 @@
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
-    import {onMount, tick, unmount } from 'svelte';
+    import {onMount, tick } from 'svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive, queueProgram } from '../../../lib/store'
     import {get,set} from 'idb-keyval';
     import DumbProgress from "../../../lib/components/xp/DumbProgress.svelte";
@@ -8,7 +8,7 @@
 
     export let id;
     export let window;
-    export let get_self = () => null;
+    export let self;
     export let parentNode;
     export let fs_item;
     export let exec_path;
@@ -49,8 +49,8 @@
     })
 
     export async function destroy(){
-        runningPrograms.update(programs => programs.filter(p => p != get_self()));
-        unmount(get_self());
+        runningPrograms.update(programs => programs.filter(p => p != self));
+        self.$destroy();
     }
 
     export let options = {

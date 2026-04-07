@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>drmy's Art Forum - Thread Hub</title>
+<link rel="stylesheet" href="thread-pages.css">
+<script src="thread-data.js" defer></script>
+<script defer>
+document.addEventListener('DOMContentLoaded', () => {
+  const threads = Array.isArray(window.THREAD_DATA) ? window.THREAD_DATA : [];
+  const sticky = threads.filter(thread => thread.kind === 'announcement');
+  const topics = threads.filter(thread => thread.kind !== 'announcement');
+
+  const announcements = document.getElementById('announcement-rows');
+  const topicRows = document.getElementById('topic-rows');
+  const topicCount = document.getElementById('topic-count');
+
+  const renderRow = (thread) => {
+    const row = document.createElement('tr');
+    if (thread.isAlert) row.className = 'thread-row-alert';
+    const titleStyleAttr = thread.titleStyle ? ` style="${thread.titleStyle}"` : '';
+    const icon = thread.kind === 'announcement' ? '&#9432;' : (thread.isAlert ? '&#9888;' : '&#9673;');
+    const iconClass = thread.kind === 'announcement' ? 'topic-status-icon topic-status-info' : (thread.isAlert ? 'topic-status-icon topic-status-alert' : 'topic-status-icon');
+    row.innerHTML = `
+      <td class="topic-status-cell"><span class="${iconClass}">${icon}</span></td>
+      <td class="topic-cell">
+        <a href="thread.html?t=${encodeURIComponent(thread.id)}" class="topic-title-link"${titleStyleAttr}>${thread.titleHtml}</a>
+        <div class="topic-desc">${thread.descHtml}</div>
+        <div class="topic-author">by <b>${thread.starterHtml}</b></div>
+      </td>
+      <td class="topic-stats">${thread.replies}</td>
+      <td class="topic-stats">${thread.views}</td>
+      <td class="last-post-cell">${thread.lastDateHtml}<br>by ${thread.lastUserHtml}</td>
+    `;
+    return row;
+  };
+
+  sticky.forEach(thread => announcements.appendChild(renderRow(thread)));
+  topics.forEach(thread => topicRows.appendChild(renderRow(thread)));
+  topicCount.textContent = `${topics.length} topics`;
+});
+</script>
+</head>
+<body>
+<div id="top"></div>
+<div class="top-banner">
+  <div class="top-banner-inner">
+    <div>
+      <div class="banner-title">drmy's Art Forum</div>
+      <div class="banner-sub">thread hub · click a topic to open the full thread</div>
+    </div>
+    <div style="font-size:11px;color:#fff7da;text-align:right">Board view<br>best viewed with too many tabs open</div>
+  </div>
+</div>
+<div class="nav-bar">
+  <a href="forum.html">Board Index</a>
+  <a href="threads.html">Threads</a>
+  <a href="forum.html#guestbook">Guestbook</a>
+  <a href="https://vgen.co/doremy" target="_blank">Commissions</a>
+</div>
+<div class="page-wrap">
+  <div class="forum-breadcrumb"><a href="forum.html">Board Index</a> &raquo; <a href="threads.html">General</a></div>
+
+  <div class="board-topline">
+    <h1 class="board-title">General</h1>
+    <div class="board-topline-meta">611 topics &bull; Page 1 of 25</div>
+  </div>
+
+  <div class="board-controls">
+    <a href="forum.html" class="board-button">NEWTOPIC *</a>
+    <form class="board-search" action="threads.html" method="get">
+      <input type="text" value="Search this forum..." aria-label="Search this forum" readonly>
+      <button type="submit">Search</button>
+    </form>
+    <div class="board-controls-right">
+      <a href="forum.html">Mark topics read</a>
+      <span id="topic-count">0 topics</span>
+      <div class="pager">
+        <span class="current">1</span><a href="threads.html">2</a><a href="threads.html">3</a><a href="threads.html">4</a><a href="threads.html">5</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-head">ANNOUNCEMENTS</div>
+  <table class="thread-index board-index-table">
+    <thead>
+      <tr>
+        <th class="topic-status-head"></th>
+        <th>Announcement</th>
+        <th>Replies</th>
+        <th>Views</th>
+        <th>Last Post</th>
+      </tr>
+    </thead>
+    <tbody id="announcement-rows"></tbody>
+  </table>
+
+  <div class="section-head">TOPICS</div>
+  <table class="thread-index board-index-table">
+    <thead>
+      <tr>
+        <th class="topic-status-head"></th>
+        <th>Topics</th>
+        <th>Replies</th>
+        <th>Views</th>
+        <th>Last Post</th>
+      </tr>
+    </thead>
+    <tbody id="topic-rows"></tbody>
+  </table>
+
+  <div class="pager board-bottom-pager">
+    <span>Page 1 of 25</span>
+    <span class="current">1</span><a href="threads.html">2</a><a href="threads.html">3</a><a href="threads.html">4</a><a href="threads.html">5</a>
+  </div>
+</div>
+</body>
+</html>

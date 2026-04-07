@@ -1,20 +1,19 @@
 <script>
-    import { unmount, mount } from 'svelte';
     import Window from '../../../lib/components/xp/Window.svelte';
     import Button from '../../../lib/components/xp/Button.svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive } from '../../../lib/store'
 
     export let id;
     export let window;
-    export let get_self = () => null;
+    export let self;
     export let parentNode;
     export let fs_item;
     export let exec_path;
     let iframe;
 
     export function destroy(){
-        runningPrograms.update(programs => programs.filter(p => p != get_self()));
-        unmount(get_self());
+        runningPrograms.update(programs => programs.filter(p => p != self));
+        self.$destroy();
     }
 
     export let options = {
@@ -30,11 +29,15 @@
 
     async function open_file(){
         const OpenModal = (await import('../../../lib/components/xp/OpenModal.svelte')).default;
-        let modal;
-        modal = mount(OpenModal, {
+        let modal = new OpenModal({
             target: window.node_ref,
-            props: { filetypes: ['.jpg'], filetypes_desc: 'Image Files', get_self: () => modal, on_open: (items) => { console.log('selected_items', items.map(el => $hardDrive[el])); unmount(modal); } },
-        });
+            props:{filetypes: ['.jpg'], filetypes_desc: 'Image Files'}
+        })
+        modal.self = modal;
+        modal.on_open = () => {
+            console.log('selected_items', modal.selected_items.map(el => $hardDrive[el]));
+            modal.destroy();
+        }
     }
 
     async function save_file(){
@@ -44,11 +47,17 @@
             {name: 'png image', value: '.png'},
             {name: 'bmp image', value: '.bmp'}
         ]
-        let modal;
-        modal = mount(SaveModal, {
+        let modal = new SaveModal({
             target: window.node_ref,
-            props: { filetypes, get_self: () => modal, on_save: (data) => { console.log('save location', $hardDrive[data.parent_id]); console.log('filename', data.filename); console.log(data.selected_filetype); unmount(modal); } },
-        });
+            props:{filetypes}
+        })
+        modal.self = modal;
+        modal.on_save = () => {
+            console.log('save location', $hardDrive[modal.parent_id]);
+            console.log('filename', modal.filename);
+            console.log(modal.selected_filetype);
+            modal.destroy();
+        }
     }
 
     async function open_dialog(){
@@ -63,17 +72,16 @@
                 action: () => console.log('Cancel')
             }
         ]
-        let dialog;
-        dialog = mount(Dialog, {
+        let dialog = new Dialog({
             target: window.node_ref,
-            props: {
+            props:{
                 icon: '/images/xp/icons/RecycleBinempty.png',
                 title: 'Confirm File Delete',
                 message: 'Are you sure you want to send Sunset.jpg to the Reycle Bin? ',
-                buttons,
-                get_self: () => dialog,
+                buttons
             }
-        });
+        })
+        dialog.self = dialog;
     }
 
     

@@ -5,6 +5,7 @@
     export let default_icon;
     export let fs_id;
     export let size = 50;
+    export let fluid = false;
     let preview_url;
     let node_ref;
 
@@ -12,7 +13,8 @@
     onMount(async () => {
         observer = new IntersectionObserver(intersect_callback, {
             root: null,
-            threshold: 1
+            threshold: 0,
+            rootMargin: '200px'
         })
         observer.observe(node_ref);
     })
@@ -41,8 +43,11 @@
 
 </script>
 
-<div bind:this={node_ref} class="shrink-0 bg-contain bg-no-repeat bg-center"
+<div bind:this={node_ref} class="bg-contain bg-no-repeat bg-center"
+    class:shrink-0={!fluid}
+    class:w-full={fluid}
     style:background-image="{preview_url || default_icon}"
-    style:width="{size}px"
-    style:height="{size}px">
+    style:width="{fluid ? null : size+'px'}"
+    style:height="{fluid ? null : size+'px'}"
+    style:aspect-ratio="{fluid ? '1' : null}">
 </div>

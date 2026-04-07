@@ -1,7 +1,7 @@
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
     import Button from '../../../lib/components/xp/Button.svelte';
-    import {onMount, tick, unmount } from 'svelte';
+    import {onMount, tick } from 'svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive, queueProgram } from '../../../lib/store'
     import * as utils from '../../../lib/utils';
     import * as fs from '../../../lib/fs';
@@ -11,7 +11,7 @@
 
     export let id;
     export let window;
-    export let get_self = () => null;
+    export let self;
     export let parentNode;
     export let fs_item;
     export let exec_path;
@@ -29,7 +29,6 @@
         height: 220,
         resizable: false,
         maximize_btn_disabled: true,
-        mobile_maximize: false,
         icon: '/images/xp/icons/RAR.png',
         id: id,
         exec_path
@@ -58,8 +57,8 @@
 
     export async function destroy(){
         cancelled = true;
-        runningPrograms.update(programs => programs.filter(p => p != get_self()));
-        unmount(get_self());
+        runningPrograms.update(programs => programs.filter(p => p != self));
+        self.$destroy();
     }
 
     async function decrypt(){

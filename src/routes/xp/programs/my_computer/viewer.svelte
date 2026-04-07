@@ -1,23 +1,21 @@
 <script>
     import { contextMenu, selectingItems, zIndex, clipboard, hardDrive, clipboard_op, queueProgram } from '../../../../lib/store';
     
-    import * as finder from '../../../../lib/finder';
     import * as utils from '../../../../lib/utils';
     import { doctypes, icons, my_computer, hidden_items, recycle_bin_id, previewable_exts } from '../../../../lib/system';
     import * as fs from '../../../../lib/fs';
-    const {click_outside, long_press, double_tap} = utils;
-    import { createEventDispatcher, tick, mount, unmount } from 'svelte';
-    import short from 'short-uuid';
-    import {get, set} from 'idb-keyval';
-    import { filter, map } from 'lodash';
+    import { createEventDispatcher, onMount, tick } from 'svelte';
     import { parse_dir } from '../../../../lib/dir_parser';
     let dispatch = createEventDispatcher();
-        import Previewable from '../../../../lib/components/xp/Previewable.svelte';
+    import DragSelect from 'dragselect';
+    import Previewable from '../../../../lib/components/xp/Previewable.svelte';
     import hash_sum from 'hash-sum';
 
     export let self;
     export let my_computer_instance;
     export let id = null;
+
+    $: large_icons = $hardDrive[id]?.view_mode === 'large_icons';
     
     $: items =  $hardDrive[id] == null ? 
         [] : 
@@ -28,7 +26,6 @@
         .filter(el => !hidden_items.includes(el.id));
 
     $: sorted_items = id ? null : null;//reset sorted_items every time id changes
-    $: if (id !== undefined) { $selectingItems = []; }
     let worker = new Worker(new URL('./sort.js', import.meta.url), {type: 'module'});
     worker.onmessage = ({data}) => {
         if(data.type == 'sorted' && data.id == id){
@@ -58,7 +55,7 @@
         }
     }
 
-    $: is_focus = $zIndex == my_computer_instance?.window?.z_index;
+    $: is_focus = $zIndex == my_computer_instance?.window.z_index;
     let computer = my_computer.map(el => $hardDrive[el]);
 
     let node_ref;
@@ -66,63 +63,46 @@
         if(id != null && $hardDrive[id] == null){
             dispatch('open', {id: null});
         }
-        show_guide();
     }
 
     export let renaming = false;
 
-    // Drag state for rubber-band select
-    let _drag_start = null;
-    let _drag_moved = false;
-    let _item_long_pressed = false;
-    let rb_visible = false;
-    let rb_left = 0, rb_top = 0, rb_width = 0, rb_height = 0;
+    const ds = new DragSelect({
+        customStyles: false,
+        draggability: false
+    });
 
-    function on_mousedown(e) {
-        if (e.button !== 0) return;
-        _drag_moved = false;
-        if (!e.target.closest('.fs-item')) {
-            _drag_start = {x: e.clientX, y: e.clientY};
-        }
-    }
+    ds.subscribe('callback', (e) => {
+        $selectingItems = e.items
+            .map(el => el.getAttribute('fs-id'))
+            .filter(el => $hardDrive[el] != null);
+       console.log($selectingItems.map(el => $hardDrive[el]));
+    });
+    const observer = new MutationObserver(() => {
+        ds.setSettings({
+            selectables: node_ref ? node_ref.querySelectorAll('.fs-item') : []
+        })
+    });
 
-    function on_mousemove(e) {
-        if (!_drag_start) return;
-        let dx = e.clientX - _drag_start.x, dy = e.clientY - _drag_start.y;
-        if (!_drag_moved && dx*dx + dy*dy < 25) return;
-        _drag_moved = true;
-        rb_visible = true;
-        let cr = node_ref.getBoundingClientRect();
-        let [sx, sy, cx, cy] = [_drag_start.x, _drag_start.y, e.clientX, e.clientY];
-        let rbc = {left: Math.min(sx,cx), right: Math.max(sx,cx), top: Math.min(sy,cy), bottom: Math.max(sy,cy)};
-        rb_left = rbc.left - cr.left + node_ref.scrollLeft;
-        rb_top = rbc.top - cr.top + node_ref.scrollTop;
-        rb_width = rbc.right - rbc.left;
-        rb_height = rbc.bottom - rbc.top;
-        let sel = [];
-        for (let el of node_ref.querySelectorAll('.fs-item')) {
-            let r = el.getBoundingClientRect();
-            if (r.left < rbc.right && r.right > rbc.left && r.top < rbc.bottom && r.bottom > rbc.top) {
-                let fid = el.getAttribute('fs-id');
-                if ($hardDrive[fid] != null) sel.push(fid);
-            }
-        }
-        $selectingItems = sel;
-    }
+    onMount(async () => {
+        ds.setSettings({
+            selectables: node_ref.querySelectorAll('.fs-item'),
+            area: node_ref
+        })
+        observer.observe(node_ref, {attributes: false, childList: true, characterData: false, subtree:true});
 
-    function on_mouseup() {
-        if (!_drag_start) return;
-        rb_visible = false;
-        _drag_start = null;
-    }
+    })
 
     function on_rightclick(ev, item){
         let selected = $selectingItems.includes(item.id);
-        if (!selected) {
+        let el = node_ref.querySelector(`.fs-item[fs-id="${item.id}"]`);
+
+        if(!selected && el && el.classList.contains('fs-item')){
+            
             if(ev.metaKey || ev.ctrlKey){
-                $selectingItems = [...$selectingItems, item.id];
+                ds.addSelection([el], true);
             } else {
-                $selectingItems = [item.id];
+                ds.setSelection([el], true);
             }
         }
 
@@ -137,20 +117,16 @@
     }
 
     function show_void_menu(ev){
-        contextMenu.set({x: ev.x, y: ev.y, type: 'FSVoid', originator: {id}});
+        contextMenu.set({x: ev.x, y: ev.y, type: 'FSVoid', originator: self});
     }
 
     function clear_selection(){
-        $selectingItems = [];
+        console.log('clear_selection');
+        ds.clearSelection(true);
     }
 
 
-
-    let _last_open = 0;
     function open(id){
-        const now = Date.now();
-        if (now - _last_open < 400) return;
-        _last_open = now;
         clear_selection();
         let fs_item = $hardDrive[id];
         if(fs_item.parent == recycle_bin_id) return;
@@ -224,7 +200,7 @@
 
     function on_keydown(e){
         
-        if(my_computer_instance?.window?.z_index != $zIndex) return;
+        if(my_computer_instance.window.z_index != $zIndex) return;
         if(renaming) return;
         if(id == null) return;
         console.log('keyevent in my computer');
@@ -237,7 +213,8 @@
         } else if(e.key == 'v'){
             fs.paste(id);
         } else if(e.key == 'a'){
-            $selectingItems = items.map(el => el.id);
+            let els = node_ref.querySelectorAll('.fs-item');
+            ds.setSelection(els, true);
         } else if(e.key == 'ArrowUp'){
             e.preventDefault();
             my_computer_instance.up();
@@ -273,48 +250,33 @@
         return null;
     }
 
-    async function show_guide(){
-        let read_transfer_guide = await get('my_computer::read_transfer_guide');
 
-        if(!read_transfer_guide && id != null && window.innerWidth >= 640){
-            const Dialog = (await import('../../../../lib/components/xp/Dialog.svelte')).default;
-            let dialog;
-            let buttons = [{name: 'OK', action: () => dialog.destroy(), focus: true}]
-            dialog = mount(Dialog, {
-                target: my_computer_instance.window.node_ref,
-                props:{
-                    title: 'File Transfer',
-                    message: 'You can drag and drop files or folders from your computer into any folder here to copy them into Windows XP.',
-                    buttons,
-                    button_align: 'center',
-                    get_self: () => dialog,
-                }
-            });
-            set('my_computer::read_transfer_guide', true);
-        }
-    }
 
 </script>
 
+<style>
+    .ds-selected {
+        outline: 3px solid black;
+        outline-offset: 3px;
+        color: black;
+        font-weight: bold;
+    }
+</style>
 <div class="absolute inset-0 overflow-auto bg-slate-50"
-    on:drop={on_drop} on:dragover={on_drop_over} bind:this={node_ref}
-    on:mousedown={on_mousedown}
-    on:click={(e) => { if (!e.target.closest('.fs-item') && !_drag_moved) { $selectingItems = []; } }}>
+    on:drop={on_drop} on:dragover={on_drop_over} bind:this={node_ref}>
     <div class="w-full min-h-[90%]" class:hidden={id == null}
-        on:contextmenu|self={show_void_menu} on:click|self={() => { if (!_drag_moved) clear_selection(); }}
-        use:long_press on:long_press|self={(e) => { if (!_item_long_pressed) show_void_menu({x: e.detail.x, y: e.detail.y}); }}>
+        class:grid={large_icons} class:grid-cols-3={large_icons} class:gap-3={large_icons} class:p-3={large_icons}
+        on:contextmenu|self={show_void_menu}>
         {#if sorted_items}
             {#each sorted_items as item (item.id)}
-                <div fs-id="{item.id}" class="fs-item w-[150px] overflow-hidden m-2 inline-flex flex-row items-center font-MSSS relative
+                <div fs-id="{item.id}" class="fs-item overflow-hidden font-MSSS relative
+                    {large_icons ? 'flex flex-col items-center text-center' : 'w-[150px] inline-flex flex-row items-center m-2'}
                     {$clipboard.includes(item.id) && $clipboard_op == 'cut' ? 'opacity-70' : ''}"
-                    on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
-                    on:click={(e) => { if (_drag_moved) return; let fs_id = e.currentTarget.getAttribute('fs-id'); if (e.ctrlKey || e.metaKey) { $selectingItems = $selectingItems.includes(fs_id) ? $selectingItems.filter(id => id !== fs_id) : [...$selectingItems, fs_id]; } else { $selectingItems = [fs_id]; } }}
-                    use:double_tap on:double_tap={() => open(item.id)}
-                    use:long_press on:long_press={(e) => { _item_long_pressed = true; setTimeout(() => _item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}>
+                    on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}>
                     {#if previewable_exts.includes(item.ext)}
-                        <Previewable default_icon={file_icon(item)} fs_id={item.id}></Previewable>
+                        <Previewable default_icon={file_icon(item)} fs_id={item.id} size={50} fluid={large_icons}></Previewable>
                     {:else}
-                        <div class="w-[50px] h-[50px] shrink-0 bg-contain bg-no-repeat bg-center
+                        <div class="{large_icons ? 'w-full aspect-square' : 'w-[50px] h-[50px]'} shrink-0 bg-contain bg-no-repeat bg-center
                         {item.type == 'folder' ? 'bg-[url(/images/xp/icons/FolderClosed.png)]' : 'bg-[url(/images/xp/icons/Default.png)]'} "
                             style:background-image="{file_icon(item)}">
                         </div>
@@ -347,11 +309,9 @@
         <p class="ml-2 mt-0.5 font-MSSS text-black text-[11px] font-bold">Files Stored on This Computer</p>
         <div class="mb-4 w-[300px] h-[2px] bg-gradient-to-r from-blue-500 to-slate-50"></div>
         {#each computer.filter(el => el.type == 'folder') as item}
-            <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS"
-                on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
-                use:double_tap on:double_tap={() => open(item.id)}
-                use:long_press on:long_press={(e) => { _item_long_pressed = true; setTimeout(() => _item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}>
-                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/FolderClosed.png)] bg-contain bg-no-repeat bg-center"
+            <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS" 
+                on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}>
+                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/FolderClosed.png)] bg-contain"
                     style:background-image="{item.icon == null ? '' : `url(${item.icon})`}">
                 </div>
                 <div class="px-1 text-[11px] line-clamp-2 text-ellipsis leading-tight">
@@ -363,11 +323,9 @@
         <p class="ml-2 mt-4 font-MSSS text-black text-[11px] font-bold">Hard Disk Drives</p>
         <div class="mb-4 w-[300px] h-[2px] bg-gradient-to-r from-blue-500 to-slate-50"></div>
         {#each computer.filter(el => el.type == 'drive') as item}
-            <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS"
-                on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
-                use:double_tap on:double_tap={() => open(item.id)}
-                use:long_press on:long_press={(e) => { _item_long_pressed = true; setTimeout(() => _item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}>
-                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/LocalDisk.png)] bg-contain bg-no-repeat bg-center">
+            <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS" 
+                on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}>
+                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/LocalDisk.png)] bg-contain">
                 </div>
                 <div class="px-1 text-[11px] line-clamp-2 text-ellipsis leading-tight">
                     {item.display_name != null ? item.display_name : item.name}
@@ -378,11 +336,9 @@
         <p class="ml-2 mt-4 font-MSSS text-black text-[11px] font-bold">Devices with Removable Storage</p>
         <div class="mb-4 w-[300px] h-[2px] bg-gradient-to-r from-blue-500 to-slate-50"></div>
         {#each computer.filter(el => el.type == 'removable_storage') as item}
-            <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS"
-                on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
-                use:double_tap on:double_tap={() => open(item.id)}
-                use:long_press on:long_press={(e) => { _item_long_pressed = true; setTimeout(() => _item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}>
-                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/RemovableMedia.png)] bg-contain bg-no-repeat bg-center">
+            <div class="w-[150px] ml-4 mr-8 overflow-hidden inline-flex flex-row items-center font-MSSS" 
+                on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}>
+                <div class="w-[50px] h-[50px] shrink-0 bg-[url(/images/xp/icons/RemovableMedia.png)] bg-contain">
                 </div>
                 <div class="px-1 text-[11px] line-clamp-2 text-ellipsis leading-tight">
                     {item.display_name != null ? item.display_name : item.name}
@@ -391,13 +347,7 @@
         {/each}
     </div>
 
-    {#if rb_visible}
-        <div class="absolute pointer-events-none border border-blue-500 bg-blue-500/20"
-            style:left="{rb_left}px" style:top="{rb_top}px" style:width="{rb_width}px" style:height="{rb_height}px">
-        </div>
-    {/if}
-
 </div>
 
 <svelte:options accessors={true}></svelte:options>
-<svelte:window on:keydown={on_keydown} on:mousemove={on_mousemove} on:mouseup={on_mouseup}></svelte:window>
+<svelte:window on:keydown={on_keydown}></svelte:window>

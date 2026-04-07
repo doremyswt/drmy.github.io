@@ -1,5 +1,4 @@
 <script>
-    import { unmount, mount } from 'svelte';
     import Window from '../../../lib/components/xp/Window.svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive, queueProgram } from '../../../lib/store'
     import * as utils from '../../../lib/utils';
@@ -10,7 +9,7 @@
 
     export let id;
     export let window;
-    export let get_self = () => null;
+    export let self;
     export let parentNode;
     export let fs_item;
     export let exec_path;
@@ -56,8 +55,8 @@
     }
 
     export async function destroy(){
-        runningPrograms.update(programs => programs.filter(p => p != get_self()));
-        unmount(get_self());
+        runningPrograms.update(programs => programs.filter(p => p != self));
+        self.$destroy();
     }
 
     export let options = {
@@ -95,11 +94,15 @@
 
         return new Promise(async (resolve, reject) => {
             const OpenModal = (await import('../../../lib/components/xp/OpenModal.svelte')).default;
-            let modal;
-            modal = mount(OpenModal, {
+            let modal = new OpenModal({
                 target: node_ref,
-                props: { filetypes, filetypes_desc, get_self: () => modal, on_open: (items) => { resolve(items); unmount(modal); } },
-            });
+                props:{filetypes, filetypes_desc}
+            })
+            modal.self = modal;
+            modal.on_open = () => {
+                resolve(modal.selected_items)
+                modal.destroy();
+            }
         })
     }
 
@@ -131,13 +134,17 @@
 
         return new Promise(async (resolve, reject) => {
             const SaveModal = (await import('../../../lib/components/xp/SaveModal.svelte')).default;
-            let modal;
-            modal = mount(SaveModal, {
+            let modal = new SaveModal({
                 target: node_ref,
-                props: { filetypes, selected_filetype: current_filetype, id, get_self: () => modal, on_save: (data) => { resolve(data); unmount(modal); } },
-            });
+                props:{filetypes, selected_filetype: current_filetype, id}
+            })
+            modal.self = modal;
+            modal.on_save = () => {
+                resolve({parent_id: modal.parent_id, filename: modal.filename, selected_filetype: modal.selected_filetype})
+                modal.destroy();
+            }
         })
-    }
+        }
 
     async function setup_paint(){
         iframe_loaded = true;
