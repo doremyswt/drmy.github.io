@@ -5416,6 +5416,9 @@ let _glitchLevel=0;
 
 function applyGlitch(level){
   _glitchLevel=level;
+  if(window.parent!==window){
+    window.parent.postMessage({type:'bonzi-glitch',level},'*');
+  }
   const layer=document.getElementById('glitch-layer');
   const canvas=document.getElementById('glitch-canvas');
   if(!layer||!canvas)return;
@@ -5526,7 +5529,7 @@ function playXpSound(name,options){
   const opts=options||{};
   if(!src)return null;
   const audio=new Audio(encodeURI(src));
-  audio.volume=opts.volume??0.8;
+  audio.volume=(opts.volume??0.8)*0.4;
   audio.loop=!!opts.loop;
   if(opts.loop){
     if(loopingXpAudio){
@@ -5744,7 +5747,7 @@ function triggerSiteCrash(mode='default'){
   if(window.parent!==window){
     window.parent.postMessage({type:'bonzi-crash',mode},'*');
     stopLoopingXpSound();
-    playCrashSound();
+    // crash sound is played by the parent desktop — don't double-play it here
     return;
   }
   if(document.body.classList.contains('site-crashed'))return;

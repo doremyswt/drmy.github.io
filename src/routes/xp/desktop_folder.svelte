@@ -1,16 +1,9 @@
 <script>
-    import { contextMenu, selectingItems, zIndex, clipboard, hardDrive, clipboard_op, queueProgram } from '../../lib/store'
-    
+    import { contextMenu, selectingItems, clipboard, hardDrive, clipboard_op, queueProgram } from '../../lib/store'
     import * as utils from '../../lib/utils';
     import { doctypes, icons, desktop_folder, previewable_exts } from '../../lib/system';
-    import * as fs from '../../lib/fs';
     const {click_outside, long_press, double_tap} = utils;
-    import { tick } from 'svelte';
-    import short from 'short-uuid';
-    import {get, set} from 'idb-keyval';
-    import { filter, map, transform } from 'lodash';
-        import RecycleBin from '../../lib/components/xp/RecycleBin.svelte';
-    import { parse_dir } from '../../lib/dir_parser';
+    import RecycleBin from '../../lib/components/xp/RecycleBin.svelte';
     import Previewable from '../../lib/components/xp/Previewable.svelte';
     
 
@@ -27,8 +20,14 @@
     let item_long_pressed = false;
     let node_ref;
     let cell_size = 80;
+    let _positions_assigned = false;
 
-    export let renaming = false;
+    $: if (items.length && node_ref && !_positions_assigned) {
+        _positions_assigned = true;
+        // defer so node_ref has dimensions
+        setTimeout(assign_missing_positions, 100);
+    }
+
 
     // Drag state: shared between rubber-band select and icon repositioning
     let _drag_start = null; // {x, y, on_item, item_el, item_fs_id, item_tx, item_ty}
@@ -80,11 +79,99 @@
         }
     }
 
+    function snap_to_grid(px) { return Math.round(px / cell_size) * cell_size; }
+
+    // Returns a map of "snapped_x,snapped_y" -> fid for all items except the excluded one.
+    function get_occupied_slots(exclude_fid) {
+        let slots = new Map();
+        for (let item of items) {
+            if (item.id === exclude_fid) continue;
+            if (!item.desktop_css_transform) continue;
+            let t = parse_translate(item.desktop_css_transform);
+            let sx = snap_to_grid(t.x), sy = snap_to_grid(t.y);
+            slots.set(`${sx},${sy}`, item.id);
+        }
+        return slots;
+    }
+
+    // Find the next free grid slot scanning column-first (top-to-bottom, left-to-right)
+    function next_free_slot(occupied) {
+        const maxCols = Math.max(1, Math.floor((node_ref?.offsetWidth || 800) / cell_size));
+        for (let col = 0; col < maxCols; col++) {
+            for (let row = 0; row < 20; row++) {
+                let x = col * cell_size, y = row * cell_size;
+                if (!occupied.has(`${x},${y}`)) return {x, y};
+            }
+        }
+        return {x: 0, y: 0};
+    }
+
+    // Assign grid positions to all items, respecting already-valid ones
+    function assign_missing_positions() {
+        const maxX = Math.max(0, (node_ref?.offsetWidth  || 800) - cell_size);
+        const maxY = Math.max(0, (node_ref?.offsetHeight || 600) - cell_size);
+
+        let occupied = new Map();
+        // First pass: collect items that have a valid, in-bounds, snapped position
+        let valid_items = new Set();
+        for (let item of items) {
+            if (item.desktop_css_transform) {
+                let t = parse_translate(item.desktop_css_transform);
+                let sx = snap_to_grid(t.x), sy = snap_to_grid(t.y);
+                // must be in bounds and on-grid
+                if (sx >= 0 && sy >= 0 && sx <= maxX && sy <= maxY && !occupied.has(`${sx},${sy}`)) {
+                    occupied.set(`${sx},${sy}`, item.id);
+                    valid_items.add(item.id);
+                }
+            }
+        }
+        // Second pass: assign positions to items without a valid position
+        hardDrive.update(drive => {
+            for (let item of items) {
+                if (!valid_items.has(item.id)) {
+                    let {x, y} = next_free_slot(occupied);
+                    let tx = `translate(${x}px, ${y}px)`;
+                    drive[item.id].desktop_css_transform = tx;
+                    occupied.set(`${x},${y}`, item.id);
+                }
+            }
+            return drive;
+        });
+    }
+
     function on_mouseup() {
         if (!_drag_start) return;
         if (_drag_start.on_item && _drag_moved) {
             let fid = _drag_start.item_fs_id;
-            if ($hardDrive[fid] != null) $hardDrive[fid]['desktop_css_transform'] = _drag_start.item_el.style.transform;
+            if ($hardDrive[fid] != null) {
+                let t = parse_translate(_drag_start.item_el.style.transform);
+                let sx = snap_to_grid(t.x);
+                let sy = snap_to_grid(t.y);
+                // clamp to desktop bounds
+                const maxX = Math.max(0, (node_ref?.offsetWidth  || 800) - cell_size);
+                const maxY = Math.max(0, (node_ref?.offsetHeight || 600) - cell_size);
+                sx = Math.max(0, Math.min(maxX, sx));
+                sy = Math.max(0, Math.min(maxY, sy));
+                let occupied = get_occupied_slots(fid);
+                // find nearest free slot
+                outer: for (let r = 0; r <= 30; r++) {
+                    for (let dy = -r; dy <= r; dy++) {
+                        for (let dx = -r; dx <= r; dx++) {
+                            if (Math.abs(dx) !== r && Math.abs(dy) !== r) continue;
+                            let cx = sx + dx * cell_size;
+                            let cy = sy + dy * cell_size;
+                            if (cx < 0 || cy < 0 || cx > maxX || cy > maxY) continue;
+                            if (!occupied.has(`${cx},${cy}`)) { sx = cx; sy = cy; break outer; }
+                        }
+                    }
+                }
+                let tx = `translate(${sx}px, ${sy}px)`;
+                _drag_start.item_el.style.transform = tx;
+                hardDrive.update(drive => {
+                    if (drive[fid]) drive[fid].desktop_css_transform = tx;
+                    return drive;
+                });
+            }
         }
         rb_visible = false;
         _drag_start = null;
@@ -136,7 +223,11 @@
             if(fs_item.executable){
                 queueProgram.set({
                     path: fs_item.url,
-                    webapp: fs_item.webapp
+                    webapp: fs_item.webapp,
+                    ie_url: fs_item.ie_url || null,
+                    ie_title: fs_item.display_name || fs_item.basename || null,
+                    ie_icon: fs_item.icon || null,
+                    window_options: fs_item.window_options || null
                 })
             } else if(doctypes[fs_item.ext] != null){
                 queueProgram.set({
@@ -158,81 +249,13 @@
         
     }
 
-    function rename(){
-        renaming = true;
-        tick()
-        .then(() => {
-            let id = $selectingItems[0];
-            let el = document.querySelector(`div[fs-id="${id}"] textarea`);
-            let end_range = $hardDrive[id].basename.length;
-            if(el != null) el.setSelectionRange(0, end_range);
-        });
-    }
-
-
-    
-    function end_renaming(e, item){
-        let name = utils.sanitize_filename(e.target.value);
-
-        let ext = utils.extname(name);
-        let seedname = utils.basename(name, ext);
-        let basename = seedname;
-
-        item.ext = ext.toLowerCase();
-
-        if(basename.trim() == ''){
-            renaming = false;
-            return;
-        }
-        
-        let parent_items_names = [
-            ...$hardDrive[item.parent].children.filter(el => el != item.id).map(el => $hardDrive[el].name),
-        ]
-        let appendix = 2;
-        while(parent_items_names.includes(basename + item.ext)){
-            basename = seedname + ' ' + appendix;
-            appendix++;
-        }
-        $hardDrive[item.id].basename = basename;
-        $hardDrive[item.id].ext = item.ext;
-        $hardDrive[item.id].name = basename + item.ext;
-        
-        renaming = false;
-    }
-
     function on_keydown(e){
         if(!is_focus) return;
-        if(renaming) return;
         if(id == null) return;
-        console.log('keyevent in desktop_folder');
-
         if(!(e.ctrlKey || e.metaKey)) return;
-        if(e.key == 'c'){
-            fs.copy();
-        } else if(e.key == 'x'){
-            fs.cut();
-        } else if(e.key == 'v'){
-            fs.paste(id);
-        } else if(e.key == 'a'){
+        if(e.key == 'a'){
             $selectingItems = items.map(el => el.id);
         }
-    }
-
-    async function on_drop(e){
-        e.preventDefault();
-        if(id == null) return;
-
-        let copying_obj = await parse_dir(e);
-        queueProgram.set({
-            path: './programs/copier.svelte',
-            copying_obj,
-            target_folder_id: id
-        })
-
-    }
-
-    function on_drop_over(e){
-        e.preventDefault();
     }
 
     function file_icon(item){
@@ -259,11 +282,11 @@
     use:long_press on:long_press|self={(e) => { if (!item_long_pressed) show_void_menu({x: e.detail.x, y: e.detail.y}); }}
     bind:this={node_ref}>
 
-    <div class="top-0 left-0 bottom-0 absolute flex flex-col flex-wrap" 
+    <div class="absolute inset-0"
         class:hidden={id == null}>
         {#each items as item, index (item.id)}
 
-            <div fs-id="{item.id}" class="relative fs-item w-[150px] flex-shrink-0 flex-grow-0 overflow-hidden m-2 inline-flex flex-col items-center font-MSSS"
+            <div fs-id="{item.id}" class="absolute left-0 top-0 fs-item overflow-hidden inline-flex flex-col items-center font-MSSS"
                 on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
                 on:click={(e) => { if (_drag_moved) return; let fs_id = e.currentTarget.getAttribute('fs-id'); if (e.ctrlKey || e.metaKey) { $selectingItems = $selectingItems.includes(fs_id) ? $selectingItems.filter(id => id !== fs_id) : [...$selectingItems, fs_id]; } else { $selectingItems = [fs_id]; } }}
                 use:long_press on:long_press={(e) => { item_long_pressed = true; setTimeout(() => item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}
@@ -284,17 +307,8 @@
                 <p class="px-1 mx-0.5 text-[11px] break-words line-clamp-2 text-ellipsis leading-tight text-center text-white
                     {$selectingItems?.includes(item.id) && is_focus ? 'bg-blue-600 text-slate-50' : ''}"
                     style="text-shadow: 1px 1px 2px black;">
-                    {item.executable ? item.basename : item.name}
+                    {item.display_name || (item.executable ? item.basename : item.name)}
                 </p>
-                {#if $selectingItems.includes(item.id) && renaming}
-                    <textarea
-                        autofocus
-                        on:keydown={e => e.key == 'Enter' && end_renaming(e, item)}
-                        on:blur={(e) => end_renaming(e, item)}
-                        class="absolute max-h-[40px] left-0 top-[40px] right-0 bottom-0 overflow-hidden 
-                        outline-none border-1 border-slate-900 text-[11px] font-MSSS z-50 resize-none"
-                    >{item.name}</textarea>
-                {/if}
                 
             </div>
 

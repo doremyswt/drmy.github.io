@@ -19,7 +19,9 @@
 
     let iframe;
     let address_input;
-    let homepage = url ? url : 'https://wiby.me/';
+    const HOMEPAGE_DISPLAY = 'http://drmycorner.com';
+    const HOMEPAGE_REAL = '/remake/current-site/forum.html';
+    let homepage = url ? url : HOMEPAGE_DISPLAY;
 
     let nav_history = [homepage];
     let page_index = 0;
@@ -176,6 +178,7 @@
     // ── Helpers ──────────────────────────────────────────────
 
     async function to_real_url(url) {
+        if (url === HOMEPAGE_DISPLAY) return HOMEPAGE_REAL;
         if (/^[A-Z]:\\/.test(url)) {
             let file = await fs.get_file(finder.to_id(url));
             return URL.createObjectURL(file);
@@ -187,6 +190,7 @@
         runningPrograms.update(programs => programs.filter(p => p !== get_self()));
         unmount(get_self());
     }
+
 
     let ws_size = { width: document.querySelector('#work-space').offsetWidth, height: document.querySelector('#work-space').offsetHeight };
 

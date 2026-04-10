@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="" style="background:black">
+<html lang="en" data-theme="" style="background:#00309c">
 	<head>
 		<meta charset="utf-8" />
 		<title>Microsoft Windows XP Professional</title>
@@ -154,42 +154,12 @@
 		
 		<div style="position:absolute;top:0;left:0;right:0;height:100dvh;overflow:hidden;">%sveltekit.body%</div>
 
-		<div id="pos_loader" style="position:absolute;inset:0;padding:10px;background-color:black;font-size: 18px;">
-			<!-- Bootup by Kyle Stephens -->
-			<!-- https://codepen.io/kylestephens/pen/zYOgLrr -->
-			<section id="bios">
-				<p>Award Modular BIOS v6.00PG, An Energy Star Ally</p>
-				<p>Copyright (C) 1984-2003, Award Software, Inc.</p>
-				<br />
-				<p>ASUS P4S800-MX ACPI BIOS Revision 1008</p>
-				<p>Copyright (C) 2003, ASUSTeK COMPUTER INC.</p>
-				<br />
-				<p>Main Processor : Intel(R) Pentium(R) 4 CPU 2.40GHz</p>
-				<p>Memory Testing : 524288K OK</p>
-				<br />
-				<p>IDE Channel 0 Device 0 :  WDC WD400BB-00JRA0</p>
-				<p>IDE Channel 1 Device 0 :  ASUS DVD-E616A3</p>
-				<br />
-				<p>Verifying DMI Pool Data <span class="blink">...</span></p>
-			</section>
-			  
-			<section id="loader">
-				<div class='loader'>
-					<div class='circle'></div>
-					<div class='circle'></div>
-					<div class='circle'></div>
-					<div class='circle'></div>
-					<div class='circle'></div>
-				</div>
-			</section>
-		</div>
-
 		<script>
 			window.addEventListener('contextmenu', (event) => {
 				event.preventDefault();
 			})
 		</script>
-		
+
 		<script src="//unpkg.com/loadjs@latest/dist/loadjs.min.js"></script>
 
 		<script>
@@ -198,18 +168,6 @@
 				.allSettled(assets.map(asset => fetch(asset).then(res => res.blob()).catch(() => null)))
 				.then(completion);
 			}
-
-			load_assets([
-				'/images/xp_loading_logo.jpg',
-				'/images/xp_loading_mslogo.jpg',
-				'/images/xp_logo_horizontal.png',
-				'/images/xp_logo.png',
-				'/fonts/levi.ttf', 
-				'/fonts/ms_sans_serif_bold.ttf', 
-				'/fonts/ms_sans_serif.ttf'], () => {
-				document.querySelector('#pos_loader').style.display = 'none';
-			})
-
 		</script>
 
 		<script>

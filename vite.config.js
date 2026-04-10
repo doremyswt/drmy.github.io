@@ -11,6 +11,9 @@ const config = {
 		host: true,
 		// https: true,
 		port: 3000
+	},
+	optimizeDeps: {
+		exclude: ['@jhubbardsf/svelte-sortablejs']
 	}
 };
 

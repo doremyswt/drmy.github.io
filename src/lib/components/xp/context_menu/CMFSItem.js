@@ -1,9 +1,8 @@
 import { queueProgram, clipboard, selectingItems, hardDrive, clipboard_op, wallpaper } from '../../../store';
-import { recycle_bin_id, protected_items, wallpapers_folder, supported_wallpaper_filetypes, doctypes, archive_exts } from '../../../system';
+import { recycle_bin_id, protected_items, supported_wallpaper_filetypes, doctypes, archive_exts } from '../../../system';
 import * as utils from '../../../utils';
 import { get } from 'svelte/store';
 import * as fs from '../../../fs';
-import short from 'short-uuid';
 import FileSaver from 'file-saver';
 export let make = ({type, originator}) => {
     //originator: a wrapped fs item, i.e, file, folder, drive
@@ -47,9 +46,7 @@ export let make = ({type, originator}) => {
                     {
                         name: 'Set as Desktop Wallpaper',
                         action: () => {
-                            let new_id = short.generate();
-                            fs.clone_fs(originator.item.id, wallpapers_folder, new_id);
-                            wallpaper.set(new_id);
+                            wallpaper.set(originator.item.id);
                         }
                     }
                 ] : []
@@ -122,94 +119,6 @@ export let make = ({type, originator}) => {
                         ]
                     }
                 ] : []
-            ],
-            [
-                ...protected_items.includes(originator.item.id) ? [] : [
-                    {
-                        name: 'Cut',
-                        disabled: get(selectingItems).length == 0,
-                        action: () => {
-                            fs.cut();
-                        }
-                    }
-                ],
-                ...originator.item.type == 'drive' || originator.item.type == 'removable_storage' ? [] : [
-                    {
-                        name: 'Copy',
-                        disabled: get(selectingItems).length == 0,
-                        action: () => {
-                            fs.copy();
-                        }
-                    }
-                ],
-                ... originator.item.type != 'file' && originator.item.parent != recycle_bin_id ? [{
-                    name: 'Paste',
-                    disabled: get(clipboard).length == 0,
-                    action: () => {
-                        fs.paste(originator.item.id);
-                    }
-                }] : [],
-            ],
-            [
-                ...protected_items.includes(originator.item.id) ? [] : [
-                    {
-                        name: 'Delete', 
-                        action: () => {
-                            let items = [...get(selectingItems)];
-                            console.log(items)
-
-                            let yes_action = () => {
-                                if(originator.item.parent == recycle_bin_id){
-                                    for(let id of items){
-                                        fs.del_fs(id);
-                                    }
-                                } else {
-                                    for(let id of items){
-                                        fs.clone_fs(id, recycle_bin_id, null);
-                                        fs.del_fs(id);
-                                    }
-                                }
-                            }
-                            let filename = originator.item.name.length > 70 ? originator.item.name.slice(0,70) + '...' : originator.item.name;
-
-                            let message = '';
-                            let plural = '';
-                            if(items.length == 1){
-                                plural = '';
-                            } else if(items.length == 2){
-                                plural = ' and 1 other item';
-                            } else if(items.length > 2){
-                                plural = ` and ${items.length-1} other items`;
-                            }
-                            if(originator.item.parent == recycle_bin_id){
-                                message = `Do you want to permanently delete ${filename}${plural}? This action can't be undone?`
-                            } else {
-                                message = `Do you want to move ${filename}${plural} to the Recycle Bin?`
-                            }
-
-                            let icon = originator.item.parent == recycle_bin_id ? '/images/xp/icons/DeleteConfirmation.png' : '/images/xp/icons/RecycleBinempty.png';
-
-                            confirm_delete({
-                                node_ref: originator.my_computer_instance?.window.node_ref || document.body,
-                                title: 'Confirm Delete File',
-                                icon,
-                                message,
-                                yes_action: yes_action,
-                                no_action: () => {}
-                            });
-                            
-                        }
-                    }
-                ],
-                ...protected_items.includes(originator.item.id) || originator.item.parent == recycle_bin_id ? [] : [
-                    {
-                        name: 'Rename',
-                        action: () => {
-                            selectingItems.set([originator.item.id]);
-                            originator.rename();
-                        }
-                    }
-                ]
             ],
             [
                 {

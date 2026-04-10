@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
 import { default_wallpapers } from './system';
 
-export let queueProgram = writable({});
+export let queueProgram = writable(null);
 export let runningPrograms = writable([]);
 
 export let selectingItems = writable([]);

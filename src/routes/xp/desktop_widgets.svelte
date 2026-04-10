@@ -15,7 +15,7 @@
 
     function handleCommissionsClick() {
         if (!dragMoved) {
-            window.open('https://vgen.co/doremy', '_blank', 'noopener');
+            window.location.href = '/form';
         }
     }
 
@@ -98,7 +98,7 @@
 >
     <div
         class="widget-sticky-header"
-        on:mousedown={(event) => startDrag('sticky', event, event.currentTarget.parentElement)}
+        on:mousedown={(event) => { event.stopPropagation(); startDrag('sticky', event, event.currentTarget.parentElement); }}
     >
         <span>sticky note</span>
     </div>
@@ -113,7 +113,7 @@
 <div
     class="widget-clock"
     style={widgetStyle(clockWidget)}
-    on:mousedown={(event) => startDrag('clock', event, event.currentTarget)}
+    on:mousedown={(event) => { event.stopPropagation(); startDrag('clock', event, event.currentTarget); }}
 >
     <div class="widget-clock-bezel">
         <div class="widget-clock-frame">
@@ -135,7 +135,7 @@
 <div
     class="widget-commissions"
     style={widgetStyle(commissionsWidget)}
-    on:mousedown={(event) => startDrag('commissions', event, event.currentTarget)}
+    on:mousedown={(event) => { event.stopPropagation(); startDrag('commissions', event, event.currentTarget); }}
     on:click={handleCommissionsClick}
 >
     <div class="widget-commissions-btn">COMMISSIONS</div>

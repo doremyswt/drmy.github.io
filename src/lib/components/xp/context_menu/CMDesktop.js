@@ -70,67 +70,6 @@ export let make = ({type, originator}) => {
             ],
             [
                 {
-                    name: 'Paste',
-                    disabled: get(clipboard).length == 0,
-                    action: () => {
-                        fs.paste(originator.id);
-                    }
-                },
-                {
-                    name: 'Paste Shortcut',
-                    disabled: true
-                }
-            ],
-            [
-                {
-                    name: 'New',
-                    items: [
-                        {
-                            name: 'Folder',
-                            icon: '/images/xp/icons/FolderClosed.png',
-                            action: () => {
-                                fs.new_fs_item('folder', '', 'New Folder', originator.id);
-                            }
-                        },
-                        {
-                            name: 'Shortcut',
-                            icon: '/images/xp/icons/Shortcutoverlay.png'
-                        },
-                        {
-                            name: 'Briefcase',
-                            icon: '/images/xp/icons/Briefcase.png'
-                        },
-                        {
-                            name: 'Bitmap Image',
-                            icon: '/images/xp/icons/Bitmap.png',
-                            action: () => {
-                                fs.new_fs_item('file', '.bmp', 'New Bitmap Image', originator.id);
-                            }
-                        },
-                        {
-                            name: 'Text Document',
-                            icon: '/images/xp/icons/TXT.png',
-                            action: () => {
-                                fs.new_fs_item('file', '.txt', 'New Text Document', originator.id);
-                            }
-                        },
-                        {
-                            name: 'Wave Sound',
-                            icon: '/images/xp/icons/WMV.png',
-                            action: () => {
-                                fs.new_fs_item('file', '.wav', 'New Sound', originator.id);
-                            }
-                        },
-                        {
-                            name: 'Compressed (zipped) Folder',
-                            icon: '/images/xp/icons/Zipfolder.png'
-                        }
-
-                    ]
-                }
-            ],
-            [
-                {
                     name: 'Properties',
                     action: () => {
                         queueProgram.set({

@@ -2,51 +2,322 @@
     import TaskBar from "./task_bar.svelte";
     import WorkSpace from "./work_space.svelte";
     import ContextMenu from "../../lib/components/xp/ContextMenu.svelte";
-    import axios from "axios";
-    import { get, set, keys } from "idb-keyval";
-    import { onMount, onDestroy, createEventDispatcher } from "svelte";
-    import {
-        zIndex,
-        hardDrive,
-        wallpaper,
-        queueCommand,
-        crtEffect,
-    } from "../../lib/store";
-    import Welcome from "./welcome.svelte";
-    import * as utils from "../../lib/utils";
-    let dispatcher = createEventDispatcher();
+    import { onMount, onDestroy, tick } from "svelte";
+    import { queueCommand, crtEffect, wallpaper, hardDrive, queueProgram } from "../../lib/store";
+    import { get } from "svelte/store";
+    import { set } from "idb-keyval";
 
-    let io_worker;
+    // ── Crash state ──
+    let crashed = false;
+    let crash_pct = 0;
+    let crash_interval = null;
+    let crash_countdown = null;
+
+    let flash_opacity = 0;
+    let flash_visible = false;
+
+    let crack_visible = false;
+    let fire_visible = false;
+    let crack_canvas;
+
+    let blackout_visible = false;
+    let rekt_text = '';
+    let went_black = false;
+
+    function go_black() {
+        if (went_black) return;
+        went_black = true;
+        crack_visible = false;
+        fire_visible = false;
+        flash_visible = false;
+        flash_opacity = 0;
+        crashed = false;
+        blackout_visible = true;
+        start_rekt_typing();
+    }
+
+    const ROAST_STOP = [
+        'ISSUE_ENCOUNTERED_IN_USER_BRAIN',
+        'TOO_MANY_VIRUSES_CLICKED',
+        'FREE_IPAD_OFFER_ACCEPTED',
+        'UNLICENSED_ANIME_WALLPAPER_DETECTED',
+        'USER_COMMON_SENSE_NOT_FOUND',
+    ];
+    const roast_code = ROAST_STOP[Math.floor(Math.random() * ROAST_STOP.length)];
+
+    // ── Glitch overlay ──
+    let glitch_canvas;
+    let glitch_active = false;
+    let glitch_level = 0;
+    let _glitch_raf = null;
+
+    function start_glitch(level) {
+        glitch_level = level;
+        glitch_active = true;
+        if (_glitch_raf) return;
+        tick().then(() => {
+            if (!glitch_canvas) return;
+            let frame = 0;
+            const ctx = glitch_canvas.getContext('2d');
+            function resize() {
+                glitch_canvas.width = window.innerWidth;
+                glitch_canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize, { passive: true });
+            function loop() {
+                _glitch_raf = requestAnimationFrame(loop);
+                const W = glitch_canvas.width, H = glitch_canvas.height;
+                ctx.clearRect(0, 0, W, H);
+                frame++;
+                const intensity = glitch_level / 3;
+                const skip = Math.max(1, Math.round(6 - glitch_level * 1.5));
+                if (frame % skip !== 0) return;
+                const numBands = Math.floor(4 + intensity * 14);
+                for (let i = 0; i < numBands; i++) {
+                    const y = Math.random() * H;
+                    const h = 2 + Math.random() * Math.max(4, intensity * 22);
+                    const shift = (-1 + Math.random() * 2) * intensity * 38;
+                    ctx.fillStyle = `rgba(255,0,0,${0.06 + intensity * 0.18})`;
+                    ctx.fillRect(shift, y, W, h);
+                    ctx.fillStyle = `rgba(0,255,255,${0.06 + intensity * 0.18})`;
+                    ctx.fillRect(-shift, y + 1, W, h);
+                }
+                const numBlocks = Math.floor(intensity * 28);
+                for (let i = 0; i < numBlocks; i++) {
+                    const x = Math.random() * W;
+                    const y = Math.random() * H;
+                    const bw = 4 + Math.random() * Math.max(8, intensity * 60);
+                    const bh = 2 + Math.random() * Math.max(4, intensity * 14);
+                    ctx.fillStyle = `rgba(${(Math.random()*255)|0},${(Math.random()*255)|0},${(Math.random()*255)|0},${0.18+intensity*0.44})`;
+                    ctx.fillRect(x, y, bw, bh);
+                }
+                if (intensity >= 0.9 && Math.random() < 0.08) {
+                    ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.12})`;
+                    ctx.fillRect(0, 0, W, H);
+                }
+            }
+            loop();
+        });
+    }
+
+    function stop_glitch() {
+        if (_glitch_raf) { cancelAnimationFrame(_glitch_raf); _glitch_raf = null; }
+        glitch_active = false;
+    }
+
+    // ── Popups ──
+    let popups = [];
+    let popup_z = 1000;
+
+    function spawn_popup(data) {
+        const { id, title, message, source, opts = {} } = data;
+        const x = 80 + Math.random() * (window.innerWidth - 380);
+        const y = 80 + Math.random() * (window.innerHeight - 200);
+        popups = [...popups, { id, title, message, source, opts, x, y, z: popup_z++ }];
+        const ie = document.querySelector('iframe');
+        if (ie) ie.contentWindow.postMessage({ type: 'forum-popup-ack', id }, '*');
+    }
+
+    function close_popup(id) {
+        popups = popups.filter(p => p.id !== id);
+    }
+
+    let drag_popup = null;
+    let drag_ox = 0, drag_oy = 0;
+
+    function popup_mousedown(e, popup) {
+        e.preventDefault();
+        drag_popup = popup.id;
+        drag_ox = e.clientX - popup.x;
+        drag_oy = e.clientY - popup.y;
+        popups = popups.map(p => p.id === popup.id ? { ...p, z: popup_z++ } : p);
+    }
+
+    function on_mousemove(e) {
+        if (!drag_popup) return;
+        popups = popups.map(p => p.id === drag_popup ? { ...p, x: e.clientX - drag_ox, y: e.clientY - drag_oy } : p);
+    }
+
+    function on_mouseup() { drag_popup = null; }
+
+    // ── Message handler ──
+    function on_message(e) {
+        if (!e.data) return;
+        const { type } = e.data;
+        if (type === 'bonzi-glitch') {
+            start_glitch(e.data.level);
+        } else if (type === 'forum-popup-spawn') {
+            spawn_popup(e.data);
+        } else if (type === 'forum-popup-close') {
+            close_popup(e.data.id);
+        } else if (type === 'bonzi-crash') {
+            handle_crash();
+        }
+    }
+
+    function handle_crash() {
+        if (crashed) return;
+        crashed = true;
+        crash_pct = 0;
+        crash_countdown = null;
+        stop_glitch();
+
+        // play crash sound on the desktop side (forum iframe no longer plays it when in iframe mode)
+        const crash_audio = new Audio('/remake/current-site/SFX-XP/computer_crash.mp3');
+        crash_audio.volume = 0.3;
+        crash_audio.play().catch(() => {});
+        crash_audio.addEventListener('ended', go_black);
+
+        crash_interval = setInterval(() => {
+            crash_pct = Math.min(100, crash_pct + (0.55 + Math.random() * 1.2));
+            if (crash_pct >= 100) {
+                clearInterval(crash_interval);
+                crash_interval = null;
+                crash_countdown = 3;
+                const cd = setInterval(() => {
+                    crash_countdown--;
+                    if (crash_countdown <= 0) {
+                        clearInterval(cd);
+                        trigger_explosion();
+                    }
+                }, 1000);
+            }
+        }, 95);
+    }
+
+    // ── Screen crack ──
+    function draw_crack() {
+        if (!crack_canvas) return;
+        crack_canvas.width = window.innerWidth;
+        crack_canvas.height = window.innerHeight;
+        const ctx = crack_canvas.getContext('2d');
+        const W = crack_canvas.width, H = crack_canvas.height;
+        const ix = W * 0.42, iy = H * 0.38;
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+        ctx.lineWidth = 1.5;
+        for (let i = 0; i < 18; i++) {
+            const angle = (i / 18) * Math.PI * 2 + (Math.random() - 0.5) * 0.3;
+            const len = Math.max(W, H) * (0.5 + Math.random() * 0.8);
+            ctx.beginPath();
+            ctx.moveTo(ix, iy);
+            const steps = 4 + Math.floor(Math.random() * 5);
+            for (let s = 0; s < steps; s++) {
+                const frac = (s + 1) / steps;
+                ctx.lineTo(
+                    ix + Math.cos(angle) * len * frac + (Math.random() - 0.5) * 40,
+                    iy + Math.sin(angle) * len * frac + (Math.random() - 0.5) * 40
+                );
+            }
+            ctx.stroke();
+            ctx.lineWidth = 0.8;
+            ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+            const branchAngle = angle + (Math.random() - 0.5) * 1.2;
+            const bx = ix + Math.cos(angle) * len * 0.4;
+            const by = iy + Math.sin(angle) * len * 0.4;
+            ctx.beginPath(); ctx.moveTo(bx, by);
+            ctx.lineTo(bx + Math.cos(branchAngle) * len * 0.25, by + Math.sin(branchAngle) * len * 0.25);
+            ctx.stroke();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+        }
+        ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+        ctx.lineWidth = 2;
+        for (let r = 12; r < 90; r += 18) {
+            ctx.beginPath(); ctx.arc(ix, iy, r, 0, Math.PI * 2);
+            ctx.globalAlpha = 0.8 - r / 90 * 0.6;
+            ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+        for (let i = 0; i < 12; i++) {
+            const a = (i / 12) * Math.PI * 2, na = ((i + 1) / 12) * Math.PI * 2;
+            const len = 60 + Math.random() * 140;
+            ctx.beginPath(); ctx.moveTo(ix, iy);
+            ctx.lineTo(ix + Math.cos(a) * len, iy + Math.sin(a) * len);
+            ctx.lineTo(ix + Math.cos(na) * len, iy + Math.sin(na) * len);
+            ctx.closePath();
+            ctx.fillStyle = `rgba(0,0,0,${0.1 + Math.random() * 0.25})`; ctx.fill();
+        }
+        ctx.filter = 'blur(1px)';
+        ctx.strokeStyle = 'rgba(0,200,255,0.25)'; ctx.lineWidth = 3;
+        for (let i = 0; i < 6; i++) {
+            const a = (i / 6) * Math.PI * 2, len = Math.max(W, H) * 0.6;
+            ctx.beginPath(); ctx.moveTo(ix + 2, iy + 1);
+            ctx.lineTo(ix + Math.cos(a) * len + 2, iy + Math.sin(a) * len + 1);
+            ctx.stroke();
+        }
+        ctx.filter = 'none';
+        for (let y = 0; y < H; y += 4) { ctx.fillStyle = 'rgba(0,0,0,0.08)'; ctx.fillRect(0, y, W, 1); }
+    }
+
+    // ── Typing sound (XP Menu Command) ──
+    function play_type_sound() {
+        const snd = new Audio('/remake/current-site/SFX-XP/Windows XP Menu Command.wav');
+        snd.volume = 0.35;
+        snd.play().catch(() => {});
+    }
+
+    function start_rekt_typing() {
+        const full = 'GET REKT LOL';
+        let idx = 0;
+        const typeNext = () => {
+            if (idx >= full.length) return;
+            rekt_text = full.slice(0, ++idx);
+            play_type_sound();
+            setTimeout(typeNext, 85);
+        };
+        setTimeout(typeNext, 2000);
+    }
+
+    // ── Explosion sequence ──
+    function trigger_explosion() {
+        const boom = new Audio('/remake/current-site/SFX-XP/explosion.mp3');
+        boom.volume = 0.08;
+        boom.play().catch(() => {});
+
+        // crack ~300ms after explosion
+        setTimeout(() => { crack_visible = true; tick().then(draw_crack); }, 300);
+        // fire ~600ms after explosion
+        setTimeout(() => { fire_visible = true; }, 600);
+
+        // White flash: timing matches forum.html triggerCrashFlash logic
+        const durationMs = (boom.duration || 3.6) * 1000;
+        const total = Math.max(durationMs || 3600, 2400);
+        const hold = Math.min(Math.max(total * 0.62, 1800), total - 300);
+        const fadeDur = Math.max(300, total - hold);
+
+        flash_visible = true;
+        flash_opacity = 1;
+
+        setTimeout(() => {
+            const fadeStart = Date.now();
+            const fadeOut = () => {
+                const t = (Date.now() - fadeStart) / fadeDur;
+                if (t < 1) {
+                    flash_opacity = 1 - t;
+                    requestAnimationFrame(fadeOut);
+                } else {
+                    flash_opacity = 0;
+                    flash_visible = false;
+                }
+            };
+            requestAnimationFrame(fadeOut);
+        }, hold);
+    }
+
+    import Welcome from "./welcome.svelte";
 
     let unsubscribers = [
-        hardDrive.subscribe(async (value) => {
-            clearInterval(io_worker);
-            io_worker = setTimeout(async () => {
-                console.log('update hardDrive');
-                await set("hard_drive", $hardDrive);
-            }, 1000);
-        }),
-        wallpaper.subscribe(async (value) => {
-            if (value == null) return;
-            await set("wallpaper", value);
-        }),
         queueCommand.subscribe((cmd) => {
             if (cmd != null && cmd != "") {
                 switch (cmd) {
                     case "shutdown":
-                        dispatcher("load_page", {
-                            url: "./xp/shutdown.svelte",
-                        });
+                    case "restart":
+                        window.location.reload();
                         queueCommand.set(null);
                         break;
-                    case "restart":
-                        dispatcher("load_page", {
-                            url: "./xp/shutdown.svelte",
-                        });
-                        break;
-
-                    default:
-                        break;
+                    default: break;
                 }
             }
         }),
@@ -57,8 +328,7 @@
     onMount(async () => {
         crtEffect.set(localStorage.getItem('crt_effect') === 'true');
         unsubscribers.push(crtEffect.subscribe(v => localStorage.setItem('crt_effect', String(v))));
-
-        //load other pure js lib
+        unsubscribers.push(wallpaper.subscribe(v => { if (v) set('wallpaper', v); }));
         loadjs([
             "https://www.gstatic.com/charts/loader.js",
             "/js/mammoth.browser.min.js",
@@ -68,26 +338,211 @@
     });
 
     onDestroy(() => {
-        for (let fn of unsubscribers) {
-            fn();
-        }
-        clearInterval(io_worker);
+        for (let fn of unsubscribers) fn();
+        if (crash_interval) clearInterval(crash_interval);
+        stop_glitch();
     });
 </script>
 
-<div id="desktop" class="absolute inset-0 p-0">
+
+<svelte:window on:message={on_message} on:mousemove={on_mousemove} on:mouseup={on_mouseup} />
+
+<div id="desktop" class="absolute inset-0 p-0" inert={crashed || blackout_visible || undefined}>
     <div class="absolute z-0 left-0 right-0 top-0 overflow-hidden" style:bottom="calc(30px + env(safe-area-inset-bottom))">
         <WorkSpace />
     </div>
-
     <TaskBar />
     <ContextMenu />
 </div>
 
-{#if show_welcome}<Welcome on:done={() => show_welcome = false} />{/if}
+{#if show_welcome}<Welcome on:done={() => {
+    show_welcome = false;
+    const hd = get(hardDrive);
+    if (hd?.['drmyGalleryFolder01']) {
+        queueProgram.set({
+            path: './programs/my_computer.svelte',
+            fs_item: hd['drmyGalleryFolder01'],
+            window_options: {
+                exec_path: './programs/my_computer.svelte::gallery',
+                width: window.innerWidth * 0.8,
+                height: window.innerHeight * 0.7,
+                top: 200,   // null = centered
+                left: 250,  // null = centered
+            }
+        });
+    }
+}} />{/if}
+
+<!-- Draggable desktop popups from forum.html -->
+{#each popups as popup (popup.id)}
+<div
+    class="fixed select-none"
+    style="left:{popup.x}px;top:{popup.y}px;z-index:{popup.z};min-width:260px;max-width:{popup.opts.width||'340px'};background:#ece9d8;border:2px solid #0a246a;box-shadow:2px 2px 0 #fff inset,-1px -1px 0 #716f64 inset,4px 4px 8px rgba(0,0,0,0.4);"
+>
+    <div
+        role="presentation"
+        class="flex items-center gap-1 px-1 cursor-move"
+        style="background:linear-gradient(180deg,#0a246a,#a6b5e1);color:#fff;height:22px;font-size:11px;font-family:'Trebuchet MS',sans-serif;font-weight:bold;"
+        on:mousedown={(e) => popup_mousedown(e, popup)}
+    >
+        <span class="flex-1 truncate">{popup.title || 'Alert'}</span>
+        <button
+            class="flex items-center justify-center text-black font-bold cursor-pointer"
+            style="width:16px;height:14px;background:#ece9d8;border:1px solid #716f64;font-size:10px;line-height:1;"
+            on:click={() => close_popup(popup.id)}
+        >×</button>
+    </div>
+    <div class="p-3" style="font-size:12px;font-family:Tahoma,sans-serif;color:#000;">
+        {#if popup.opts.html}
+            {@html popup.opts.html}
+        {:else}
+            {popup.message || ''}
+        {/if}
+        {#if popup.source}
+            <div style="margin-top:6px;font-size:10px;color:#666;">{popup.source}</div>
+        {/if}
+    </div>
+</div>
+{/each}
+
+<!-- Glitch canvas overlay -->
+{#if glitch_active}
+<canvas
+    bind:this={glitch_canvas}
+    class="fixed inset-0 pointer-events-none"
+    style="z-index:9000;"
+></canvas>
+{/if}
+
+<!-- BSOD — VT323 IBM BIOS-style font, zero antialiasing -->
+{#if crashed}
+<div
+    class="fixed inset-0 z-[99999] select-none overflow-auto"
+    style="
+        background:#0000aa;
+        color:#fff;
+        font-family:'DOS-V ANK16',monospace;
+        font-size:16px;
+        line-height:1.6;
+        padding:clamp(16px,4vw,48px) clamp(16px,6vw,80px);
+        -webkit-font-smoothing:none;
+        -moz-osx-font-smoothing:unset;
+        font-smooth:never;
+        text-rendering:optimizeSpeed;
+        image-rendering:pixelated;
+        cursor:default;
+        letter-spacing:0;
+    "
+>
+    <p style="max-width:720px;">A problem has been detected and Windows has been shut down to prevent damage to your computer.</p>
+    <br>
+    <p style="max-width:720px;">The end-user has been diagnosed with a severe case of clicking on suspicious ads.</p>
+    <br>
+    <p style="max-width:720px;">
+        If this is the first time you've seen this Stop error screen, maybe log off the internet.<br>
+        If this screen appears again, seek professional help immediately.
+    </p>
+    <br>
+    <p style="max-width:720px;">
+        Check to make sure you are not, in fact, a gullible person. Disable your urge to click<br>
+        suspicious popup ads. If you need to use Safe Mode to recover your dignity, press F8.
+    </p>
+    <br>
+    <p style="max-width:720px;">Technical information:</p>
+    <br>
+    <p>*** STOP: 0x000000{Math.floor(Math.random()*9999).toString(16).toUpperCase().padStart(4,'0')} ({roast_code})</p>
+    <br>
+    <p style="max-width:720px;">
+        Beginning dump of user's common sense...<br>
+        Physical memory dump complete.<br>
+        Contact your nearest responsible adult for further assistance.
+    </p>
+    <br><br>
+    {#if crash_countdown === null}
+    <p>Collecting crash info... {Math.floor(crash_pct)}%</p>
+    <div style="width:min(320px,80vw);height:6px;background:rgba(255,255,255,0.25);margin-top:6px;">
+        <div style="height:100%;background:#fff;width:{crash_pct}%;"></div>
+    </div>
+    {:else}
+    <p>Restarting in {crash_countdown}...</p>
+    {/if}
+</div>
+{/if}
+
+<!-- Screen crack canvas -->
+{#if crack_visible}
+<canvas
+    bind:this={crack_canvas}
+    class="fixed inset-0 pointer-events-none"
+    style="z-index:999997;"
+></canvas>
+{/if}
+
+<!-- Fire overlay -->
+{#if fire_visible}
+<div class="fixed inset-0 pointer-events-none" style="z-index:999998;">
+    <img src="/remake/current-site/SFX-XP/Fire.gif" alt="" style="width:100%;height:100%;object-fit:cover;" />
+</div>
+{/if}
+
+<!-- White flash -->
+{#if flash_visible}
+<div class="fixed inset-0 pointer-events-none" style="z-index:999999;background:white;opacity:{flash_opacity};"></div>
+{/if}
+
+<!-- Blackout + GET REKT LOL — stays forever -->
+{#if blackout_visible}
+<div
+    class="fixed inset-0"
+    style="
+        z-index:9999999;
+        background:#000;
+        cursor:default;
+        user-select:none;
+        display:flex;
+        align-items:flex-end;
+        padding:18px 22px;
+    "
+>
+    <span style="
+        display:block;
+        color:#00ff41;
+        font-family:'DOS-V ANK16',monospace;
+        font-size:16px;
+        line-height:1.6;
+        letter-spacing:0;
+        -webkit-font-smoothing:none;
+        -moz-osx-font-smoothing:unset;
+        font-smooth:never;
+        text-rendering:optimizeSpeed;
+        white-space:pre;
+    ">{rekt_text}<span class="cursor-blink">_</span></span>
+</div>
+{/if}
 
 {#if $crtEffect}
 <div class="pointer-events-none fixed inset-0 z-[9999]" style="
     background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
 "></div>
 {/if}
+
+<style>
+    @font-face {
+        font-family: 'IBM VGA';
+        src: url('/fonts/Web437_IBM_VGA_8x14.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+    @font-face {
+        font-family: 'DOS-V ANK16';
+        src: url('/fonts/Web437_DOS-V_re_ANK16.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+    .cursor-blink {
+        animation: blink 0.6s step-start infinite;
+    }
+    @keyframes blink {
+        50% { opacity: 0; }
+    }
+</style>

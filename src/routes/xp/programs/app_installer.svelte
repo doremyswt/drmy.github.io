@@ -126,7 +126,7 @@
                 </div>
                 {#if webapp}
                 <div class="flex flex-row p-2 overflow-hidden my-2">
-                    <div class="grow-0 shrink-0 bg-cover bg-no-repeat w-12 h-12 m-1" style:background-image="url({webapp.icon})"></div>
+                    <div class="grow-0 shrink-0 bg-cover bg-no-repeat w-12 h-12 m-1" style:background-image={/^https?:\/\//.test(webapp.icon) ? `url(${webapp.icon})` : 'none'}></div>
                     <div class="">
                         <p class="font-bold text-base">{webapp.name}</p>
                         <p>{webapp.desc}</p>

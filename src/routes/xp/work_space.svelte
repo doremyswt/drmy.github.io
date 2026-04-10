@@ -5,6 +5,7 @@
     import _ from 'lodash';
     import short from 'short-uuid';
     import DesktopFolder from './desktop_folder.svelte';
+    import DesktopWidgets from './desktop_widgets.svelte';
     import * as finder from '../../lib/finder'
     
 
@@ -23,7 +24,7 @@
     
 
     onMount(() => {
-        
+
     })
 
     onDestroy(() => {
@@ -31,13 +32,36 @@
     })
 
     async function launch(program){
-        let {fs_item, webapp, copying_obj, target_folder_id, path} = program;
+        try {
+        let {fs_item, webapp, copying_obj, target_folder_id, path, ie_url, ie_title, ie_icon, window_options} = program;
 
         if(path == './programs/my_computer.svelte'){
             const Program = (await import('./programs/my_computer.svelte')).default;
+            const wo = window_options || {};
+            const prog_id = short.generate();
+            const exec = wo.exec_path || path;
             let program = mount(Program, {
                 target: node_ref,
-                props: {id: short.generate(), fs_item, exec_path: path, get_self: () => program}
+                props: {
+                    id: prog_id,
+                    fs_item,
+                    exec_path: exec,
+                    get_self: () => program,
+                    ...(wo.width || wo.height ? {
+                        options: {
+                            title: 'My Computer',
+                            min_width: 500,
+                            min_height: 400,
+                            width: wo.width,
+                            height: wo.height,
+                            ...(wo.top != null ? { top: wo.top } : {}),
+                            ...(wo.left != null ? { left: wo.left } : {}),
+                            icon: '/images/xp/icons/MyComputer.png',
+                            id: prog_id,
+                            // no exec_path in options → Window won't save/restore size
+                        }
+                    } : { options: { title: 'My Computer', min_width: 500, min_height: 400, width: 700, height: 500, icon: '/images/xp/icons/MyComputer.png', id: prog_id, exec_path: exec } })
+                }
             });
             //add to program tray
             runningPrograms.update(values => {
@@ -55,7 +79,7 @@
             //     return [...values, program];
             // })
         } else if(path == './programs/internet_explorer.svelte'){
-            let url = await get_url(fs_item);
+            let url = ie_url || await get_url(fs_item);
             const Program = (await import('./programs/internet_explorer.svelte')).default;
             let program = mount(Program, {
                 target: node_ref,
@@ -262,18 +286,29 @@
                 target: node_ref,
                 props: {id: short.generate(), parentNode: node_ref, fs_item, exec_path: path, get_self: () => program}
             });
-            
+
             //add to program tray
             runningPrograms.update(values => {
                 return [...values, program];
             })
-        } 
+        } else if(path == './programs/html_viewer.svelte'){
+            const Program = (await import('./programs/html_viewer.svelte')).default;
+            let program = mount(Program, {
+                target: node_ref,
+                props: {id: short.generate(), url: ie_url, title: ie_title, icon: ie_icon, window_options, exec_path: path, get_self: () => program}
+            });
+            runningPrograms.update(values => [...values, program]);
+        } else if(path == './programs/redirect.svelte'){
+            window.location.href = ie_url;
+        }
 
-        queueProgram.set(null);
+        } finally {
+            queueProgram.set(null);
+        }
     }
 
     async function get_url(item){
-        if(item == null) return 'https://wiby.me/';
+        if(item == null) return null;
 
         if(item.storage_type == 'local'){
             return finder.to_url(item.id);
@@ -288,7 +323,6 @@
 
 <div id="work-space" bind:this={node_ref} bind:clientHeight={workSpaceHeight} class="absolute inset-0 {$queueProgram != null ? 'waiting': ''}">
     <Wallpaper></Wallpaper>
+    <DesktopWidgets></DesktopWidgets>
     <DesktopFolder></DesktopFolder>
-
-    
 </div>

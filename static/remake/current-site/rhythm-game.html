@@ -110,7 +110,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;image-rendering
       <div id="menu-result-box" class="menu-result-box" style="display:none"></div>
       <div class="menu-settings">
         <div class="setting-row"><span class="setting-lbl">approach</span><input type="range" id="ar-slider" min="0.2" max="10" step="0.05" value="0.8"><input type="number" class="setting-val-input" id="ar-input" min="0.2" max="10" step="0.05" value="0.8"><span class="setting-unit">s</span></div>
-        <div class="setting-row"><span class="setting-lbl">offset</span><input type="range" id="offset-slider" min="-500" max="500" step="1" value="30"><input type="number" class="setting-val-input" id="offset-input" min="-500" max="500" step="1" value="30"><span class="setting-unit">ms</span></div>
+        <div class="setting-row"><span class="setting-lbl">offset</span><input type="range" id="offset-slider" min="-500" max="500" step="1" value="25"><input type="number" class="setting-val-input" id="offset-input" min="-500" max="500" step="1" value="25"><span class="setting-unit">ms</span></div>
       </div>
       <div class="setting-divider"></div><div class="setting-section-lbl">volume</div>
       <div class="menu-settings">
@@ -132,13 +132,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;image-rendering
       <span class="viz-time" id="viz-time-label">0.00s</span>
       <div class="viz-speed-group"><span class="viz-lbl">speed</span><input type="range" class="viz-range" id="viz-speed-slider" min="0.1" max="2" step="0.05" value="1" style="width:90px"><input type="number" class="viz-num" id="viz-speed-input" min="0.1" max="2" step="0.05" value="1" style="width:58px"><span class="viz-unit">×</span></div>
     </div>
-    <div class="viz-offset-group"><span class="viz-lbl">offset</span><input type="range" class="viz-range" id="viz-offset-slider" min="-500" max="500" step="1" value="30" style="width:160px"><input type="number" class="viz-num" id="viz-offset-input" min="-500" max="500" step="1" value="30"><span class="viz-unit">ms</span></div>
+    <div class="viz-offset-group"><span class="viz-lbl">offset</span><input type="range" class="viz-range" id="viz-offset-slider" min="-500" max="500" step="1" value="25" style="width:160px"><input type="number" class="viz-num" id="viz-offset-input" min="-500" max="500" step="1" value="25"><span class="viz-unit">ms</span></div>
     <div class="viz-hint">dashed line = song start · adjust offset until notes align with beats</div>
     <button class="btn-viz-close" id="btn-viz-close">✓ apply &amp; close</button>
   </div>
   <div class="game-topbar">
     <div class="game-title">勘冴えて悔しいわ · shield</div>
-    <div class="game-topbar-right"><a class="game-credits" href="https://www.youtube.com/watch?v=T9zKK6ujKn8" target="_blank" rel="noopener">♪ credits</a><button class="game-close" id="game-close-btn">✕ close</button></div>
+    <div class="game-topbar-right"><a class="game-credits" href="https://www.youtube.com/watch?v=T9zKK6ujKn8" target="_blank" rel="noopener">♪ credits</a></div>
   </div>
   <div class="game-bottom">
     <div class="hp-bar-wrap"><span class="hp-label" id="hud-hp-label">hp 10/10</span><div class="hp-bar-bg"><div class="hp-bar-fill" id="hp-bar-fill" style="width:100%"></div></div></div>
@@ -150,7 +150,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;image-rendering
 
 <script>
 (function(){
-  const modal=document.getElementById('game-modal'),gc=document.getElementById('game-canvas'),ctx=gc.getContext('2d',{alpha:false}),closeBtn=document.getElementById('game-close-btn');
+  const modal=document.getElementById('game-modal'),gc=document.getElementById('game-canvas'),ctx=gc.getContext('2d',{alpha:false});
   const hudScore=document.getElementById('hud-score'),hudCombo=document.getElementById('hud-combo'),hpLabel=document.getElementById('hud-hp-label'),hpFill=document.getElementById('hp-bar-fill'),feedback=document.getElementById('game-feedback');
   const gameMenu=document.getElementById('game-menu'),menuResultBox=document.getElementById('menu-result-box'),btnPlay=document.getElementById('btn-play'),btnRetry=document.getElementById('btn-retry');
   const arSlider=document.getElementById('ar-slider'),arInput=document.getElementById('ar-input'),offsetSlider=document.getElementById('offset-slider'),offsetInput=document.getElementById('offset-input');
@@ -182,7 +182,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;image-rendering
   function stopAudio(){if(sourceNode){sourceNode.onended=null;try{sourceNode.stop(0);}catch{}try{sourceNode.disconnect();}catch{}sourceNode=null;}}
   let waveformPeaks=null;
   function buildWaveform(){if(!audioBuffer)return;const raw=audioBuffer.getChannelData(0),bins=1400,bsize=Math.floor(raw.length/bins);waveformPeaks=new Float32Array(bins);for(let i=0;i<bins;i++){let pk=0;for(let j=0;j<bsize;j++){const v=Math.abs(raw[i*bsize+j]);if(v>pk)pk=v;}waveformPeaks[i]=pk;}}
-  let approachRate=bmApproachRate,userOffsetMs=30;
+  let approachRate=bmApproachRate,userOffsetMs=25;
   function syncAR(val){approachRate=Math.max(0.2,Math.min(10,parseFloat(val)||0.8));arSlider.value=approachRate;arInput.value=approachRate.toFixed(2);}
   function syncOffset(val){userOffsetMs=Math.max(-500,Math.min(500,parseInt(val)||0));offsetSlider.value=userOffsetMs;offsetInput.value=userOffsetMs;vizOffsetSlider.value=userOffsetMs;vizOffsetInput.value=userOffsetMs;}
   function syncVolMusic(pct){volMusic=Math.max(0,Math.min(1,parseFloat(pct)||0));if(gainNode)gainNode.gain.value=volMusic;document.getElementById('vol-music-slider').value=volMusic;document.getElementById('vol-music-input').value=Math.round(volMusic*100);}
@@ -232,7 +232,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;image-rendering
   function resumeGame(){if(phase!=='paused')return;hideMenu();phase='playing';lastT=null;const elapsed=(performance.now()-gameStartMs)*.001;startAudioFrom(Math.max(0,elapsed-bmLeadIn),1,0);gc.focus();}
   btnPlay.addEventListener('click',startGame);btnRetry.addEventListener('click',startGame);
   // close button sends message to parent window (desktop app)
-  closeBtn.addEventListener('click',()=>{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'close-rhythm-game'},'*');}});
   let vizClock=0,vizPlaying=false,vizSpeed=1,vizAnimRaf=null;
   let vizSrcNode=null,vizDragging=false,vizDragStartX=0,vizDragStartClock=0;
   let _vizWallAtPlay=0,_vizClockAtPlay=0,_vizACAnchor=0;

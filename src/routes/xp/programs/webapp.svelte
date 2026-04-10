@@ -45,7 +45,7 @@
 
 
     async function setup_webapp(){
-        iframe_loaded = true;
+        if (webapp_url) iframe_loaded = true;
     }
 
     function on_window_focused(){
@@ -179,7 +179,7 @@
     }
 
     function transform(url){
-        url = new URL(url);
+        url = new URL(url, window.location.origin);
         url.searchParams.set('program_id', id);
         url.searchParams.set('parent_origin', utils.browser_window().location.origin);
         return url.href;
@@ -204,9 +204,9 @@
             {/if}
 
             <!-- svelte-ignore a11y-missing-attribute -->
-            <iframe 
-                class="w-full h-full {!iframe_loaded ? 'hidden' : ''} {window?.z_index == $zIndex ? 'pointer-events-auto' : 'pointer-events-none'}" 
-                bind:this={iframe} src={webapp_url} 
+            <iframe
+                class="w-full h-full {!iframe_loaded ? 'opacity-0' : ''} {window?.z_index == $zIndex ? 'pointer-events-auto' : 'pointer-events-none'}"
+                bind:this={iframe} src={webapp_url || ''}
                 allow="gamepad *;" frameborder="0" allowfullscreen
                 style:background-color="{background}"
                 on:load={setup_webapp}>

@@ -26,26 +26,6 @@ export let make = ({type, originator}) => {
             ],
             [
                 {
-                    name: 'Empty Recycle Bin', 
-                    action: () => {
-                        let yes_action = () => {
-                            let children = get(hardDrive)[recycle_bin_id].children;
-                            for(let id of [...children]){
-                                fs.del_fs(id);
-                            }
-                        }
-
-                        confirm_delete({
-                            node_ref: document.body,
-                            title: 'Confirm Delete File',
-                            icon: '/images/xp/icons/DeleteConfirmation.png' ,
-                            message: 'Do you want to permanently delete all files in the Recycle Bin? This action cannot be undone.',
-                            yes_action: yes_action,
-                            no_action: () => {}
-                        });
-                    }
-                },
-                {
                     name: 'Properties',
                     action: () => {
                         // queueProgram.set({

@@ -1,0 +1,77 @@
+name: Update arch images
+
+on:
+  push:
+    paths:
+      - 'static/remake/current-site/arch/**'
+
+jobs:
+  update-images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rebuild images.json and hard_drive gallery entries
+        run: |
+          node -e "
+            const fs   = require('fs');
+            const path = require('path');
+            const archDir = 'static/remake/current-site/arch';
+
+            // 1. Collect image files
+            const files = fs.readdirSync(archDir)
+              .filter(f => /\.(png|jpg|jpeg|gif|webp)$/i.test(f))
+              .sort((a, b) => {
+                const na = parseInt(a), nb = parseInt(b);
+                if (!isNaN(na) && !isNaN(nb)) return na - nb;
+                return a.localeCompare(b);
+              });
+
+            // 2. Update images.json (used by old site)
+            const urls = files.map(f => '/remake/current-site/arch/' + f);
+            fs.writeFileSync(path.join(archDir, 'images.json'), JSON.stringify(urls, null, 2));
+            console.log('images.json: wrote', files.length, 'entries');
+
+            // 3. Update hard_drive.json gallery children
+            const hdPath = 'static/json/hard_drive.json';
+            const hd = JSON.parse(fs.readFileSync(hdPath, 'utf8'));
+
+            // Remove all existing drmyArchImg* entries
+            for (const key of Object.keys(hd)) {
+              if (key.startsWith('drmyArchImg')) delete hd[key];
+            }
+
+            // Recreate entries and children list
+            const children = [];
+            files.forEach((file, i) => {
+              const id = 'drmyArchImg' + String(i).padStart(2, '0');
+              const ext = path.extname(file).toLowerCase();
+              const base = path.basename(file, ext);
+              children.push(id);
+              hd[id] = {
+                id, type: 'file',
+                name: file, basename: base, ext,
+                storage_type: 'remote',
+                url: '/remake/current-site/arch/' + file,
+                parent: 'drmyGalleryFolder01',
+                size: 0, children: [],
+                date_created: 1676799354180,
+                date_modified: 1676799354180,
+                sort_option: 0, sort_order: 0
+              };
+            });
+            hd['drmyGalleryFolder01'].children = children;
+
+            fs.writeFileSync(hdPath, JSON.stringify(hd, null, 2));
+            console.log('hard_drive.json: gallery has', children.length, 'items');
+          "
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add static/remake/current-site/arch/images.json static/json/hard_drive.json
+          git diff --cached --quiet || git commit -m "chore: sync arch gallery [skip ci]"
+          git push

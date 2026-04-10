@@ -3,6 +3,9 @@
     import {onMount, tick, unmount } from 'svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive, queueProgram } from '../../../lib/store'
     import {get,set} from 'idb-keyval';
+    import FileSaver from 'file-saver';
+    import * as fs from '../../../lib/fs';
+    import * as utils from '../../../lib/utils';
     
     
 
@@ -90,6 +93,27 @@
         img_node.style.transform = 'none';
     }
 
+    let ctx_visible = false;
+    let ctx_x = 0, ctx_y = 0;
+
+    function on_img_contextmenu(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        ctx_x = e.clientX;
+        ctx_y = e.clientY;
+        ctx_visible = true;
+    }
+
+    function on_window_click() {
+        ctx_visible = false;
+    }
+
+    async function download_image() {
+        ctx_visible = false;
+        const file = await fs.get_file(fs_item.id);
+        FileSaver.saveAs(new File([file], fs_item.name, { type: utils.ext_to_mime(fs_item.name) }));
+    }
+
     function zoomIn(){
         panzoom_instance.smoothZoom(img_node.clientWidth*0.5,img_node.clientHeight*0.5, 1.2);
     }
@@ -132,7 +156,7 @@
 <Window options={options} bind:this={window} on_click_close={destroy}>
     <div slot="content" class="absolute inset-1 flex flex-col bg-slate-100">
         <div class="grow w-full overflow-hidden flex items-center justify-center p-2 outline-none">
-            <img bind:this={img_node} class="max-w-full max-h-full outline-none" alt="">
+            <img bind:this={img_node} class="max-w-full max-h-full outline-none" alt="" on:contextmenu={on_img_contextmenu}>
         </div>
         <div class="h-[40px] shrink-0 flex items-center">
             <div class="mx-auto flex flex-row items-center justify-evenly w-[200px]">
@@ -161,6 +185,19 @@
     
 </Window>
 
+{#if ctx_visible}
+<div
+    class="fixed z-[999999] border-2 border-slate-200 bg-slate-50 text-slate-900 text-[11px]"
+    style="left:{ctx_x}px;top:{ctx_y}px;min-width:120px;padding:2px 0;"
+    role="menu"
+    tabindex="-1"
+>
+    <button class="w-full text-left py-1 px-5 hover:bg-blue-600 hover:text-slate-50 font-bold cursor-default select-none tracking-wide"
+        on:click={download_image}
+    >DOWNLOAD</button>
+</div>
+{/if}
+
 <svelte:options accessors={true}></svelte:options>
 
-<svelte:window on:keydown={on_key_pressed} />
+<svelte:window on:keydown={on_key_pressed} on:click={on_window_click} on:contextmenu={on_window_click} />

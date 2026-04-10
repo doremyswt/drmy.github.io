@@ -1,7 +1,5 @@
 
 <script>
-    import {my_music_id, my_pictures_id} from '../../../../lib/system';
-    import * as fs from '../../../../lib/fs';
     export let my_computer_instance = {};
     
     export let id;
@@ -48,46 +46,12 @@
                     action: () => { my_computer_instance.open(null) }
                 },
                 {
-                    name: 'My Pictures',
-                    icon: 'MyPictures.png',
-                    action: () => { my_computer_instance.open(my_pictures_id) }
-                },
-                {
-                    name: 'My Music',
-                    icon: 'MyMusic.png',
-                    action: () => { my_computer_instance.open(my_music_id) }
-                },
-                {
                     name: 'My Network Places',
                     icon: 'MyNetworkPlaces.png',
                     action: () => {}
                 }
             ]
         },
-        ...id ? [{
-            name: 'File and Folder Tasks',
-            items: [
-                {
-                    name: 'Make a new folder',
-                    icon: 'NewFolder.png',
-                    action: () => {
-                        if(id){
-                            fs.new_fs_item('folder', '', 'New Folder', id);
-                        }
-                    }
-                },
-                {
-                    name: 'Publish this folder to the Web',
-                    icon: 'Publishtoweb.png',
-                    action: () => {}
-                },
-                {
-                    name: 'Share this folder',
-                    icon: 'SharedFolder.png',
-                    action: () => {}
-                }
-            ]
-        }] : [],
         
     ]
 </script>

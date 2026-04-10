@@ -1,12 +1,59 @@
 
 <script>
    import { onMount } from 'svelte';
+   import { hardDrive, wallpaper } from '../lib/store';
+   import { bliss_wallpaper, SortOptions, SortOrders } from '../lib/system';
+   import { get, set } from 'idb-keyval';
+   import axios from 'axios';
+   import Welcome from './xp/welcome.svelte';
 
-   let page;
+   let page = null;
 
    onMount(async () => {
-    await load_page('./boot_manager.svelte');
+    load_hard_drive();
+    load_wallpaper();
+    await load_page('./xp/desktop.svelte');
    })
+
+   const USER_FIELDS = ['desktop_css_transform', 'sort_option', 'sort_order', 'view_mode'];
+
+   async function load_hard_drive() {
+    let hard_drive = (await axios({ method: 'get', url: '/json/hard_drive.json' })).data;
+    let cached = await get('hard_drive');
+    if (cached != null) {
+        for (let key of Object.keys(hard_drive)) {
+            if (cached[key] != null) {
+                for (let field of USER_FIELDS) {
+                    if (cached[key][field] != null) {
+                        hard_drive[key][field] = cached[key][field];
+                    }
+                }
+            }
+        }
+    }
+    migrate_files_format(hard_drive);
+    hardDrive.set(hard_drive);
+   }
+
+   function migrate_files_format(drive) {
+    let now = (new Date()).getTime();
+    for (let key of Object.keys(drive)) {
+        let obj = drive[key];
+        if (obj.children == null) { obj.children = [...(obj.files||[]), ...(obj.folders||[])]; delete obj.files; delete obj.folders; }
+        if (obj.date_created == null) obj.date_created = now;
+        if (obj.date_modified == null) obj.date_modified = now;
+        if (obj.sort_option == null) obj.sort_option = SortOptions.NONE;
+        if (obj.sort_order == null) obj.sort_order = SortOrders.ASCENDING;
+    }
+   }
+
+   async function load_wallpaper() {
+    $wallpaper = await get('wallpaper');
+    if ($wallpaper == null) {
+        $wallpaper = bliss_wallpaper;
+        await set('wallpaper', bliss_wallpaper);
+    }
+   }
 
 
    async function load_page(url){
@@ -107,5 +154,8 @@
     <title>Microsoft Windows XP Professional</title>
 </svelte:head>
 
-<svelte:component this={page}  on:load_page={(e) => load_page(e.detail.url)}>
-</svelte:component>
+{#if page}
+<svelte:component this={page} on:load_page={(e) => load_page(e.detail.url)}></svelte:component>
+{:else}
+<Welcome on:done={() => {}} />
+{/if}

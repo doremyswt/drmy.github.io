@@ -1,5 +1,46 @@
 import { json } from '@sveltejs/kit';
 
+function isPrivateUrl(urlString) {
+    let parsed;
+    try { parsed = new URL(urlString); } catch { return true; }
+
+    if (!['http:', 'https:'].includes(parsed.protocol)) return true;
+
+    const host = parsed.hostname.toLowerCase().replace(/^\[|\]$/g, '');
+
+    if (host === 'localhost' || host === '0.0.0.0') return true;
+
+    // IPv6 loopback / private
+    if (host === '::1' || host.startsWith('fc') || host.startsWith('fd')) return true;
+
+    // IPv4 private ranges
+    const ipv4 = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+    if (ipv4) {
+        const [a, b] = [+ipv4[1], +ipv4[2]];
+        if (a === 10) return true;                          // 10.0.0.0/8
+        if (a === 127) return true;                         // 127.0.0.0/8
+        if (a === 169 && b === 254) return true;            // 169.254.0.0/16 link-local
+        if (a === 172 && b >= 16 && b <= 31) return true;  // 172.16.0.0/12
+        if (a === 192 && b === 168) return true;            // 192.168.0.0/16
+        if (a === 100 && b >= 64 && b <= 127) return true; // 100.64.0.0/10 CGNAT
+        if (a === 0 || a >= 224) return true;               // 0.x and multicast/reserved
+    }
+
+    return false;
+}
+
+function sanitizeIconUrl(href, baseUrl) {
+    try {
+        const iconUrl = href.startsWith('http') ? href : new URL(href, baseUrl).href;
+        const parsed = new URL(iconUrl);
+        if (!['http:', 'https:'].includes(parsed.protocol)) return null;
+        if (isPrivateUrl(iconUrl)) return null;
+        return iconUrl;
+    } catch {
+        return null;
+    }
+}
+
 function is_embeddable(headers) {
     const xfo = (headers.get('x-frame-options') ?? '').toUpperCase().trim();
     if (xfo === 'DENY' || xfo === 'SAMEORIGIN') return false;
@@ -19,6 +60,8 @@ async function crawl(webapp_url) {
     if (!webapp_url.toLowerCase().startsWith('https://') && !webapp_url.toLowerCase().startsWith('http://')) {
         webapp_url = 'https://' + webapp_url;
     }
+
+    if (isPrivateUrl(webapp_url)) return null;
 
     const webapp = {
         url: webapp_url,
@@ -59,10 +102,9 @@ async function crawl(webapp_url) {
         if (ogDesc?.[1]?.trim()) webapp.desc = ogDesc[1].trim();
 
         if (faviconTag?.[1]) {
-            const href = faviconTag[1];
-            webapp.icon = href.startsWith('http') ? href : new URL(href, finalUrl).href;
+            webapp.icon = sanitizeIconUrl(faviconTag[1], finalUrl) ?? webapp.icon;
         } else {
-            webapp.icon = new URL('/favicon.ico', finalUrl).href;
+            webapp.icon = sanitizeIconUrl('/favicon.ico', finalUrl) ?? webapp.icon;
         }
     } catch {
         // silently fail, return default webapp info

@@ -19,7 +19,9 @@
     export let my_computer_instance;
     export let id = null;
     
-    $: items =  $hardDrive[id] == null ? 
+    $: large_icons = $hardDrive[id]?.view_mode === 'large_icons';
+
+    $: items =  $hardDrive[id] == null ?
         [] : 
         $hardDrive[id]
         .children
@@ -301,20 +303,22 @@
     on:mousedown={on_mousedown}
     on:click={(e) => { if (!e.target.closest('.fs-item') && !_drag_moved) { $selectingItems = []; } }}>
     <div class="w-full min-h-[90%]" class:hidden={id == null}
+        class:grid={large_icons} class:grid-cols-3={large_icons} class:gap-3={large_icons} class:p-3={large_icons}
         on:contextmenu|self={show_void_menu} on:click|self={() => { if (!_drag_moved) clear_selection(); }}
         use:long_press on:long_press|self={(e) => { if (!_item_long_pressed) show_void_menu({x: e.detail.x, y: e.detail.y}); }}>
         {#if sorted_items}
             {#each sorted_items as item (item.id)}
-                <div fs-id="{item.id}" class="fs-item w-[150px] overflow-hidden m-2 inline-flex flex-row items-center font-MSSS relative
+                <div fs-id="{item.id}" class="fs-item overflow-hidden font-MSSS relative
+                    {large_icons ? 'flex flex-col items-center text-center' : 'w-[150px] inline-flex flex-row items-center m-2'}
                     {$clipboard.includes(item.id) && $clipboard_op == 'cut' ? 'opacity-70' : ''}"
                     on:dblclick={() => open(item.id)} on:contextmenu={(e) => on_rightclick(e, item)}
                     on:click={(e) => { if (_drag_moved) return; let fs_id = e.currentTarget.getAttribute('fs-id'); if (e.ctrlKey || e.metaKey) { $selectingItems = $selectingItems.includes(fs_id) ? $selectingItems.filter(id => id !== fs_id) : [...$selectingItems, fs_id]; } else { $selectingItems = [fs_id]; } }}
                     use:double_tap on:double_tap={() => open(item.id)}
                     use:long_press on:long_press={(e) => { _item_long_pressed = true; setTimeout(() => _item_long_pressed = false, 100); on_rightclick({x: e.detail.x, y: e.detail.y}, item); }}>
                     {#if previewable_exts.includes(item.ext)}
-                        <Previewable default_icon={file_icon(item)} fs_id={item.id}></Previewable>
+                        <Previewable default_icon={file_icon(item)} fs_id={item.id} size={50} fluid={large_icons}></Previewable>
                     {:else}
-                        <div class="w-[50px] h-[50px] shrink-0 bg-contain bg-no-repeat bg-center
+                        <div class="{large_icons ? 'w-full aspect-square' : 'w-[50px] h-[50px]'} shrink-0 bg-contain bg-no-repeat bg-center
                         {item.type == 'folder' ? 'bg-[url(/images/xp/icons/FolderClosed.png)]' : 'bg-[url(/images/xp/icons/Default.png)]'} "
                             style:background-image="{file_icon(item)}">
                         </div>

@@ -7,7 +7,6 @@
     import { bliss_wallpaper, wallpapers_folder, SortOptions, SortOrders } from '../../lib/system';
     let dispatcher = createEventDispatcher();
 
-    let assets_loaded = false;
 
     let remote_files = ["/files/blue_hill.jpg","/files/new_stories.mp3","/files/sunset.jpg","/files/symphony_9.mp3","/files/wallpapers/Ascent.jpg","/files/wallpapers/Autumn.jpg","/files/wallpapers/Azul.jpg","/files/wallpapers/Bliss.jpg","/files/wallpapers/Follow.jpg","/files/wallpapers/Friend.jpg","/files/wallpapers/Moonflower.jpg","/files/wallpapers/Radiance.jpg","/files/wallpapers/Redmoondesert.jpg","/files/wallpapers/Tulips.jpg","/files/wallpapers/Wind.jpg","/files/water_lily.jpg","/files/winter.jpg"];
 
@@ -29,18 +28,8 @@
             ...remote_files,
             ...fonts,
             ...empties,
-        ], () => {
-            assets_loaded = true;
-        });
+        ], () => {});
 
-        // wait at least 3s (aesthetic), then up to 7s more for assets
-        await utils.sleep(3000);
-        let waited = 3000;
-        while (!assets_loaded && waited < 10000) {
-            await utils.sleep(500);
-            waited += 500;
-        }
-        
         preload_iframes();
         preload_context_menus();
         console.log('after preload_context_menu');
@@ -53,17 +42,28 @@
         
     })
 
+    // Fields that represent user state and should survive updates
+    const USER_FIELDS = ['desktop_css_transform', 'sort_option', 'sort_order', 'view_mode'];
+
     async function load_hard_drive(){
-        let hard_drive = await get('hard_drive');
-        if(hard_drive == null){
-            hard_drive = (await axios({
-                method: 'get',
-                url: '/json/hard_drive.json'
-            })).data;
-            await set('hard_drive', hard_drive);
+        // Always load fresh from JSON so server-side changes take effect
+        let hard_drive = (await axios({ method: 'get', url: '/json/hard_drive.json' })).data;
+
+        // Overlay user-modified fields from cache
+        let cached = await get('hard_drive');
+        if(cached != null){
+            for(let key of Object.keys(hard_drive)){
+                if(cached[key] != null){
+                    for(let field of USER_FIELDS){
+                        if(cached[key][field] != null){
+                            hard_drive[key][field] = cached[key][field];
+                        }
+                    }
+                }
+            }
         }
+
         migrate_files_format(hard_drive);
-        console.log(hard_drive);
         hardDrive.set(hard_drive);
     }
 

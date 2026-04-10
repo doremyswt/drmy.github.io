@@ -24,7 +24,7 @@
     export let z_index = 0;
 
     onMount(async () => {
-        if(options.exec_path != null){
+        if(options.exec_path != null && options.resizable !== false){
             let rect = await get(options.exec_path);
             if(rect){
                 rect = {top: rect.top, left: rect.left, width: rect.width, height: rect.height};

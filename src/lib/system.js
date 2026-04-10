@@ -92,10 +92,6 @@ export let my_pictures_id = 'neRHxqN8SPnG1xrivxXxRq';
 
 export let my_computer = [
   'cTbkbrM4qjwF3UfmCoFkEK',//c drive
-  'ejq5mVcfZA2fzR1uwYUC6n',//d drive
-  'o1owmZuXKQdXR5vFxaBBW3',//f removable storage
-  my_music_id,//my music
-  my_pictures_id//my pictures
 ]
 
 export let recycle_bin_id = "aEF1hjqok52tpJPsNeXMGP";

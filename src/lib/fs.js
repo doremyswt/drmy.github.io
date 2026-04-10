@@ -8,19 +8,11 @@ import * as idb from 'idb-keyval';
 import * as finder from './finder';
 import {Buffer} from 'buffer';
 
-export function copy(){
-    clipboard_op.set('copy');
-    clipboard.set(get(selectingItems));
-    console.log('copy');
-}
-
-export function cut(){
-    clipboard_op.set('cut');
-    clipboard.set(get(selectingItems));
-    console.log('cut');
-}
+export function copy(){ return; }
+export function cut(){ return; }
 
 export function paste(id, new_id=null){
+    return;
     console.log('paste to', id);
     console.log('clipboard_op', get(clipboard_op));
     console.log(get(hardDrive)[id]);
@@ -47,6 +39,7 @@ export function paste(id, new_id=null){
 }
 
 export function del_fs(id){
+    return;
     if(protected_items.includes(id)){
         console.log(id, 'is protected');
         return;
@@ -92,6 +85,7 @@ function dir_contains_dir(a, b){
 
 }
 export function clone_fs(obj_current_id, parent_id, new_id=null){
+    return;
     if(dir_contains_dir(obj_current_id, parent_id)){
         console.log('cannot paste item onto itself');
         return;
@@ -145,9 +139,7 @@ export function clone_fs(obj_current_id, parent_id, new_id=null){
 
 
 export async function new_fs_item(type, ext, seedname, parent_id, file=null){
-    if(type == null || seedname == null || parent_id == null){
-        return;
-    }
+    return;
 
     let now = (new Date()).getTime();
     let item = {
@@ -214,9 +206,7 @@ export async function new_fs_item(type, ext, seedname, parent_id, file=null){
 }
 
 export async function new_fs_item_raw(item, parent_id){
-    if(parent_id == null){
-        return;
-    }
+    return;
     item.id = short.generate();
     item.parent = parent_id;
 
@@ -285,6 +275,7 @@ export function get_path(id){
 }
 
 export async function save_file(fs_id, file){
+    return;
     if(get(hardDrive)[fs_id] == null){
         console.log(fs_id, 'not exist');
         return;
@@ -304,6 +295,7 @@ export async function save_file(fs_id, file){
 }
 
 export async function save_file_as(basename, ext, file, parent_id, new_id=null){
+    return;
     ext = ext.toLowerCase();
     if(util.extname(basename) == ext){
         basename = util.basename(basename, ext);

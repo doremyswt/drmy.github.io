@@ -14,6 +14,7 @@
 
     onMount(() => {
         let welcome_audio = new Audio("/audio/xp_startup.mp3");
+        welcome_audio.volume = 0.15;
         welcome_audio.addEventListener("canplaythrough", () => {
             welcome_audio.play().catch(() => done()); // autoplay blocked → skip immediately
         });
