@@ -2,6 +2,7 @@
     import { contextMenu, selectingItems, clipboard, hardDrive, clipboard_op, queueProgram } from '../../lib/store'
     import * as utils from '../../lib/utils';
     import { doctypes, icons, desktop_folder, previewable_exts } from '../../lib/system';
+    import { parse_dir } from '../../lib/dir_parser';
     const {click_outside, long_press, double_tap} = utils;
     import RecycleBin from '../../lib/components/xp/RecycleBin.svelte';
     import Previewable from '../../lib/components/xp/Previewable.svelte';
@@ -256,6 +257,22 @@
         if(e.key == 'a'){
             $selectingItems = items.map(el => el.id);
         }
+    }
+
+    async function on_drop(e){
+        e.preventDefault();
+        if(id == null) return;
+
+        let copying_obj = await parse_dir(e);
+        queueProgram.set({
+            path: './programs/copier.svelte',
+            copying_obj,
+            target_folder_id: id
+        })
+    }
+
+    function on_drop_over(e){
+        e.preventDefault();
     }
 
     function file_icon(item){
