@@ -1,15 +1,11 @@
 <script>
     import * as utils from '../../lib/utils';
     import { onMount, createEventDispatcher } from 'svelte';
+    import {set, get} from 'idb-keyval';
     import axios from 'axios';
     import { hardDrive, wallpaper, contextMenu } from '../../lib/store';
-    import { bliss_wallpaper, SortOptions, SortOrders } from '../../lib/system';
+    import { bliss_wallpaper, wallpapers_folder, SortOptions, SortOrders } from '../../lib/system';
     let dispatcher = createEventDispatcher();
-    const GALLERY_FOLDER_ID = 'drmyGalleryFolder01';
-    const GALLERY_SYNC_PREFIX = 'drmyGalleryGit_';
-    const GALLERY_MANIFEST_URL = '/remake/current-site/arch/images.json';
-    const LOCAL_ARCH_PREFIX = '/remake/current-site/arch/';
-    const GALLERY_IMAGE_EXTS = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif', '.bmp']);
 
     let assets_loaded = false;
 
@@ -25,8 +21,8 @@
 
     onMount(async () => {
         await load_hard_drive();
-        load_wallpaper();
-
+        await load_wallpaper();
+        
         load_assets([
             ...audios,
             ...images,
@@ -37,103 +33,38 @@
             assets_loaded = true;
         });
 
+        // wait at least 3s (aesthetic), then up to 7s more for assets
+        await utils.sleep(3000);
+        let waited = 3000;
+        while (!assets_loaded && waited < 10000) {
+            await utils.sleep(500);
+            waited += 500;
+        }
+        
         preload_iframes();
         preload_context_menus();
+        console.log('after preload_context_menu');
 
         if(utils.is_installing_windows()){
             dispatcher('load_page', {url: './installation/95/installing.svelte'});
         } else {
             dispatcher('load_page', {url: './xp/desktop.svelte'});
         }
-
+        
     })
 
     async function load_hard_drive(){
-        let hard_drive = (await axios({
-            method: 'get',
-            url: '/json/hard_drive.json'
-        })).data;
-        migrate_files_format(hard_drive);
-        await sync_gallery_from_manifest(hard_drive);
-        hardDrive.set(hard_drive);
-    }
-
-    async function sync_gallery_from_manifest(drive){
-        if(drive == null || drive[GALLERY_FOLDER_ID] == null){
-            return;
-        }
-
-        try {
-            let response = await axios({
+        let hard_drive = await get('hard_drive');
+        if(hard_drive == null){
+            hard_drive = (await axios({
                 method: 'get',
-                url: GALLERY_MANIFEST_URL
-            });
-
-            let images = Array.isArray(response.data) ? response.data : [];
-            images = images
-                .map(rawUrl => normalize_gallery_entry(rawUrl))
-                .filter(Boolean);
-
-            let folder = drive[GALLERY_FOLDER_ID];
-            let oldChildren = [...(folder.children || [])];
-
-            for(let childId of oldChildren){
-                delete drive[childId];
-            }
-
-            folder.children = images.map(item => {
-                let id = gallery_item_id(item.name);
-                drive[id] = {
-                    id,
-                    type: 'file',
-                    name: item.name,
-                    storage_type: 'remote',
-                    url: item.url,
-                    ext: item.ext,
-                    parent: GALLERY_FOLDER_ID,
-                    size: 0,
-                    basename: utils.basename(item.name, item.ext),
-                    children: [],
-                    date_created: Date.now(),
-                    date_modified: Date.now(),
-                    sort_option: SortOptions.NONE,
-                    sort_order: SortOrders.ASCENDING
-                };
-                return id;
-            });
-            folder.date_modified = Date.now();
-        } catch (error) {
-            console.warn('Failed to sync gallery from local images.json manifest.', error);
+                url: '/json/hard_drive.json'
+            })).data;
+            await set('hard_drive', hard_drive);
         }
-    }
-
-    function gallery_item_id(name){
-        return `${GALLERY_SYNC_PREFIX}${name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
-    }
-
-    function normalize_gallery_entry(rawUrl){
-        if(typeof rawUrl !== 'string' || rawUrl.trim() == ''){
-            return null;
-        }
-
-        let url = rawUrl.trim();
-
-        try {
-            let parsed = new URL(url, window.location.origin);
-            let filename = decodeURIComponent(parsed.pathname.split('/').pop() || '');
-            let ext = utils.extname(filename).toLowerCase();
-            if(!GALLERY_IMAGE_EXTS.has(ext)){
-                return null;
-            }
-
-            return {
-                name: filename,
-                ext,
-                url: `${LOCAL_ARCH_PREFIX}${filename}`
-            };
-        } catch (error) {
-            return null;
-        }
+        migrate_files_format(hard_drive);
+        console.log(hard_drive);
+        hardDrive.set(hard_drive);
     }
 
     function migrate_files_format(drive){
@@ -160,8 +91,12 @@
         }
     }
 
-    function load_wallpaper(){
-        $wallpaper = bliss_wallpaper;
+    async function load_wallpaper(){
+        $wallpaper = await get('wallpaper');
+        if($wallpaper == null){
+            $wallpaper = bliss_wallpaper;
+            await set('wallpaper', bliss_wallpaper);
+        }
     }
 
     function preload_iframes(){
@@ -188,15 +123,33 @@
     }
 
     function preload_context_menus(){
-        let types = ['ProgramTile', 'Desktop', 'FSVoid', 'FSItem', 'RecycleBin', 'ImageViewer'];
+        let types = ['ProgramTile', 'Desktop', 'FSVoid', 'FSItem', 'RecycleBin'];
         for(let type of types){
             contextMenu.set({x: -1000, y: -1000, type, originator: {}});
         }
+        contextMenu.set(null);
     }
 
 </script>
 
-<div class="absolute inset-0 bg-black overflow-hidden"></div>
+<div class="absolute inset-0 bg-black overflow-hidden text-slate-100">
+    <div class="absolute top-[50%] -translate-y-[50%] left-[50%] -translate-x-[50%] animate-fadein">
+        <img src="/images/xp_loading_logo.jpg" alt="" width="400px">
+        <div class="xp-loader">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div class="absolute left-4 right-4 bottom-6 animate-fadein flex flex-row items-end justify-between gap-2">
+        <p class="text-sm sm:text-base font-sans shrink-0">Copyright &copy; Microsoft Corporation</p>
+        <img src="/images/xp_loading_mslogo.jpg" width="120px" alt="" class="shrink-0">
+    </div>
+
+    
+
+</div>
 
 
 <style>

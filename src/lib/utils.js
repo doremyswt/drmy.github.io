@@ -34,14 +34,14 @@ function parent_match_selector (target, selector) {
 
 /** Dispatch event on click outside of node */
 export function click_outside(node) {
-  
+
     const handleClick = event => {
       if (node && !node.contains(event.target) && !event.defaultPrevented) {
         if(parent_match_selector(event.target, '.context-menu')) return;
         if(parent_match_selector(event.target, '.toolbar-menu')) return;
-        
+
         if(parent_match_selector(event.target, '.tox-tinymce-aux')) return;
-        
+
         if(parent_match_selector(event.target, '#start-menu-btn')
         && node == document.querySelector('#start-menu')) return;
 
@@ -52,16 +52,16 @@ export function click_outside(node) {
             if(parent_match_selector(event.target, selector)) return;
           }
         }
-        
+
 
         node.dispatchEvent(
           new CustomEvent('click_outside', node)
         )
       }
     }
-  
+
     document.addEventListener('click', handleClick, true);
-    
+
     return {
       destroy() {
         document.removeEventListener('click', handleClick, true);
@@ -344,4 +344,89 @@ export function timestamp_to_readable(timestamp){
   let date = new Date();
   date.setTime(timestamp);
   return date.toString();
+}
+
+/** Svelte action: fires 'double_tap' custom event on two taps within 300ms.
+ *  Resets on 'long_press' events to avoid false triggers after a long press.
+ *  Usage: <div use:double_tap on:double_tap={() => handler()}>
+ */
+export function double_tap(node) {
+  let lastTap = 0;
+
+  function handle(e) {
+    const now = Date.now();
+    const diff = now - lastTap;
+    if (diff < 300 && diff > 0) {
+      node.dispatchEvent(new CustomEvent('double_tap', { bubbles: true }));
+      lastTap = 0;
+    } else {
+      lastTap = now;
+    }
+  }
+
+  function reset() { lastTap = 0; }
+
+  // passive: true — don't call preventDefault so iOS doesn't redirect
+  // subsequent touches to the parent element
+  node.addEventListener('touchend', handle, { passive: true });
+  node.addEventListener('long_press', reset);
+
+  return {
+    destroy() {
+      node.removeEventListener('touchend', handle);
+      node.removeEventListener('long_press', reset);
+    }
+  };
+}
+
+/** Svelte action: fires 'long_press' custom event after holding touch for `duration` ms.
+ *  Cancels if the finger moves more than 10px.
+ *  Usage: <div use:long_press on:long_press={(e) => handler(e.detail.x, e.detail.y)}>
+ */
+export function long_press(node, duration = 500) {
+  let timer = null;
+  let startX = 0;
+  let startY = 0;
+
+  function handle_start(e) {
+    if (e.touches?.length > 1) return;
+    const t = e.touches?.[0] ?? e;
+    startX = t.clientX;
+    startY = t.clientY;
+    timer = setTimeout(() => {
+      node.dispatchEvent(new CustomEvent('long_press', {
+        detail: { x: startX, y: startY },
+        bubbles: true
+      }));
+    }, duration);
+  }
+
+  function handle_move(e) {
+    if (!timer) return;
+    const t = e.touches?.[0] ?? e;
+    if (Math.abs(t.clientX - startX) > 10 || Math.abs(t.clientY - startY) > 10) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
+
+  function handle_end() {
+    clearTimeout(timer);
+    timer = null;
+  }
+
+  node.addEventListener('touchstart', handle_start, { passive: true });
+  node.addEventListener('touchmove', handle_move, { passive: true });
+  node.addEventListener('touchend', handle_end);
+  node.addEventListener('touchcancel', handle_end);
+
+  return {
+    destroy() {
+      clearTimeout(timer);
+      node.removeEventListener('touchstart', handle_start);
+      node.removeEventListener('touchmove', handle_move);
+      node.removeEventListener('touchend', handle_end);
+      node.removeEventListener('touchcancel', handle_end);
+    }
+  };
 }

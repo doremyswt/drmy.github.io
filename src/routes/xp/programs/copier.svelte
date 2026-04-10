@@ -1,7 +1,7 @@
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
     import Button from '../../../lib/components/xp/Button.svelte';
-    import {onMount, tick } from 'svelte';
+    import {onMount, tick, unmount } from 'svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive, queueProgram } from '../../../lib/store'
     import * as utils from '../../../lib/utils';
     import * as fs from '../../../lib/fs';
@@ -10,7 +10,7 @@
 
     export let id;
     export let window;
-    export let self;
+    export let get_self = () => null;
     export let parentNode;
     export let copying_obj;
     export let target_folder_id;
@@ -50,8 +50,8 @@
 
     export async function destroy(){
         cancelled = true;
-        runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        runningPrograms.update(programs => programs.filter(p => p != get_self()));
+        unmount(get_self());
     }
 
 

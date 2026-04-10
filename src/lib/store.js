@@ -16,3 +16,4 @@ export let hardDrive = writable(null);
 export let clipboard = writable([]);
 export let clipboard_op = writable('copy');
 export let queueCommand = writable(null);
+export let crtEffect = writable(false);

@@ -5,7 +5,7 @@
 
     import { click_outside } from '../../utils';
     import { contextMenu } from '../../store';
-    import { onDestroy } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
     import { filter } from 'lodash';
 
     let top = 0;
@@ -39,9 +39,6 @@
         } else if(type == 'RecycleBin'){
             menu_obj = (await import('./context_menu/RecycleBin')).make({type, originator});
 
-        } else if(type == 'ImageViewer'){
-            menu_obj = (await import('./context_menu/CMImageViewer')).make({type, originator});
-
         } else {
             console.log('unknown context menu type')
         }
@@ -58,7 +55,21 @@
         visible = true;
     })
 
+    let menu_el;
+
+    // On mobile, `click` events are unreliable for dismissal; use touchstart instead.
+    function handle_touch_outside(e) {
+        if (visible && menu_el && !menu_el.contains(e.target)) {
+            hide();
+        }
+    }
+
+    onMount(() => {
+        document.addEventListener('touchstart', handle_touch_outside, { capture: true, passive: true });
+    });
+
     onDestroy(() => {
+        document.removeEventListener('touchstart', handle_touch_outside, true);
         unsubscriber();
     })
     
@@ -71,7 +82,8 @@
 </script>
 
 
-<div use:click_outside on:click_outside={() => hide()}
+<div bind:this={menu_el}
+     use:click_outside on:click_outside={() => hide()}
      class="context-menu z-20 pt-0.5 absolute border-2 border-slate-200 bg-slate-50 text-slate-900 w-[180px] text-[11px] {visible ? '' : 'hidden' }"
      style:top="{top}px" style:left="{left}px">
     {#each menu.filter(el => el.length > 0) as group, group_index}

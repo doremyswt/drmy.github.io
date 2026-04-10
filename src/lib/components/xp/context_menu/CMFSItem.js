@@ -236,6 +236,7 @@ export let make = ({type, originator}) => {
 
 
 async function confirm_delete({node_ref, title, message, icon, yes_action, no_action}){
+    const { mount } = await import('svelte');
     const Dialog = (await import('../Dialog.svelte')).default;
         let buttons = [
             {
@@ -254,14 +255,15 @@ async function confirm_delete({node_ref, title, message, icon, yes_action, no_ac
                 },
             }
         ]
-        let dialog = new Dialog({
+        let dialog;
+        dialog = mount(Dialog, {
             target: node_ref,
             props:{
                 icon,
                 title,
                 message,
                 buttons,
+                get_self: () => dialog,
             }
-        })
-        dialog.self = dialog;
+        });
 }

@@ -1,4 +1,5 @@
 <script>
+    import { unmount, mount } from 'svelte';
     import Window from '../../../lib/components/xp/Window.svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive, queueProgram } from '../../../lib/store'
     import * as utils from '../../../lib/utils';
@@ -9,7 +10,7 @@
 
     export let id;
     export let window;
-    export let self;
+    export let get_self = () => null;
     export let parentNode;
     export let fs_item;
     export let exec_path;
@@ -36,8 +37,8 @@
     }
 
     export async function destroy(){
-        runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        runningPrograms.update(programs => programs.filter(p => p != get_self()));
+        unmount(get_self());
     }
 
     let ws_size = {width: document.querySelector('#work-space').offsetWidth, height: document.querySelector('#work-space').offsetHeight};
@@ -71,15 +72,11 @@
 
         return new Promise(async (resolve, reject) => {
             const OpenModal = (await import('../../../lib/components/xp/OpenModal.svelte')).default;
-            let modal = new OpenModal({
+            let modal;
+            modal = mount(OpenModal, {
                 target: node_ref,
-                props:{filetypes, filetypes_desc}
-            })
-            modal.self = modal;
-            modal.on_open = () => {
-                resolve(modal.selected_items)
-                modal.destroy();
-            }
+                props: { filetypes, filetypes_desc, get_self: () => modal, on_open: (items) => { resolve(items); unmount(modal); } },
+            });
         })
     }
 
@@ -107,15 +104,11 @@
 
         return new Promise(async (resolve, reject) => {
             const SaveModal = (await import('../../../lib/components/xp/SaveModal.svelte')).default;
-            let modal = new SaveModal({
+            let modal;
+            modal = mount(SaveModal, {
                 target: node_ref,
-                props:{filetypes, selected_filetype: current_filetype, id}
-            })
-            modal.self = modal;
-            modal.on_save = () => {
-                resolve({parent_id: modal.parent_id, filename: modal.filename, selected_filetype: modal.selected_filetype})
-                modal.destroy();
-            }
+                props: { filetypes, selected_filetype: current_filetype, id, get_self: () => modal, on_save: (data) => { resolve(data); unmount(modal); } },
+            });
         })
     }
 

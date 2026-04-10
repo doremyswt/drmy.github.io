@@ -1,6 +1,6 @@
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
-    import {onMount } from 'svelte';
+    import {onMount, unmount } from 'svelte';
     import { runningPrograms, zIndex, hardDrive, selectingItems, queueProgram } from '../../../lib/store'
     import {recycle_bin_id, icons} from '../../../lib/system';
     import Menu from '../../../lib/components/xp/Menu.svelte';
@@ -11,7 +11,7 @@
 
     export let id;//this is the program id, don' confuse with file/folder id
     export let window;
-    export let self;
+    export let get_self = () => null;
     export let exec_path;
 
     export let fs_item;//fs: file system, i.e, files and folder
@@ -178,8 +178,10 @@
         }
     ]
 
+    $: mc_interface = { window, up, open };
+
     onMount(() => {
-        
+
     })
 
 
@@ -199,8 +201,8 @@
     }
    
     export function destroy(){
-        runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        runningPrograms.update(programs => programs.filter(p => p != get_self()));
+        unmount(get_self());
     }
 
     export let options = {
@@ -306,10 +308,10 @@
         </div>
         
         <div class="grow flex flex-row overflow-hidden">
-            <Sidebar my_computer_instance={self} id={history[page_index]} ></Sidebar>
+            <Sidebar my_computer_instance={mc_interface} id={history[page_index]} ></Sidebar>
             <div class="grow relative bg-blue-100">
-                <Viewer bind:this={viewer} self={viewer} id={history[page_index]} 
-                    on:open={(e) => open(e.detail.id)} my_computer_instance={self}>
+                <Viewer bind:this={viewer} id={history[page_index]}
+                    on:open={(e) => open(e.detail.id)} my_computer_instance={mc_interface}>
                 </Viewer>
             </div>
         </div>

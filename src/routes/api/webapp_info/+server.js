@@ -1,5 +1,3 @@
-export const prerender = false;
-
 import { json } from '@sveltejs/kit';
 
 function is_embeddable(headers) {

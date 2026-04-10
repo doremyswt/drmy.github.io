@@ -1,12 +1,12 @@
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
-    import {onMount } from 'svelte';
+    import {onMount, unmount } from 'svelte';
     import { queueProgram, runningPrograms, zIndex } from '../../../lib/store'
     import Menu from '../../../lib/components/xp/Menu.svelte';
    
     export let id;
     export let window;
-    export let self;
+    export let get_self = () => null;
     export let parentNode;
 
     let iframe;
@@ -22,8 +22,8 @@
     })
 
     export function destroy(){
-        runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        runningPrograms.update(programs => programs.filter(p => p != get_self()));
+        unmount(get_self());
     }
 
     export let options = {
@@ -33,6 +33,7 @@
         icon: '/images/xp/icons/Minesweeper.png',
         resizable: false,
         maximize_btn_disabled: true,
+        mobile_maximize: false,
         id: id
     };
 

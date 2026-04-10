@@ -1,11 +1,11 @@
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
-    import {onMount } from 'svelte';
+    import {onMount, unmount } from 'svelte';
     import { runningPrograms } from '../../../lib/store'
 
     export let id;
     export let window;
-    export let self;
+    export let get_self = () => null;
     export let parentNode;
     export let exec_path;
 
@@ -24,8 +24,8 @@
     }
 
     export function destroy(){
-        runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        runningPrograms.update(programs => programs.filter(p => p != get_self()));
+        unmount(get_self());
     }
 
     export let options = {
@@ -56,7 +56,7 @@
     
     <div slot="content" bind:this={intro_player} class="absolute inset-1 flex flex-col bg-xp-yellow" style:background="{options.background}">
         <video autoplay playsinline class="absolute inset-0 {fullScreen ? 'object-cover' : 'object-cover'} w-full h-full">
-            <source src="/video/xp_tour.mp4" type="video/mp4">
+            <source src="https://static.win32.run/video/xp_tour.mp4" type="video/mp4">
         </video>
         <div class="absolute inset-0 border-l-4 border-r-4 border-white">
 

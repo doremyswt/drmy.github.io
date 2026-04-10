@@ -1,11 +1,12 @@
 <script>
+    import { unmount } from 'svelte';
     import Button from "../../lib/components/xp/Button.svelte";
     import {queueCommand} from '../../lib/store';
 
-    export let self;
+    export let get_self = () => null;
 
     export function destroy(){
-        self.$destroy();
+        unmount(get_self());
     }
 
 </script>
@@ -22,15 +23,15 @@
             <div class="w-full grow bg-gradient-to-r from-blue-400 via-blue-300 to-blue-500">
                 <div class="mx-[50px] h-full flex flex-row justify-between items-center text-[12px] font-bold">
                     <div class="flex flex-col items-center justify-center brightness-50">
-                        <img class="w-8 h-8 bg-[url(/images/xp/icons/Standby.png)] bg-contain bg-no-repeat mb-1">
+                        <div class="w-8 h-8 bg-[url(/images/xp/icons/Standby.png)] bg-contain bg-no-repeat mb-1"></div>
                         <p>Standby</p>
                     </div>
                     <div class="flex flex-col items-center justify-center group" on:click={() => queueCommand.set('shutdown')}>
-                        <img class="group-hover:brightness-110 w-8 h-8 bg-[url(/images/xp/icons/Power.png)] bg-contain bg-no-repeat mb-1">
+                        <div class="group-hover:brightness-110 w-8 h-8 bg-[url(/images/xp/icons/Power.png)] bg-contain bg-no-repeat mb-1"></div>
                         <p>Power</p>
                     </div>
                     <div class="flex flex-col items-center justify-center group" on:click={() => queueCommand.set('restart')}>
-                        <img class="group-hover:brightness-110 w-8 h-8 bg-[url(/images/xp/icons/Restart.png)] bg-contain bg-no-repeat mb-1">
+                        <div class="group-hover:brightness-110 w-8 h-8 bg-[url(/images/xp/icons/Restart.png)] bg-contain bg-no-repeat mb-1"></div>
                         <p>Restart</p>
                     </div>
                 </div>

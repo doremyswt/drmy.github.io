@@ -1,7 +1,7 @@
 <script>
     import Window from '../../../lib/components/xp/Window.svelte';
     import RangeSlider from "svelte-range-slider-pips";
-    import {onMount, tick } from 'svelte';
+    import {onMount, tick, unmount, mount } from 'svelte';
     import { runningPrograms,systemVolume, zIndex, hardDrive } from '../../../lib/store'
     import * as utils from '../../../lib/utils';
     import * as fs from '../../../lib/fs';
@@ -12,7 +12,7 @@
 
     export let id;
     export let window;
-    export let self;
+    export let get_self = () => null;
     export let parentNode;
     export let fs_item;
     export let exec_path;
@@ -74,22 +74,26 @@
 
     async function open_file(){
         const OpenModal = (await import('../../../lib/components/xp/OpenModal.svelte')).default;
-        let modal = new OpenModal({
+        let modal;
+        modal = mount(OpenModal, {
             target: window.node_ref,
-            props:{filetypes: ['.mp3','.mp4', '.ogg', '.webm', '.wav', '.flac', '.aac'], filetypes_desc: 'Audio and Video Files'}
-        })
-        modal.self = modal;
-        modal.on_open = () => {
-            let item = $hardDrive[modal.selected_items[0]];
-            load_media(item);
-            modal.destroy();
-        }
+            props: {
+                filetypes: ['.mp3','.mp4', '.ogg', '.webm', '.wav', '.flac', '.aac'],
+                filetypes_desc: 'Audio and Video Files',
+                get_self: () => modal,
+                on_open: (items) => {
+                    let item = $hardDrive[items[0]];
+                    load_media(item);
+                    unmount(modal);
+                }
+            },
+        });
     }
 
 
     export function destroy(){
-        runningPrograms.update(programs => programs.filter(p => p != self));
-        self.$destroy();
+        runningPrograms.update(programs => programs.filter(p => p != get_self()));
+        unmount(get_self());
         clearTimeout(idle_timer);
     }
 
