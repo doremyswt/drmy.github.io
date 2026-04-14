@@ -16,22 +16,42 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
 
       - name: Rebuild images.json and hard_drive gallery entries
         run: |
+          # Build a map of file -> git addition timestamp (newest first)
+          declare -A FILE_TIMES
+          for f in static/remake/current-site/arch/*.{png,jpg,jpeg,gif,webp}; do
+            [ -f "$f" ] || continue
+            fname=$(basename "$f")
+            # timestamp of the commit that first added this file
+            ts=$(git log --diff-filter=A --format=%at -- "$f" | tail -1)
+            [ -z "$ts" ] && ts=$(git log --format=%at -- "$f" | tail -1)
+            [ -z "$ts" ] && ts=0
+            FILE_TIMES["$fname"]=$ts
+          done
+          # Write timestamps to a temp file for node to read
+          for fname in "${!FILE_TIMES[@]}"; do
+            echo "${FILE_TIMES[$fname]} $fname"
+          done > /tmp/arch_file_times.txt
+
           node -e "
             const fs   = require('fs');
             const path = require('path');
             const archDir = 'static/remake/current-site/arch';
 
-            // 1. Collect image files
-            const files = fs.readdirSync(archDir)
-              .filter(f => /\.(png|jpg|jpeg|gif|webp)$/i.test(f))
-              .sort((a, b) => {
-                const na = parseInt(a), nb = parseInt(b);
-                if (!isNaN(na) && !isNaN(nb)) return na - nb;
-                return a.localeCompare(b);
-              });
+            // 1. Collect image files with git timestamps (newest first)
+            const timeData = fs.readFileSync('/tmp/arch_file_times.txt', 'utf8').trim().split('\n');
+            const fileMap = {};
+            for (const line of timeData) {
+              const spaceIdx = line.indexOf(' ');
+              const ts = parseInt(line.slice(0, spaceIdx));
+              const name = line.slice(spaceIdx + 1);
+              fileMap[name] = ts;
+            }
+            const files = Object.keys(fileMap)
+              .sort((a, b) => fileMap[b] - fileMap[a]);
 
             // 2. Update images.json (used by old site)
             const urls = files.map(f => '/remake/current-site/arch/' + f);
