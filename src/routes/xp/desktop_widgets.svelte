@@ -15,7 +15,7 @@
 
     function handleCommissionsClick() {
         if (!dragMoved) {
-            window.location.href = '/remake/current-site/commission.html';
+            window.location.href = '/form';
         }
     }
 
