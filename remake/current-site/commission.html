@@ -1,0 +1,1392 @@
+<!--
+  ============================================================
+  COMMISSION FORM — Google Apps Script Setup Instructions
+  ============================================================
+
+  1. Go to https://script.google.com and create a new project.
+
+  2. Paste the following code into the editor:
+
+     var FOLDER_ID      = 'YOUR_FOLDER_ID';       // Drive folder ID
+     var CLIENT_ID      = 'YOUR_GOOGLE_CLIENT_ID'; // Same client ID as in the HTML
+
+     function doPost(e) {
+       try {
+         var data = JSON.parse(e.postData.contents);
+
+         // ── Server-side auth: verify the Google ID token ──────────
+         if (!data.googleIdToken) {
+           return jsonResponse({ result: 'error', message: 'Authentication required' });
+         }
+         var tokenResp = UrlFetchApp.fetch(
+           'https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(data.googleIdToken),
+           { muteHttpExceptions: true }
+         );
+         var tokenInfo = JSON.parse(tokenResp.getContentText());
+         if (tokenInfo.aud !== CLIENT_ID || tokenInfo.email_verified !== 'true') {
+           return jsonResponse({ result: 'error', message: 'Invalid authentication' });
+         }
+         var email = tokenInfo.email;
+
+         // ── Get or create per-commissioner subfolder ──────────────
+         var root = DriveApp.getFolderById(FOLDER_ID);
+         var iter = root.getFoldersByName(email);
+         var folder = iter.hasNext() ? iter.next() : root.createFolder(email);
+
+         // ── Build filename: Name.Style_Size_Date ──────────────────
+         var date     = new Date().toISOString().split('T')[0];
+         var safeName = (data.name || 'Unknown').replace(/[^a-zA-Z0-9_\-]/g, '_');
+         var style    = data.style         ? data.style.key         : 'unknown';
+         var size     = data.characterSize ? data.characterSize.key : 'unknown';
+         var basename = safeName + '.' + style + '_' + size + '_' + date;
+
+         // ── Save reference image ──────────────────────────────────
+         if (data.referenceImage) {
+           var img     = data.referenceImage;
+           var allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+           if (allowed.indexOf(img.mimeType) === -1) {
+             return jsonResponse({ result: 'error', message: 'Invalid image type' });
+           }
+           var extMap  = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/gif': '.gif', 'image/webp': '.webp' };
+           var bytes   = Utilities.base64Decode(img.data);
+           var blob    = Utilities.newBlob(bytes, img.mimeType, basename + (extMap[img.mimeType] || '.img'));
+           folder.createFile(blob);
+           data.referenceImage = { filename: img.filename, mimeType: img.mimeType, size: img.size };
+         }
+
+         // ── Save commission JSON ──────────────────────────────────
+         folder.createFile(basename + '.json', JSON.stringify(data, null, 2), MimeType.PLAIN_TEXT);
+         return jsonResponse({ result: 'ok' });
+       } catch(err) {
+         return jsonResponse({ result: 'error', message: err.message });
+       }
+     }
+
+     function jsonResponse(obj) {
+       return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+     }
+
+     Replace YOUR_FOLDER_ID with your Drive folder ID and YOUR_GOOGLE_CLIENT_ID
+     with the same client ID used in the HTML config below.
+
+  3. Click Deploy > New deployment.
+     - Type: Web app
+     - Execute as: Me
+     - Who has access: Anyone
+     Click Deploy and authorise the permissions.
+
+  4. Copy the web app URL and paste it as the value of GOOGLE_SCRIPT_URL below.
+
+  ============================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commission Request Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async></script>
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Tahoma, 'Tahoma', Geneva, Verdana, sans-serif;
+  font-size: 11px;
+  background: #3a6fc4;
+  overflow-y: auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px 10px 40px;
+}
+
+/* ── XP Desktop Window wrapper ──────────────────────────── */
+#xp-page-window {
+  width: min(600px, 100%);
+  background: #ece9d8;
+  border: 2px solid #0a246a;
+  border-top: none;
+  box-shadow: 2px 2px 12px rgba(0,0,0,0.5), inset 0 0 0 1px #fff;
+  border-radius: 0 0 4px 4px;
+  position: relative;
+}
+
+#xp-page-titlebar {
+  background: linear-gradient(to bottom, #0a246a 0%, #3a6ea5 4%, #2963a3 45%, #1a52a3 50%, #2963a3 55%, #3a6ea5 100%);
+  border-radius: 5px 5px 0 0;
+  padding: 4px 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+}
+
+#xp-page-titlebar span {
+  flex: 1;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+}
+
+/* ── VGen fallback button ───────────────────────────────── */
+#vgen-btn {
+  display: block;
+  margin: 12px auto 14px;
+  position: relative;
+  z-index: 999999;
+  padding: 5px 14px;
+  font-family: Tahoma, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(to bottom, #e05000 0%, #c03000 100%);
+  border: 2px outset #ff7020;
+  border-radius: 3px;
+  cursor: pointer;
+  text-decoration: none;
+  animation: vgen-flicker 1.4s infinite;
+}
+#vgen-btn:hover { filter: brightness(1.15); }
+
+@keyframes vgen-flicker {
+  0%,100% { opacity: 1; box-shadow: 0 0 6px #ff7020, 0 0 12px #ff5000; }
+  45%      { opacity: 1; box-shadow: 0 0 6px #ff7020, 0 0 12px #ff5000; }
+  50%      { opacity: 0.55; box-shadow: none; }
+  55%      { opacity: 1; box-shadow: 0 0 6px #ff7020, 0 0 12px #ff5000; }
+  80%      { opacity: 1; box-shadow: 0 0 6px #ff7020, 0 0 12px #ff5000; }
+  85%      { opacity: 0.6; box-shadow: none; }
+  90%      { opacity: 1; box-shadow: 0 0 6px #ff7020, 0 0 12px #ff5000; }
+}
+
+/* ── XP Window Shell ────────────────────────────────────── */
+.xp-window {
+  width: 820px;
+  max-width: 100%;
+  background: #ece9d8;
+  border: 1px solid #848284;
+  box-shadow:
+    inset 0 0 0 1px #ffffff,
+    2px 2px 8px rgba(0,0,0,0.5);
+  border-radius: 6px 6px 4px 4px;
+}
+
+/* Title bar */
+.xp-titlebar {
+  background: linear-gradient(to bottom, #0a246a 0%, #3a6ea5 4%, #2963a3 45%, #1a52a3 50%, #2963a3 55%, #3a6ea5 100%);
+  border-radius: 5px 5px 0 0;
+  padding: 3px 4px 4px 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+}
+
+.xp-titlebar-icon {
+  width: 15px;
+  height: 15px;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect x="1" y="3" width="14" height="10" rx="1" fill="%23fff" opacity=".9"/><path d="M1 5h14v1H1z" fill="%23d04020"/><path d="M5 3v10" stroke="%23ccc" stroke-width=".5"/></svg>') center/contain no-repeat;
+  flex-shrink: 0;
+}
+
+.xp-titlebar-text {
+  flex: 1;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+  letter-spacing: 0.02em;
+}
+
+/* Window control buttons */
+.xp-controls { display: flex; gap: 2px; }
+
+.xp-btn-ctrl {
+  width: 21px;
+  height: 21px;
+  border: 1px solid rgba(0,0,0,0.4);
+  border-radius: 3px;
+  font-size: 11px;
+  font-family: Marlett, Tahoma, sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  text-shadow: none;
+  line-height: 1;
+}
+
+.xp-btn-min, .xp-btn-max {
+  background: linear-gradient(to bottom, #d8d0c8 0%, #a8a098 100%);
+  color: #000;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+.xp-btn-close {
+  background: linear-gradient(to bottom, #e04040 0%, #b82020 50%, #c83030 100%);
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+.xp-btn-ctrl:hover { filter: brightness(1.1); }
+.xp-btn-ctrl:active { filter: brightness(0.9); }
+
+/* Window body */
+.xp-body {
+  padding: 10px 12px 12px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.xp-form-col {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Group Boxes ────────────────────────────────────────── */
+.xp-group {
+  border: 1px solid #848284;
+  box-shadow: inset 1px 1px 0 #fff, 1px 1px 0 #fff;
+  background: #ece9d8;
+  margin-bottom: 10px;
+  padding: 0;
+  position: relative;
+}
+
+.xp-group-legend {
+  position: absolute;
+  top: -7px;
+  left: 8px;
+  background: #ece9d8;
+  padding: 0 4px;
+  font-weight: bold;
+  font-size: 11px;
+  color: #000;
+  white-space: nowrap;
+}
+
+.xp-group-body {
+  padding: 14px 10px 8px;
+}
+
+/* ── Price Display ──────────────────────────────────────── */
+.price-display {
+  background: #fff;
+  border: 2px inset #848284;
+  padding: 6px 10px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.price-label {
+  font-weight: bold;
+  font-size: 11px;
+}
+
+.price-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #0a246a;
+  font-family: Tahoma, sans-serif;
+}
+
+.price-breakdown {
+  font-size: 10px;
+  color: #555;
+  margin-top: 2px;
+}
+
+/* ── Form Elements ──────────────────────────────────────── */
+.xp-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+  line-height: 16px;
+}
+
+.xp-row label {
+  flex: 1;
+  cursor: pointer;
+}
+
+.price-tag {
+  color: #555;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.price-tag.inc { color: #006600; font-style: italic; }
+
+input[type="radio"],
+input[type="checkbox"] {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: #0a246a;
+}
+
+input[type="text"],
+textarea {
+  font-family: Tahoma, sans-serif;
+  font-size: 11px;
+  border: 1px solid #7f9db9;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.15);
+  background: #fff;
+  padding: 2px 4px;
+  outline: none;
+  width: 100%;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  border-color: #0a246a;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.15), 0 0 0 1px #7ab4ea;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.field-row {
+  margin-bottom: 7px;
+}
+
+.field-row label {
+  display: block;
+  margin-bottom: 2px;
+  font-weight: bold;
+}
+
+.contact-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.contact-row .contact-icon {
+  width: 70px;
+  text-align: right;
+  flex-shrink: 0;
+  font-weight: bold;
+}
+
+/* ── Submit Button ──────────────────────────────────────── */
+.xp-submit-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.xp-button {
+  font-family: Tahoma, sans-serif;
+  font-size: 11px;
+  padding: 3px 14px;
+  min-width: 75px;
+  height: 23px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid;
+}
+
+.xp-button-default {
+  background: linear-gradient(to bottom, #dce9f8 0%, #aec9e8 30%, #7aadd8 70%, #5592c8 100%);
+  border-color: #2a5fa8 #1a3f88 #1a3f88 #2a5fa8;
+  color: #000;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 1px 2px rgba(0,0,0,0.2);
+  font-weight: bold;
+}
+
+.xp-button-default:hover {
+  background: linear-gradient(to bottom, #eef5ff 0%, #c4d8f0 30%, #90c0e8 70%, #68a0d8 100%);
+}
+
+.xp-button-default:active {
+  background: linear-gradient(to bottom, #7aadd8 0%, #5592c8 50%, #aec9e8 100%);
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.xp-button-normal {
+  background: linear-gradient(to bottom, #f0ede0 0%, #dddacf 45%, #ccc8b8 100%);
+  border-color: #888 #666 #666 #888;
+  color: #000;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.xp-button-normal:hover {
+  background: linear-gradient(to bottom, #faf8f0 0%, #eceadf 45%, #ddd8c8 100%);
+}
+
+/* ── Body Crop Preview ──────────────────────────────────── */
+.crop-col {
+  flex-shrink: 0;
+  width: 240px;
+}
+
+.crop-preview-wrap {
+  position: sticky;
+  top: 20px;
+}
+
+.crop-container {
+  width: 220px;
+  height: 390px; /* ~9:16 ratio */
+  position: relative;
+  overflow: hidden;
+  border: 2px inset #848284;
+  cursor: pointer;
+  display: block;
+  background: #555;
+  flex-shrink: 0;
+}
+.crop-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Overlay layers — four clickable regions stacked */
+.crop-region {
+  position: absolute;
+  left: 0;
+  right: 0;
+  cursor: pointer;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  padding: 2px 5px;
+}
+.crop-region-label {
+  font-family: Tahoma, sans-serif;
+  font-size: 10px;
+  color: rgba(255,255,255,0.85);
+  text-shadow: 1px 1px 2px #000;
+  line-height: 1.2;
+  pointer-events: none;
+  background: rgba(0,0,0,0.35);
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+.crop-region-price {
+  margin-left: auto;
+  font-family: Tahoma, sans-serif;
+  font-size: 10px;
+  color: rgba(255,220,100,0.9);
+  text-shadow: 1px 1px 2px #000;
+  pointer-events: none;
+}
+.crop-overlay {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  pointer-events: none;
+  transition: top 0.2s;
+  z-index: 2;
+}
+
+/* Full-bg message overlay */
+.crop-fullbg-msg {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 5;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  font-family: Tahoma, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  text-shadow: 0 1px 3px #000;
+  line-height: 1.5;
+  padding: 10px;
+  pointer-events: none;
+}
+.crop-fullbg-msg.active {
+  display: flex;
+}
+
+/* Hit-area regions */
+.crop-region-headshot { top: 0;         height: 33.33%; }
+.crop-region-halfbody { top: 33.33%;    height: 33.33%; }
+.crop-region-fullbody { top: 66.67%;    height: 33.33%; }
+
+/* Hover hint label */
+.crop-hint {
+  position: absolute;
+  bottom: 6px;
+  left: 0; right: 0;
+  text-align: center;
+  color: #fff;
+  font-size: 10px;
+  text-shadow: 0 1px 3px #000;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.crop-label {
+  text-align: center;
+  font-size: 10px;
+  color: #555;
+  margin-top: 3px;
+}
+
+/* ── XP Dialog Overlay ──────────────────────────────────── */
+.xp-dialog-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+.xp-dialog-overlay.active {
+  display: flex;
+}
+
+.xp-dialog {
+  background: #ece9d8;
+  border: 1px solid #848284;
+  box-shadow: inset 0 0 0 1px #fff, 2px 2px 8px rgba(0,0,0,0.5);
+  border-radius: 6px 6px 4px 4px;
+  min-width: 280px;
+  max-width: 420px;
+}
+
+.xp-dialog .xp-titlebar { border-radius: 5px 5px 0 0; }
+
+.xp-dialog-body {
+  padding: 18px 20px 14px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.xp-dialog-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.xp-dialog-msg {
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.xp-dialog-footer {
+  padding: 6px 20px 14px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* ── Validation error highlight ─────────────────────────── */
+.field-error {
+  outline: 1px solid red;
+}
+
+.error-msg {
+  color: red;
+  font-size: 10px;
+  margin-top: 1px;
+  display: none;
+}
+
+.error-msg.show { display: block; }
+
+/* ── Separator ──────────────────────────────────────────── */
+hr.xp-sep {
+  border: none;
+  border-top: 1px solid #aca899;
+  border-bottom: 1px solid #fff;
+  margin: 8px 0;
+}
+
+/* Disabled row */
+.xp-row.disabled label { color: #888; }
+
+/* ── Sign-in Gate ────────────────────────────────────────── */
+.signin-gate {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.signin-gate.hidden { display: none; }
+.signin-box {
+  background: #ece9d8;
+  border: 1px solid #848284;
+  box-shadow: inset 0 0 0 1px #fff, 2px 2px 8px rgba(0,0,0,0.5);
+  border-radius: 6px 6px 4px 4px;
+  min-width: 300px;
+  max-width: 380px;
+  text-align: center;
+}
+.signin-body {
+  padding: 24px 24px 20px;
+}
+.signin-body p {
+  margin-bottom: 16px;
+  line-height: 16px;
+}
+
+/* ── File Upload ─────────────────────────────────────────── */
+.file-drop-area {
+  border: 1px dashed #aca899;
+  background: #f5f3ea;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  margin-top: 4px;
+  font-size: 10px;
+  color: #555;
+  position: relative;
+}
+.file-drop-area:hover { background: #edeae0; }
+.file-drop-area input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+.file-preview {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  background: #f0ede0;
+  border: 1px solid #aca899;
+  padding: 4px 6px;
+  font-size: 10px;
+}
+.file-preview.visible { display: flex; }
+.file-preview img { width: 32px; height: 32px; object-fit: cover; border: 1px solid #ccc; }
+.file-preview-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-preview-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  font-size: 12px;
+  padding: 0 2px;
+  line-height: 1;
+}
+.file-preview-remove:hover { color: #c00; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     XP Page Window wrapper
+════════════════════════════════════════════════════════ -->
+<div id="xp-page-titlebar">
+  <span>Commission Request Form</span>
+</div>
+<div id="xp-page-window">
+
+<!-- VGen fallback button (top, always visible) -->
+<a id="vgen-btn" href="https://vgen.co/doremy" target="_blank" rel="noopener noreferrer">
+  ⚠ Form not working? Open VGen Commission Page
+</a>
+
+<!-- ════════════════════════════════════════════════════════
+     Sign-in Gate
+════════════════════════════════════════════════════════ -->
+<div class="signin-gate" id="signinGate">
+  <div class="signin-box">
+    <div class="xp-titlebar">
+      <div class="xp-titlebar-text">Commission Form — Sign In Required</div>
+    </div>
+    <div class="signin-body">
+      <p><strong>Please sign in with Google</strong><br>to access the commission form.</p>
+      <div id="googleSignInBtn"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     XP Window
+════════════════════════════════════════════════════════ -->
+<div class="xp-body">
+
+    <!-- ── Left: Form Column ─────────────────────────── -->
+    <div class="xp-form-col">
+
+      <!-- Live Price -->
+      <div class="price-display" id="priceDisplay">
+        <div>
+          <div class="price-label">Estimated Total</div>
+          <div class="price-breakdown" id="priceBreakdown">Select options to calculate</div>
+        </div>
+        <div class="price-value" id="priceValue">$0.00</div>
+      </div>
+
+      <form id="commissionForm" novalidate>
+
+        <!-- 0. Name -->
+        <div class="xp-group">
+          <div class="xp-group-legend">Your Name</div>
+          <div class="xp-group-body">
+            <div class="field-row">
+              <input type="text" id="commName" name="commName" placeholder="How should I call you?">
+              <div class="error-msg" id="err-name">Please enter your name.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1. Style -->
+        <div class="xp-group">
+          <div class="xp-group-legend">Style</div>
+          <div class="xp-group-body">
+            <div class="xp-row">
+              <input type="radio" name="style" id="style-sketch" value="sketch">
+              <label for="style-sketch">Sketch</label>
+              <span class="price-tag">$59.99</span>
+            </div>
+            <div class="xp-row">
+              <input type="radio" name="style" id="style-render" value="render">
+              <label for="style-render">Render</label>
+              <span class="price-tag">$89.99</span>
+            </div>
+            <div class="xp-row">
+              <input type="radio" name="style" id="style-fullbg" value="fullbg">
+              <label for="style-fullbg">Full Background Illustration</label>
+              <span class="price-tag">$279.99</span>
+            </div>
+            <div class="error-msg" id="err-style">Please select a style.</div>
+          </div>
+        </div>
+
+        <!-- hidden size radios for form validation/JS -->
+        <input type="radio" name="size" id="size-headshot" value="headshot" style="display:none">
+        <input type="radio" name="size" id="size-halfbody" value="halfbody" style="display:none">
+        <input type="radio" name="size" id="size-fullbody" value="fullbody" style="display:none">
+        <div class="error-msg" id="err-size" style="margin-bottom:4px;">Please select a character size using the preview on the right.</div>
+
+        <!-- 3. Licenses -->
+        <div class="xp-group">
+          <div class="xp-group-legend">Licenses</div>
+          <div class="xp-group-body">
+            <div class="xp-row disabled">
+              <input type="checkbox" id="lic-personal" checked disabled>
+              <label for="lic-personal">Personal use</label>
+              <span class="price-tag inc">Included</span>
+            </div>
+            <div class="xp-row disabled">
+              <input type="checkbox" id="lic-monetized" checked disabled>
+              <label for="lic-monetized">Monetized content</label>
+              <span class="price-tag inc">Included</span>
+            </div>
+            <div class="xp-row">
+              <input type="checkbox" id="lic-commercial" name="licCommercial">
+              <label for="lic-commercial">Commercial merchandising</label>
+              <span class="price-tag">+150% to total</span>
+            </div>
+            <div class="xp-row">
+              <input type="checkbox" id="lic-nda" name="licNDA">
+              <label for="lic-nda">Non-Disclosure Agreement</label>
+              <span class="price-tag">+$49.99</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Description -->
+        <div class="xp-group">
+          <div class="xp-group-legend">Commission Description</div>
+          <div class="xp-group-body">
+            <div class="field-row">
+              <label for="description">Describe what you want for this art piece (Characters, poses, clothing, background, etc)</label>
+              <textarea id="description" name="description" rows="5" placeholder="Be as detailed as possible!"></textarea>
+              <div class="error-msg" id="err-desc">Please provide a description.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5b. Reference Image -->
+        <div class="xp-group">
+          <div class="xp-group-legend">Reference Image <span style="font-weight:normal;color:#555">(optional)</span></div>
+          <div class="xp-group-body">
+            <div class="field-row">
+              <label>Attach a reference image to help describe your commission (JPEG, PNG, GIF or WebP · max 4 MB)</label>
+              <div class="file-drop-area" id="fileDropArea">
+                <input type="file" id="refImage" accept="image/jpeg,image/png,image/gif,image/webp">
+                <span id="fileDropLabel">Click to browse or drop an image here</span>
+              </div>
+              <div class="file-preview" id="filePreview">
+                <img id="fileThumb" src="" alt="">
+                <span class="file-preview-name" id="filePreviewName"></span>
+                <button type="button" class="file-preview-remove" id="fileRemove" aria-label="Remove">&#x2715;</button>
+              </div>
+              <div class="error-msg" id="err-file">Invalid file. Use JPEG, PNG, GIF or WebP under 4 MB.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Contact -->
+        <div class="xp-group">
+          <div class="xp-group-legend">Contact <span style="font-weight:normal;color:#555">(at least one required)</span></div>
+          <div class="xp-group-body">
+            <div class="contact-grid">
+              <div class="contact-row">
+                <span class="contact-icon">Discord:</span>
+                <input type="text" id="contact-discord" name="contactDiscord" placeholder="username#0000">
+              </div>
+              <div class="contact-row">
+                <span class="contact-icon">Twitter:</span>
+                <input type="text" id="contact-twitter" name="contactTwitter" placeholder="@handle">
+              </div>
+              <div class="contact-row">
+                <span class="contact-icon">Instagram:</span>
+                <input type="text" id="contact-instagram" name="contactInstagram" placeholder="@handle">
+              </div>
+            </div>
+            <div class="error-msg" id="err-contact">Please fill in at least one contact method.</div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="xp-submit-row">
+          <button type="button" class="xp-button xp-button-normal" id="resetBtn">Reset</button>
+          <button type="submit" class="xp-button xp-button-default" id="submitBtn">Submit</button>
+        </div>
+
+      </form>
+    </div><!-- /.xp-form-col -->
+
+    <!-- ── Right: Body Crop Preview ─────────────────── -->
+    <div class="crop-col">
+      <div class="crop-preview-wrap">
+        <div class="xp-group">
+          <div class="xp-group-legend">Body Crop Preview</div>
+          <div class="xp-group-body" style="padding-bottom:10px;">
+
+            <div class="crop-container" id="cropContainer" role="group" aria-label="Character size visual selector">
+              <img class="crop-image" src="/remake/current-site/comm/body.png" alt="">
+              <!-- Clickable hit regions with labels -->
+              <div class="crop-region crop-region-headshot" data-size="headshot" role="button" tabindex="0">
+                <span class="crop-region-label">Headshot</span><span class="crop-region-price">+$0</span>
+              </div>
+              <div class="crop-region crop-region-halfbody" data-size="halfbody" role="button" tabindex="0">
+                <span class="crop-region-label">Half-Body</span><span class="crop-region-price">+$19.99</span>
+              </div>
+              <div class="crop-region crop-region-fullbody" data-size="fullbody" role="button" tabindex="0">
+                <span class="crop-region-label">Full Body</span><span class="crop-region-price">+$29.99</span>
+              </div>
+              <!-- Overlay (covers area below selection) -->
+              <div class="crop-overlay" id="cropOverlay"></div>
+              <!-- Full-bg message overlay -->
+              <div class="crop-fullbg-msg" id="cropFullbgMsg">Desired size included<br>free of charge</div>
+            </div>
+            <div class="crop-label" id="cropLabel" style="font-size:10px;color:#555;margin-top:4px;text-align:center;">Click a region to select</div>
+
+          </div>
+        </div>
+      </div>
+    </div><!-- /.crop-col -->
+
+  </div><!-- /.xp-body -->
+
+<!-- ════════════════════════════════════════════════════════
+     Success Dialog
+════════════════════════════════════════════════════════ -->
+<div class="xp-dialog-overlay" id="dialogSuccess">
+  <div class="xp-dialog">
+    <div class="xp-titlebar">
+      <div class="xp-titlebar-text">Commission Submitted</div>
+      <div class="xp-controls">
+        <button class="xp-btn-ctrl xp-btn-close" onclick="closeDialog('dialogSuccess')" aria-label="Close">&#x2715;</button>
+      </div>
+    </div>
+    <div class="xp-dialog-body">
+      <div class="xp-dialog-icon">&#x2705;</div>
+      <div class="xp-dialog-msg">
+        <strong>Your commission request has been submitted!</strong><br><br>
+        Thank you — I will review your request and reach out to you via the contact information you provided.
+      </div>
+    </div>
+    <div class="xp-dialog-footer">
+      <button class="xp-button xp-button-default" onclick="closeDialog('dialogSuccess')">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     Error Dialog
+════════════════════════════════════════════════════════ -->
+<div class="xp-dialog-overlay" id="dialogError">
+  <div class="xp-dialog">
+    <div class="xp-titlebar">
+      <div class="xp-titlebar-text">Submission Error</div>
+      <div class="xp-controls">
+        <button class="xp-btn-ctrl xp-btn-close" onclick="closeDialog('dialogError')" aria-label="Close">&#x2715;</button>
+      </div>
+    </div>
+    <div class="xp-dialog-body">
+      <div class="xp-dialog-icon">&#x274C;</div>
+      <div class="xp-dialog-msg">
+        <strong>An error occurred while submitting your commission.</strong><br><br>
+        <span id="dialogErrorMsg">Please try again. If the problem persists, please contact me directly.</span>
+      </div>
+    </div>
+    <div class="xp-dialog-footer">
+      <button class="xp-button xp-button-default" onclick="closeDialog('dialogError')">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ────────────────────────────────────────────────────────
+   CONFIG
+──────────────────────────────────────────────────────── */
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCwmKCmeEEO52Ym-kIvW6z2nhPZcmEGYiSW5zFCXWr_VTWBWvWnKrk3b4mXAjde_4/exec';
+
+// Get from https://console.cloud.google.com → APIs & Services → Credentials → OAuth 2.0 Client IDs
+// Set Authorised JavaScript origins to your domain (and http://localhost for dev)
+const GOOGLE_CLIENT_ID = '529129254599-6ospr23r84b7coqfaumqktslmaob9f71.apps.googleusercontent.com';
+
+/* ── Pricing tables ─────────────────────────────────── */
+const STYLE_PRICES = {
+  sketch:  59.99,
+  render:  89.99,
+  fullbg: 279.99,
+};
+
+const SIZE_PRICES = {
+  headshot:  0,
+  halfbody: 19.99,
+  fullbody: 29.99,
+};
+
+const STYLE_LABELS = {
+  sketch:  'Sketch',
+  render:  'Render',
+  fullbg:  'Full Background Illustration',
+};
+
+const SIZE_LABELS = {
+  headshot: 'Headshot',
+  halfbody: 'Half-Body',
+  fullbody: 'Full Body',
+};
+
+/* ── DOM refs ───────────────────────────────────────── */
+const form            = document.getElementById('commissionForm');
+const priceValue      = document.getElementById('priceValue');
+const priceBreakdown  = document.getElementById('priceBreakdown');
+const cropOverlay     = document.getElementById('cropOverlay');
+const cropLabel       = document.getElementById('cropLabel');
+const cropHint        = null; // no cropHint element in DOM
+const cropFullbgMsg   = document.getElementById('cropFullbgMsg');
+const submitBtn       = document.getElementById('submitBtn');
+const resetBtn        = document.getElementById('resetBtn');
+
+/* ── Sign-in gate ───────────────────────────────────── */
+let googleUser    = null;
+let googleIdToken = null;
+
+window.addEventListener('load', function() {
+  if (typeof google === 'undefined' || GOOGLE_CLIENT_ID.startsWith('YOUR')) {
+    // GSI not loaded or client ID not configured — skip gate (dev fallback)
+    document.getElementById('signinGate').classList.add('hidden');
+    return;
+  }
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: function(response) {
+      var parts = response.credential.split('.');
+      // Pad base64url to standard base64
+      var b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) b64 += '=';
+      var payload = JSON.parse(atob(b64));
+      googleUser    = { email: payload.email, name: payload.name };
+      googleIdToken = response.credential;
+      document.getElementById('signinGate').classList.add('hidden');
+    },
+    cancel_on_tap_outside: false,
+  });
+  google.accounts.id.renderButton(
+    document.getElementById('googleSignInBtn'),
+    { theme: 'outline', size: 'large' }
+  );
+  google.accounts.id.prompt();
+});
+
+/* ── File upload ─────────────────────────────────────── */
+const refImageInput   = document.getElementById('refImage');
+const filePreviewEl   = document.getElementById('filePreview');
+const fileThumb       = document.getElementById('fileThumb');
+const filePreviewName = document.getElementById('filePreviewName');
+const fileRemove      = document.getElementById('fileRemove');
+const fileDropLabel   = document.getElementById('fileDropLabel');
+
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+const MAX_FILE_BYTES = 4 * 1024 * 1024; // 4 MB
+
+
+function clearFilePreview() {
+  filePreviewEl.classList.remove('visible');
+  fileThumb.src = '';
+  filePreviewName.textContent = '';
+  fileDropLabel.textContent = 'Click to browse or drop an image here';
+}
+
+refImageInput.addEventListener('change', function() {
+  clearError('err-file');
+  var file = this.files[0];
+  if (!file) { clearFilePreview(); return; }
+
+  if (!ALLOWED_TYPES.includes(file.type) || file.size > MAX_FILE_BYTES) {
+    showError('err-file');
+    clearFilePreview();
+    this.value = '';
+    return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var base64 = ev.target.result.split(',')[1];
+    var url = URL.createObjectURL(file);
+    fileThumb.src = url;
+    filePreviewName.textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+    filePreviewEl.classList.add('visible');
+    fileDropLabel.textContent = 'Click to change image';
+  };
+  reader.readAsDataURL(file);
+});
+
+fileRemove.addEventListener('click', function() {
+  refImageInput.value = '';
+  clearFilePreview();
+  clearError('err-file');
+});
+
+/* ── Crop overlay boundaries (as % top position) ───── */
+const CROP_TOPS = {
+  headshot: 33,
+  halfbody: 67,
+  fullbody: 100,
+};
+
+const CROP_LABELS = {
+  headshot: 'Headshot',
+  halfbody: 'Half-Body',
+  fullbody: 'Full Body',
+};
+
+/* ── Price calculation ──────────────────────────────── */
+function calcPrice() {
+  const styleRadio = document.querySelector('input[name="style"]:checked');
+  const sizeRadio  = document.querySelector('input[name="size"]:checked');
+
+  // Toggle fullbg overlay on crop preview
+  const isFullbg = styleRadio && styleRadio.value === 'fullbg';
+  cropFullbgMsg.classList.toggle('active', isFullbg);
+
+  if (!styleRadio || !sizeRadio) {
+    priceValue.textContent     = '$0.00';
+    priceBreakdown.textContent = 'Select style and size to calculate';
+    return;
+  }
+
+  const styleKey = styleRadio.value;
+  const sizeKey  = sizeRadio.value;
+
+  // Full Background Illustration includes any size — don't add size price
+  const sizePrice = isFullbg ? 0 : SIZE_PRICES[sizeKey];
+  let base = STYLE_PRICES[styleKey] + sizePrice;
+
+  const commercial = document.getElementById('lic-commercial').checked;
+  const licNDA     = document.getElementById('lic-nda').checked;
+
+  let total = base;
+  const parts = [`${STYLE_LABELS[styleKey]} $${STYLE_PRICES[styleKey].toFixed(2)}`];
+  if (!isFullbg) {
+    parts.push(SIZE_PRICES[sizeKey] > 0 ? `${SIZE_LABELS[sizeKey]} +$${SIZE_PRICES[sizeKey].toFixed(2)}` : `${SIZE_LABELS[sizeKey]} +$0`);
+  } else {
+    parts.push('Size included');
+  }
+
+  if (commercial) {
+    total = total * 2.5;
+    parts.push('Commercial ×2.5');
+  }
+
+  if (licNDA) {
+    total += 49.99;
+    parts.push('NDA +$49.99');
+  }
+
+  priceValue.textContent     = `$${total.toFixed(2)}`;
+  priceBreakdown.textContent = parts.join(' · ');
+}
+
+/* ── Crop preview logic ─────────────────────────────── */
+function setCropFromSize(sizeKey) {
+  // Update selected outline on regions
+  document.querySelectorAll('.crop-region').forEach(function(el) {
+    el.classList.toggle('selected', el.dataset.size === sizeKey);
+  });
+
+  if (!sizeKey) {
+    cropOverlay.style.top     = '0';
+    cropOverlay.style.display = 'block';
+    cropLabel.textContent     = 'No selection';
+    if (cropHint) cropHint.textContent = 'Click to select';
+    return;
+  }
+  const top = CROP_TOPS[sizeKey];
+  if (top >= 100) {
+    cropOverlay.style.display = 'none';
+  } else {
+    cropOverlay.style.display = 'block';
+    cropOverlay.style.top     = top + '%';
+  }
+  cropLabel.textContent = CROP_LABELS[sizeKey] + ' selected';
+  if (cropHint) cropHint.textContent = CROP_LABELS[sizeKey];
+}
+
+document.querySelectorAll('.crop-region').forEach(function(region) {
+  function activate() {
+    const sz = region.dataset.size;
+    // Select the matching radio
+    const radio = document.getElementById('size-' + sz);
+    if (radio) { radio.checked = true; }
+    setCropFromSize(sz);
+    calcPrice();
+    clearError('err-size');
+  }
+  region.addEventListener('click', activate);
+  region.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
+  });
+});
+
+/* ── Sync crop when size radio changes ──────────────── */
+document.querySelectorAll('input[name="size"]').forEach(function(r) {
+  r.addEventListener('change', function() {
+    setCropFromSize(r.value);
+    calcPrice();
+    clearError('err-size');
+  });
+});
+
+/* ── Clear name error on input ──────────────────────── */
+document.getElementById('commName').addEventListener('input', function() {
+  clearError('err-name');
+  this.classList.remove('field-error');
+});
+
+/* ── Recalc on any pricing change ───────────────────── */
+document.querySelectorAll('input[name="style"]').forEach(function(r) {
+  r.addEventListener('change', function() { calcPrice(); clearError('err-style'); });
+});
+
+document.getElementById('lic-commercial').addEventListener('change', calcPrice);
+document.getElementById('lic-nda').addEventListener('change', calcPrice);
+
+
+/* ── Validation helpers ─────────────────────────────── */
+function showError(id) {
+  document.getElementById(id).classList.add('show');
+}
+
+function clearError(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+function clearAllErrors() {
+  document.querySelectorAll('.error-msg').forEach(function(el) { el.classList.remove('show'); });
+  document.querySelectorAll('.field-error').forEach(function(el) { el.classList.remove('field-error'); });
+}
+
+/* ── Form submit ─────────────────────────────────────── */
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  clearAllErrors();
+
+  let valid = true;
+
+  const nameVal = document.getElementById('commName').value.trim();
+  if (!nameVal) {
+    showError('err-name');
+    document.getElementById('commName').classList.add('field-error');
+    valid = false;
+  }
+
+  const styleRadio = document.querySelector('input[name="style"]:checked');
+  if (!styleRadio) { showError('err-style'); valid = false; }
+
+  const sizeRadio = document.querySelector('input[name="size"]:checked');
+  if (!sizeRadio) { showError('err-size'); valid = false; }
+
+  const desc = document.getElementById('description').value.trim();
+  if (!desc) {
+    showError('err-desc');
+    document.getElementById('description').classList.add('field-error');
+    valid = false;
+  }
+
+  const discord   = document.getElementById('contact-discord').value.trim();
+  const twitter   = document.getElementById('contact-twitter').value.trim();
+  const instagram = document.getElementById('contact-instagram').value.trim();
+  if (!discord && !twitter && !instagram) {
+    showError('err-contact');
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  // Build price for submission
+  const styleKey   = styleRadio.value;
+  const sizeKey    = sizeRadio.value;
+  const isFullbgSub = styleKey === 'fullbg';
+  const sizeCharge  = isFullbgSub ? 0 : SIZE_PRICES[sizeKey];
+  const base        = STYLE_PRICES[styleKey] + sizeCharge;
+  const commercial  = document.getElementById('lic-commercial').checked;
+  const licNDA      = document.getElementById('lic-nda').checked;
+
+  let total = base;
+  if (commercial) total = total * 2.5;
+  if (licNDA)     total += 49.99;
+
+  // Read reference image as base64 if one is attached
+  let referenceImage = null;
+  const imgFile = refImageInput.files[0];
+  if (imgFile) {
+    if (!ALLOWED_TYPES.includes(imgFile.type) || imgFile.size > MAX_FILE_BYTES) {
+      showError('err-file');
+      return;
+    }
+    try {
+      referenceImage = await new Promise(function(resolve, reject) {
+        var r = new FileReader();
+        r.onload = function(ev) {
+          var base64 = ev.target.result.split(',')[1];
+          resolve({ filename: imgFile.name, mimeType: imgFile.type, size: imgFile.size, data: base64 });
+        };
+        r.onerror = function() { reject(new Error('Could not read file')); };
+        r.readAsDataURL(imgFile);
+      });
+    } catch (fileErr) {
+      showError('err-file');
+      return;
+    }
+  }
+
+  const payload = {
+    timestamp:     new Date().toISOString(),
+    googleAccount: googleUser ? googleUser.email : null,
+    googleIdToken: googleIdToken,
+    name:          nameVal,
+    style:         { key: styleKey, label: STYLE_LABELS[styleKey], price: STYLE_PRICES[styleKey] },
+    characterSize: { key: sizeKey,  label: SIZE_LABELS[sizeKey],  price: sizeCharge },
+    licenses: {
+      personal:   true,
+      monetized:  true,
+      commercial: commercial,
+      nda:        licNDA,
+    },
+    description: desc,
+    contact: {
+      discord:   discord   || null,
+      twitter:   twitter   || null,
+      instagram: instagram || null,
+    },
+    pricing: {
+      base:       base,
+      commercial: commercial,
+      licNDA:     licNDA,
+      total:      parseFloat(total.toFixed(2)),
+    },
+    referenceImage: referenceImage,
+  };
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting…';
+
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload),
+      cache: 'no-store',
+    });
+
+    const json = await res.json();
+    if (!res.ok || json.result !== 'ok') throw new Error(json.message || `Server error ${res.status}`);
+    openDialog('dialogSuccess');
+    form.reset();
+    clearAllErrors();
+    setCropFromSize(null);
+    calcPrice();
+  } catch (err) {
+    document.getElementById('dialogErrorMsg').textContent =
+      err.message || 'Please try again. If the problem persists, please contact me directly.';
+    openDialog('dialogError');
+  } finally {
+    submitBtn.disabled    = false;
+    submitBtn.textContent = 'Submit';
+  }
+});
+
+/* ── Reset button ────────────────────────────────────── */
+resetBtn.addEventListener('click', function() {
+  form.reset();
+  clearAllErrors();
+  setCropFromSize(null);
+  calcPrice();
+});
+
+/* ── Dialog helpers ──────────────────────────────────── */
+function openDialog(id) {
+  document.getElementById(id).classList.add('active');
+}
+
+function closeDialog(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+/* ── Initial state ───────────────────────────────────── */
+document.getElementById('size-headshot').checked = true;
+setCropFromSize('headshot');
+calcPrice();
+</script>
+
+
+</div><!-- /#xp-page-window -->
+</body>
+</html>

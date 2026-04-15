@@ -1,0 +1,264 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>drmy's Art Forum - Thread</title>
+<link rel="stylesheet" href="thread-pages.css">
+<script src="thread-data.js" defer></script>
+<script defer>
+function toggleForumTranslation(id, button) {
+  const panel = document.getElementById(id);
+  if (!panel || !button) return false;
+  const isHidden = panel.hasAttribute('hidden');
+  if (isHidden) {
+    panel.removeAttribute('hidden');
+    button.textContent = 'hide english translation';
+    button.setAttribute('aria-expanded', 'true');
+  } else {
+    panel.setAttribute('hidden', 'hidden');
+    button.textContent = 'translate to english';
+    button.setAttribute('aria-expanded', 'false');
+  }
+  return false;
+}
+
+function stripTags(html) {
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = html;
+  return wrapper.textContent || wrapper.innerText || '';
+}
+
+function spinRow(count = 2) {
+  return Array.from({ length: count }, () => '<span class="sparkle-spin" aria-hidden="true"></span>').join('');
+}
+
+function badgeBlock(label, tone = 'lavender', count = 2) {
+  return `<span class="post-subtitle-label">${label}</span><span class="forum-badge-line ${tone}">${spinRow(count)}</span>`;
+}
+
+function defaultSubtitleFor(username, rankText) {
+  const rank = (rankText || '').toLowerCase();
+  if (username === 'drmy') return badgeBlock('Admin', 'black', 7);
+  if (username === 'x_glitter_n3ko_x') return badgeBlock('Pink Elite', 'pink', 4);
+  if (username === 'pixel_fairy') return badgeBlock('Pixel Club', 'lavender', 2);
+  if (username === 'sakura_mochi') return badgeBlock('Sketch Bloom', 'pink', 2);
+  if (username === '夜更かし_07') return badgeBlock('Night Crew', 'blue', 2);
+  if (username === 'コーヒー好き') return badgeBlock('Cafe Club', 'gold', 2);
+  if (username === 'midi_knight') return badgeBlock('Winamp Hours', 'blue', 2);
+  if (username === 'dialup_drifter') return badgeBlock('56k Club', 'silver', 2);
+  if (username === 'ghostwatcher88') return badgeBlock('Night Watch', 'silver', 2);
+  if (username === 'xX_shadow_Xx') return badgeBlock('Do Not Sleep', 'silver', 2);
+  if (rank.includes('admin')) return badgeBlock('Admin', 'black', 7);
+  if (rank.includes('regular')) return badgeBlock('Regular', 'lavender', 2);
+  if (rank.includes('new')) return badgeBlock('New Kid', 'blue', 2);
+  if (rank.includes('guest')) return badgeBlock('Guest', 'silver', 2);
+  return badgeBlock('Forum Kid', 'lavender', 2);
+}
+
+const PROFILE_LIBRARY = {
+  drmy: {
+    rank: 'Administrator',
+    joined: 'Joined: always',
+    count: 'Posts: 1,847',
+    avatar: './me2.png',
+    avatarStyle: 'border:2px solid #111;box-shadow:0 0 10px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.45)',
+    subtitleHtml: badgeBlock('Admin', 'black', 7),
+    signatureHtml: 'coffee gets cold faster than i do.<br>mod notice: keep giant signatures under control'
+  },
+  x_glitter_n3ko_x: {
+    rank: 'angel princess elite',
+    joined: 'Joined: 2005.12',
+    count: 'Posts: 1,203',
+    avatar: './pfps/glitter.png',
+    usernameStyle: 'color:#ff71c8;text-shadow:0 0 6px rgba(255,160,225,.8),1px 1px 0 #fff;letter-spacing:.3px',
+    rankStyle: 'color:#ff8fd7;font-style:normal;font-weight:bold',
+    avatarStyle: 'border:2px solid #ffb5e8;box-shadow:0 0 10px rgba(255,145,214,.45)',
+    subtitleHtml: badgeBlock('Pink Elite', 'pink', 4),
+    signatureHtml: '<span style="color:#ff78cf">✨✨✨</span> <span style="color:#ff9de2">~*~ x_glitter_n3ko_x ~*~</span> <span style="color:#ff78cf">✨✨✨</span><br><span style="color:#ff71c8">rawr XD</span> &middot; <span style="color:#ffb4ec">bunny clips 4ever</span> &middot; <span style="color:#ff87d7">sugar pink disaster</span> &middot; <span style="color:#ff71c8">♥♥♥</span><br><span style="color:#c772ff">currently listening to sad songs and making everything cuter (｡･ω･｡)</span>'
+  },
+  pixel_fairy: {
+    rank: 'Regular Member',
+    joined: 'Joined: 2006.02',
+    count: 'Posts: 418',
+    avatar: './pfps/pixel2.png',
+    subtitleHtml: badgeBlock('Pixel Club', 'lavender', 2)
+  },
+  sakura_mochi: {
+    rank: 'Regular Member',
+    joined: 'Joined: 2006.03',
+    count: 'Posts: 342',
+    avatar: './pfps/sakura.png',
+    subtitleHtml: badgeBlock('Sketch Bloom', 'pink', 2)
+  },
+  '夜更かし_07': {
+    rank: 'Member',
+    joined: 'Joined: 2006.11',
+    count: 'Posts: 89',
+    avatar: './pfps/yofukashi.png',
+    subtitleHtml: badgeBlock('Night Crew', 'blue', 2)
+  },
+  'コーヒー好き': {
+    rank: 'Member',
+    joined: 'Joined: 2007.01',
+    count: 'Posts: 56',
+    avatar: './pfps/coffee.png',
+    subtitleHtml: badgeBlock('Cafe Club', 'gold', 2)
+  },
+  dialup_drifter: {
+    rank: 'Member',
+    joined: 'Joined: 2006.08',
+    count: 'Posts: 204',
+    avatar: './pfps/dialup.png',
+    subtitleHtml: badgeBlock('56k Club', 'silver', 2)
+  },
+  midi_knight: {
+    rank: 'Member',
+    joined: 'Joined: 2005.09',
+    count: 'Posts: 277',
+    avatar: './pfps/midi.png',
+    subtitleHtml: badgeBlock('Winamp Hours', 'blue', 2)
+  },
+  ghostwatcher88: {
+    rank: 'Member',
+    joined: 'Joined: 2007.XX',
+    count: 'Posts: 27',
+    avatar: './pfps/ghost.png',
+    subtitleHtml: badgeBlock('Night Watch', 'silver', 2)
+  },
+  xX_shadow_Xx: {
+    rank: 'New Member',
+    joined: 'Joined: 2007.XX',
+    count: 'Posts: 13',
+    subtitleHtml: badgeBlock('Do Not Sleep', 'silver', 2)
+  }
+};
+
+function applyConsistentProfiles(root) {
+  root.querySelectorAll('.forum-post').forEach(post => {
+    const usernameNode = post.querySelector('.post-username');
+    if (!usernameNode) return;
+    const username = usernameNode.textContent.trim();
+    const profile = PROFILE_LIBRARY[username] || {};
+
+    const rankNode = post.querySelector('.post-rank');
+    const joinedNode = post.querySelector('.post-joined');
+    const countNode = post.querySelector('.post-count');
+    const avatarNode = post.querySelector('img.post-avatar');
+    let subtitleNode = post.querySelector('.post-subtitle');
+    let sigNode = post.querySelector('.forum-post-sig');
+
+    if (rankNode && profile.rank) rankNode.textContent = profile.rank;
+    if (joinedNode && profile.joined) joinedNode.textContent = profile.joined;
+    if (countNode && profile.count) countNode.textContent = profile.count;
+    if (avatarNode && profile.avatar) avatarNode.setAttribute('src', profile.avatar);
+    if (avatarNode && profile.avatar) avatarNode.setAttribute('alt', `${username} avatar`);
+
+    usernameNode.style.cssText = profile.usernameStyle || '';
+    if (rankNode) rankNode.style.cssText = profile.rankStyle || '';
+    if (avatarNode) avatarNode.style.cssText = profile.avatarStyle || '';
+    const subtitleHtml = profile.subtitleHtml || defaultSubtitleFor(username, rankNode?.textContent?.trim());
+    if (subtitleHtml) {
+      if (!subtitleNode) {
+        subtitleNode = document.createElement('div');
+        subtitleNode.className = 'post-subtitle';
+        if (rankNode) {
+          rankNode.insertAdjacentElement('afterend', subtitleNode);
+        } else {
+          post.querySelector('.forum-post-user')?.prepend(subtitleNode);
+        }
+      }
+      subtitleNode.innerHTML = subtitleHtml;
+    }
+    if (profile.signatureHtml) {
+      if (!sigNode) {
+        sigNode = document.createElement('div');
+        sigNode.className = 'forum-post-sig';
+        post.querySelector('.forum-post-body')?.appendChild(sigNode);
+      }
+      sigNode.innerHTML = profile.signatureHtml;
+    }
+  });
+}
+
+function addReplyQuotes(root) {
+  const posts = Array.from(root.querySelectorAll('.forum-post'));
+  posts.forEach((post, index) => {
+    if (index === 0) return;
+    if (post.querySelector('.forum-reply-quote')) return;
+
+    const prevPost = posts[index - 1];
+    const prevUser = prevPost.querySelector('.post-username')?.textContent?.trim();
+    const prevBody = prevPost.querySelector('.forum-post-body');
+    const body = post.querySelector('.forum-post-body');
+    const header = body?.querySelector('.forum-post-header');
+    if (!prevUser || !prevBody || !body || !header) return;
+
+    const clone = prevBody.cloneNode(true);
+    clone.querySelector('.forum-post-header')?.remove();
+    clone.querySelector('.forum-post-sig')?.remove();
+    clone.querySelector('.forum-reply-quote')?.remove();
+    clone.querySelectorAll('.forum-translate-toggle,.forum-translation').forEach(node => node.remove());
+    const excerpt = (clone.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 180);
+    if (!excerpt) return;
+
+    const quote = document.createElement('div');
+    quote.className = 'forum-reply-quote';
+    quote.innerHTML = `<strong>${prevUser} wrote:</strong><br>${excerpt}${excerpt.length === 180 ? '...' : ''}`;
+    header.insertAdjacentElement('afterend', quote);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const threads = Array.isArray(window.THREAD_DATA) ? window.THREAD_DATA : [];
+  const params = new URLSearchParams(window.location.search);
+  const threadId = params.get('t') || 'welcome-rules';
+  const thread = threads.find(entry => entry.id === threadId);
+  const titleNode = document.getElementById('thread-title');
+  const breadcrumbNode = document.getElementById('thread-crumb');
+  const contentNode = document.getElementById('thread-content');
+
+  if (!thread) {
+    titleNode.textContent = 'Thread not found';
+    breadcrumbNode.textContent = 'missing topic';
+    contentNode.innerHTML = '<div class="section-head">Missing Thread</div><div class="archive-box">That topic does not exist here anymore. Try the <a href="threads.html">thread hub</a>.</div>';
+    return;
+  }
+
+  document.title = `${stripTags(thread.titleHtml)} - drmy's Art Forum`;
+  titleNode.innerHTML = thread.titleHtml;
+  titleNode.style.cssText = thread.titleStyle || '';
+  breadcrumbNode.innerHTML = thread.titleHtml;
+  contentNode.innerHTML = thread.sectionHtml;
+  applyConsistentProfiles(contentNode);
+  addReplyQuotes(contentNode);
+});
+</script>
+</head>
+<body>
+<div id="top"></div>
+<div class="top-banner">
+  <div class="top-banner-inner">
+    <div>
+      <div class="banner-title">drmy's Art Forum</div>
+      <div class="banner-sub">thread view · replies, drawings, rumors, and too many late-night posts</div>
+    </div>
+    <div style="font-size:11px;color:#fff7da;text-align:right">Thread view<br>same tab, same weird internet</div>
+  </div>
+</div>
+<div class="nav-bar">
+  <a href="forum.html">Board Index</a>
+  <a href="threads.html">Thread Hub</a>
+  <a href="forum.html#guestbook">Guestbook</a>
+  <a href="https://vgen.co/doremy" target="_blank">Commissions</a>
+</div>
+<div class="page-wrap">
+  <div class="forum-breadcrumb"><a href="forum.html">Board Index</a> &raquo; <a href="threads.html">General</a> &raquo; <span id="thread-crumb">loading...</span></div>
+  <div class="board-topline thread-page-topline">
+    <h1 class="board-title" id="thread-title">loading...</h1>
+    <div class="board-topline-meta"><a href="threads.html">back to thread hub</a></div>
+  </div>
+  <div id="thread-content"></div>
+</div>
+</body>
+</html>
