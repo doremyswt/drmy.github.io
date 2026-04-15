@@ -151,7 +151,7 @@
 </script>
 
 <svelte:head>
-    <title>Microsoft Windows XP Professional</title>
+    <title>drmy's XP Desktop</title>
 </svelte:head>
 
 {#if page}
