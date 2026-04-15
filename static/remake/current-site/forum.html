@@ -2319,7 +2319,7 @@ html{scrollbar-color:#d4d0c8 #e0dbd8;scrollbar-width:auto}
 })();
 
 // Popups always render inside this document regardless of embedding context.
-const _IN_IFRAME=false;
+const _IN_IFRAME=(window.parent!==window);
 const _PARENT_WIN=window;
 const _PARENT_DOC=document;
 
@@ -5604,6 +5604,10 @@ function startTerminalCaption(){
 }
 
 function requestCrashFullscreen(){
+  if(window.parent&&window.parent!==window){
+    window.parent.postMessage({type:'request-fullscreen'},'*');
+    return;
+  }
   const root=document.documentElement;
   if(
     document.fullscreenElement||

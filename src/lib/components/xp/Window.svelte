@@ -127,8 +127,8 @@
         if(z_index != $zIndex){
             zIndex.update(value => value + 1);
             z_index = $zIndex;
-            on_focused();
         }
+        on_focused();
     }
 
     export function loose_focus(){

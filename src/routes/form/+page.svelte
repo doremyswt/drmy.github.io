@@ -1,5 +1,12 @@
+<script>
+    import { onMount } from 'svelte';
+    onMount(() => { window.location.href = 'https://vgen.co/doremy'; });
+</script>
+
 <svelte:head>
-    <style>html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }</style>
+    <style>html, body { margin: 0; padding: 0; height: 100%; }</style>
 </svelte:head>
 
-<iframe src="/remake/current-site/commission.html" title="Commission Form" style="width:100%;height:100vh;border:none;"></iframe>
+<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#666;">
+    Redirecting to VGen...
+</div>

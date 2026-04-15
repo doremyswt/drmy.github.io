@@ -60,6 +60,10 @@
         unmount(get_self());
     }
 
+    function on_focused(){
+        if(iframe?.contentWindow) setTimeout(() => iframe.contentWindow.focus(), 0);
+    }
+
     export let options = {
         title: fs_item == null ? 'Paint' : fs_item.name,
         min_width: 500,
@@ -202,7 +206,7 @@
 
 
 
-<Window options={options} bind:this={window} on_click_close={destroy}>
+<Window options={options} bind:this={window} on_click_close={destroy} {on_focused}>
     <div slot="content" class="absolute inset-1 top-0 flex flex-col bg-[rgb(192,192,192)] overflow-hidden">
         <!-- svelte-ignore a11y-missing-attribute -->
         {#if !iframe_loaded}

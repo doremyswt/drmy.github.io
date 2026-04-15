@@ -15,7 +15,7 @@
 
     function handleCommissionsClick() {
         if (!dragMoved) {
-            window.location.href = '/form';
+            window.open('https://vgen.co/doremy', '_blank');
         }
     }
 

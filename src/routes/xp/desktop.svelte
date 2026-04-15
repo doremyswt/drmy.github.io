@@ -126,11 +126,14 @@
     let drag_popup = null;
     let drag_ox = 0, drag_oy = 0;
 
+    let popup_dragging = false;
+
     function popup_mousedown(e, popup) {
         e.preventDefault();
         drag_popup = popup.id;
         drag_ox = e.clientX - popup.x;
         drag_oy = e.clientY - popup.y;
+        popup_dragging = true;
         popups = popups.map(p => p.id === popup.id ? { ...p, z: popup_z++ } : p);
     }
 
@@ -139,7 +142,10 @@
         popups = popups.map(p => p.id === drag_popup ? { ...p, x: e.clientX - drag_ox, y: e.clientY - drag_oy } : p);
     }
 
-    function on_mouseup() { drag_popup = null; }
+    function on_mouseup() {
+        drag_popup = null;
+        popup_dragging = false;
+    }
 
     // ── Message handler ──
     function on_message(e) {
@@ -153,7 +159,16 @@
             close_popup(e.data.id);
         } else if (type === 'bonzi-crash') {
             handle_crash();
+        } else if (type === 'request-fullscreen') {
+            requestSiteFullscreen();
         }
+    }
+
+    function requestSiteFullscreen() {
+        const root = document.documentElement;
+        if (document.fullscreenElement) return;
+        const req = root.requestFullscreen || root.webkitRequestFullscreen || root.msRequestFullscreen;
+        if (typeof req === 'function') try { req.call(root); } catch {}
     }
 
     function handle_crash() {
@@ -373,33 +388,33 @@
     }
 }} />{/if}
 
+<!-- Drag overlay to capture mouse over iframes -->
+{#if popup_dragging}
+<div class="fixed inset-0" style="z-index:999999;cursor:move;" on:mousemove={on_mousemove} on:mouseup={on_mouseup}></div>
+{/if}
+
 <!-- Draggable desktop popups from forum.html -->
 {#each popups as popup (popup.id)}
 <div
-    class="fixed select-none"
-    style="left:{popup.x}px;top:{popup.y}px;z-index:{popup.z};min-width:260px;max-width:{popup.opts.width||'340px'};background:#ece9d8;border:2px solid #0a246a;box-shadow:2px 2px 0 #fff inset,-1px -1px 0 #716f64 inset,4px 4px 8px rgba(0,0,0,0.4);"
+    class="fixed select-none virus-popup {popup.opts.variant === 'info' ? 'retro-info' : ''} {popup.opts.className || ''}"
+    style="left:{popup.x}px;top:{popup.y}px;z-index:{popup.z};{popup.opts.width ? 'width:'+popup.opts.width+';' : ''}--popup-head:{popup.opts.headColor||'#000080'};--popup-border:{popup.opts.borderColor||'#f4f4f4'};{popup.opts.glitchShift != null ? '--glitch-shift:'+popup.opts.glitchShift+';' : ''}"
 >
     <div
         role="presentation"
-        class="flex items-center gap-1 px-1 cursor-move"
-        style="background:linear-gradient(180deg,#0a246a,#a6b5e1);color:#fff;height:22px;font-size:11px;font-family:'Trebuchet MS',sans-serif;font-weight:bold;"
+        class="virus-popup-head"
         on:mousedown={(e) => popup_mousedown(e, popup)}
     >
-        <span class="flex-1 truncate">{popup.title || 'Alert'}</span>
-        <button
-            class="flex items-center justify-center text-black font-bold cursor-pointer"
-            style="width:16px;height:14px;background:#ece9d8;border:1px solid #716f64;font-size:10px;line-height:1;"
-            on:click={() => close_popup(popup.id)}
-        >×</button>
+        <span>{popup.title || 'Alert'}</span>
+        <span class="virus-popup-close" on:click={() => close_popup(popup.id)}>[x]</span>
     </div>
-    <div class="p-3" style="font-size:12px;font-family:Tahoma,sans-serif;color:#000;">
+    <div class="virus-popup-body">
         {#if popup.opts.html}
             {@html popup.opts.html}
         {:else}
             {popup.message || ''}
-        {/if}
-        {#if popup.source}
-            <div style="margin-top:6px;font-size:10px;color:#666;">{popup.source}</div>
+            {#if popup.source}
+                <small>source: {popup.source}</small>
+            {/if}
         {/if}
     </div>
 </div>
@@ -545,4 +560,65 @@
     @keyframes blink {
         50% { opacity: 0; }
     }
+
+    /* ── Virus popup styles (bridged from forum.html) ── */
+    :global(.virus-popup){
+        width:clamp(220px,24vw,300px);
+        background:#c0c0c0;
+        border:2px outset #f4f4f4;
+        color:#111;
+        font-family:'VT323',monospace;
+        box-shadow:8px 8px 0 rgba(0,0,0,.22);
+        animation:virus-pop .12s steps(2,end);
+        border-color:var(--popup-border,#f4f4f4);
+    }
+    :global(.virus-popup.popup-glitchy){overflow:hidden;transform:skewX(-1deg);}
+    :global(.virus-popup.popup-glitchy)::before{
+        content:'';position:absolute;inset:0;pointer-events:none;
+        background:repeating-linear-gradient(180deg,rgba(255,255,255,.06) 0 8px,rgba(0,0,0,.2) 8px 12px,transparent 12px 20px);
+        mix-blend-mode:screen;opacity:.9;
+    }
+    :global(.virus-popup.popup-glitchy .virus-popup-head),
+    :global(.virus-popup.popup-glitchy .virus-popup-body){transform:translateX(calc((var(--glitch-shift,0))*1px));}
+    :global(.virus-popup.popup-glitchy .virus-popup-body){
+        clip-path:polygon(0 0,100% 0,100% 14%,0 18%,0 31%,100% 28%,100% 48%,0 52%,0 67%,100% 64%,100% 82%,0 86%,0 100%,100% 100%);
+    }
+    :global(.virus-popup-head){
+        display:flex;justify-content:space-between;align-items:center;
+        background:var(--popup-head,#000080);color:#fff;font-size:15px;
+        padding:3px 6px;cursor:move;user-select:none;
+    }
+    :global(.virus-popup-close){cursor:pointer;min-width:22px;text-align:center;}
+    :global(.virus-popup-body){padding:10px 10px 12px;font-size:19px;line-height:1.15;}
+    :global(.virus-popup-body small){display:block;font-size:15px;color:#b00000;margin-top:5px;}
+    :global(.virus-popup.retro-info){background:#efe7d0;}
+    :global(.virus-popup.retro-info .virus-popup-body small){color:#6f4711;}
+    :global(.virus-popup.popup-empty .virus-popup-body){min-height:72px;}
+    :global(.virus-popup.popup-empty .virus-popup-body > *){display:none;}
+    :global(.virus-popup.popup-empty .virus-popup-head span:first-child){opacity:.45;}
+    :global(.popup-actions){display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+    :global(.popup-btn){border:2px outset #d8d0c0;background:#f2ead6;color:#111;font-family:'VT323',monospace;font-size:18px;padding:4px 10px;cursor:pointer;}
+    :global(.popup-btn:active){border-style:inset;}
+    :global(.popup-status){margin-top:8px;font-size:17px;color:#5e3100;}
+    :global(.popup-meter){width:100%;height:16px;border:2px inset #bcb4a4;background:#fff8e9;margin-top:8px;overflow:hidden;}
+    :global(.popup-meter-fill){height:100%;width:0;background:linear-gradient(90deg,#00aa44,#66ff99);}
+    :global(.popup-grid){display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;}
+    :global(.popup-card){border:1px solid #8b6914;background:#fff7dc;padding:6px;font-size:16px;}
+    :global(.popup-list){margin-top:8px;border:1px solid #8b6914;background:#fff9ee;padding:6px;display:flex;flex-direction:column;gap:4px;max-height:140px;overflow:auto;}
+    :global(.popup-mail){font-size:15px;border-bottom:1px dotted #bba16c;padding-bottom:3px;}
+    :global(.popup-reels){display:flex;gap:6px;justify-content:center;margin-top:8px;}
+    :global(.popup-reel){width:56px;border:2px inset #cfc3ab;background:#fff;font-size:32px;text-align:center;padding:8px 0;}
+    :global(.popup-note){margin-top:8px;font-size:15px;color:#7a0048;}
+    :global(.bonzi-setup){border:2px outset #b66cff;background:linear-gradient(180deg,#f7e8ff,#ead2ff);padding:10px;}
+    :global(.bonzi-stage){display:flex;gap:12px;align-items:flex-start;margin-top:8px;}
+    :global(.bonzi-canvas-wrap){width:192px;height:154px;flex-shrink:0;border:2px inset #a87cd6;background:linear-gradient(180deg,#f9f2ff,#efe0ff);display:flex;align-items:center;justify-content:center;}
+    :global(.bonzi-canvas){width:180px;height:135px;display:block;image-rendering:pixelated;}
+    :global(.bonzi-speech){flex:1;min-height:98px;background:#330066;color:#ffccff;padding:8px 10px;font-size:16px;border:2px solid #aa00ff;line-height:1.35;}
+    :global(.bonzi-actions){display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+    :global(.bonzi-actions .popup-btn){min-width:88px;}
+    :global(.bonzi-mini-status){margin-top:8px;font-size:16px;color:#6a1294;}
+    :global(.bonzi-menu-copy){border:2px outset #b66cff;background:linear-gradient(180deg,#f7e8ff,#ead2ff);padding:10px;}
+    :global(.bonzi-menu-copy h3){font-family:VT323,monospace;font-size:30px;color:#6a1294;margin-bottom:6px;}
+    :global(.bonzi-menu-copy p){font-size:16px;line-height:1.3;color:#4d1f73;}
+    @keyframes -global-virus-pop{0%{transform:scale(.85)}100%{transform:scale(1)}}
 </style>
