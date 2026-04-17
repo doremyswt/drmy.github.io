@@ -47,7 +47,7 @@
 
     async function load_hard_drive(){
         // Always load fresh from JSON so server-side changes take effect
-        let hard_drive = (await axios({ method: 'get', url: '/json/hard_drive.json' })).data;
+        let hard_drive = (await axios({ method: 'get', url: '/json/hard_drive.json?t=' + Date.now() })).data;
 
         // Overlay user-modified fields from cache
         let cached = await get('hard_drive');

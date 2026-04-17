@@ -18,7 +18,7 @@
    const USER_FIELDS = ['desktop_css_transform', 'sort_option', 'sort_order', 'view_mode'];
 
    async function load_hard_drive() {
-    let hard_drive = (await axios({ method: 'get', url: '/json/hard_drive.json' })).data;
+    let hard_drive = (await axios({ method: 'get', url: '/json/hard_drive.json?t=' + Date.now() })).data;
     let cached = await get('hard_drive');
     if (cached != null) {
         for (let key of Object.keys(hard_drive)) {

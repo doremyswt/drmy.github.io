@@ -51,8 +51,9 @@ jobs:
               const name = line.slice(spaceIdx + 1);
               fileMap[name] = ts;
             }
+            const natCmp = (a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
             const files = Object.keys(fileMap)
-              .sort((a, b) => fileMap[b] - fileMap[a]);
+              .sort((a, b) => (fileMap[b] - fileMap[a]) || natCmp(a, b));
 
             // 2. Update images.json (used by old site)
             const urls = files.map(f => '/remake/current-site/arch/' + f);
