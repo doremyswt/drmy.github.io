@@ -6118,6 +6118,7 @@ window.addEventListener('resize',layout,{passive:true});function resetZoom(){zoo
   const avatarBtn=document.getElementById('avatar-btn');
   if(avatarBtn){
     avatarBtn.style.cursor='pointer';
+    avatarBtn.addEventListener('click',function(){window.location.href='profile.html?u=drmy';});
   }
 })();
 </script>
