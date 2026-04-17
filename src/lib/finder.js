@@ -2,8 +2,11 @@ import { hardDrive } from './store';
 import { my_computer} from './system';
 import { get } from 'svelte/store';
 
-let computer = my_computer.map(el => get(hardDrive)[el]);
-let drives = computer.filter(item => item.type == 'drive' || item.type == 'removable_storage');
+function getDrives(){
+    const hd = get(hardDrive);
+    if(!hd) return [];
+    return my_computer.map(el => hd[el]).filter(item => item && (item.type == 'drive' || item.type == 'removable_storage'));
+}
  
 export function to_url(id){
     if(id == null || get(hardDrive)[id] == null) return null;
@@ -33,7 +36,7 @@ export function to_id_nocase(url){
     let path_components = url.split('\\').filter(item => item.trim().length > 0).map(item => item.trim());
     if(path_components.length == 0) return null;
 
-    let drive = drives.find(item => item.name.toLowerCase() == path_components[0].toLowerCase());
+    let drive = getDrives().find(item => item.name.toLowerCase() == path_components[0].toLowerCase());
    
     if(drive == null) return null;
     if(path_components.length == 1) return drive.id;
@@ -63,7 +66,7 @@ export function to_id(url){
     console.log(path_components);
     if(path_components.length == 0) return null;
 
-    let drive = drives.find(item => item.name == path_components[0]);
+    let drive = getDrives().find(item => item.name == path_components[0]);
    
     if(drive == null) return null;
     if(path_components.length == 1) return drive.id;
