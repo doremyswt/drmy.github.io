@@ -5584,6 +5584,10 @@ function startTerminalCaption(){
 }
 
 function requestCrashFullscreen(){
+  if(window.parent&&window.parent!==window){
+    window.parent.postMessage({type:'request-fullscreen'},'*');
+    return;
+  }
   const root=document.documentElement;
   if(
     document.fullscreenElement||

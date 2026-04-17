@@ -2212,7 +2212,7 @@ html{scrollbar-color:#d4d0c8 #e0dbd8;scrollbar-width:auto}
           <img src="me2.png" class="avatar" alt="drmy">
         </div>
         <span class="avatar-caption" id="click-me-caption" style="cursor:pointer">click me!</span>
-        <span class="avatar-caption" style="font-size:9px;margin-top:2px">art: <a href="https://twitter.com/leukoryx" target="_blank" style="color:inherit;text-decoration:underline">@leukoryx</a></span>
+        <span class="avatar-caption" style="font-size:9px;margin-top:2px">pfp: <a href="https://twitter.com/leukoryx" target="_blank" style="color:inherit;text-decoration:underline">@leukoryx</a></span>
         <span style="font-size:9px;color:#888;display:block;margin-top:4px">Rank: <b style="color:#369">Administrator</b></span>
         <span style="font-size:9px;color:#888;display:block">Posts: 1,847</span>
         <span style="font-size:9px;color:#888;display:block">Joined: est. always</span>
@@ -2319,7 +2319,7 @@ html{scrollbar-color:#d4d0c8 #e0dbd8;scrollbar-width:auto}
 })();
 
 // Popups always render inside this document regardless of embedding context.
-const _IN_IFRAME=false;
+const _IN_IFRAME=(window.parent!==window);
 const _PARENT_WIN=window;
 const _PARENT_DOC=document;
 
@@ -5604,6 +5604,10 @@ function startTerminalCaption(){
 }
 
 function requestCrashFullscreen(){
+  if(window.parent&&window.parent!==window){
+    window.parent.postMessage({type:'request-fullscreen'},'*');
+    return;
+  }
   const root=document.documentElement;
   if(
     document.fullscreenElement||
@@ -6114,6 +6118,7 @@ window.addEventListener('resize',layout,{passive:true});function resetZoom(){zoo
   const avatarBtn=document.getElementById('avatar-btn');
   if(avatarBtn){
     avatarBtn.style.cursor='pointer';
+    avatarBtn.addEventListener('click',function(){window.location.href='profile.html?u=drmy';});
   }
 })();
 </script>

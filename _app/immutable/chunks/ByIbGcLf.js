@@ -1,1 +1,0 @@
-import{N as t,L as h,b as L,R as S,ak as T}from"./CgoPmvko.js";function k(r,i){return r===i||(r==null?void 0:r[T])===i}function x(r={},i,a,c){return t(()=>{var f,s;return h(()=>{f=s,s=[],L(()=>{r!==a(...s)&&(i(r,...s),f&&k(a(...f),r)&&i(null,...f))})}),()=>{S(()=>{s&&k(a(...s),r)&&i(null,...s)})}}),r}export{x as b};
