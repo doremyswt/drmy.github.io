@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -27,6 +29,55 @@ jobs:
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
+
+      - name: Rebuild arch gallery JSONs
+        run: |
+          declare -A FILE_TIMES
+          for f in static/remake/current-site/arch/*.{png,jpg,jpeg,gif,webp}; do
+            [ -f "$f" ] || continue
+            fname=$(basename "$f")
+            ts=$(git log --diff-filter=A --format=%at -- "$f" | tail -1)
+            [ -z "$ts" ] && ts=$(git log --format=%at -- "$f" | tail -1)
+            [ -z "$ts" ] && ts=0
+            FILE_TIMES["$fname"]=$ts
+          done
+          for fname in "${!FILE_TIMES[@]}"; do
+            echo "${FILE_TIMES[$fname]} $fname"
+          done > /tmp/arch_file_times.txt
+
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const archDir = 'static/remake/current-site/arch';
+            const timeData = fs.readFileSync('/tmp/arch_file_times.txt', 'utf8').trim().split('\n');
+            const fileMap = {};
+            for (const line of timeData) {
+              const i = line.indexOf(' ');
+              fileMap[line.slice(i + 1)] = parseInt(line.slice(0, i));
+            }
+            const natCmp = (a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+            const files = Object.keys(fileMap).sort((a, b) => (fileMap[b] - fileMap[a]) || natCmp(a, b));
+            const urls = files.map(f => '/remake/current-site/arch/' + f);
+            fs.writeFileSync(path.join(archDir, 'images.json'), JSON.stringify(urls, null, 2));
+            const hdPath = 'static/json/hard_drive.json';
+            const hd = JSON.parse(fs.readFileSync(hdPath, 'utf8'));
+            for (const key of Object.keys(hd)) if (key.startsWith('drmyArchImg')) delete hd[key];
+            const children = [];
+            files.forEach((file, i) => {
+              const id = 'drmyArchImg' + String(i).padStart(2, '0');
+              const ext = path.extname(file).toLowerCase();
+              children.push(id);
+              hd[id] = {
+                id, type: 'file', name: file, basename: path.basename(file, ext), ext,
+                storage_type: 'remote', url: '/remake/current-site/arch/' + file,
+                parent: 'drmyGalleryFolder01', size: 0, children: [],
+                date_created: 1676799354180, date_modified: 1676799354180,
+                sort_option: 0, sort_order: 0
+              };
+            });
+            hd['drmyGalleryFolder01'].children = children;
+            fs.writeFileSync(hdPath, JSON.stringify(hd, null, 2));
+          "
 
       - name: Build
         run: npm run build
