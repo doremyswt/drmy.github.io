@@ -10,8 +10,8 @@
 
     let id = desktop_folder;
     
-    $: items =  $hardDrive[id] == null ? 
-        [] : 
+    $: items =  $hardDrive?.[id] == null ?
+        [] :
         $hardDrive[id]
         .children
         .map(id => $hardDrive[id])

@@ -10,7 +10,7 @@
    let page = null;
 
    onMount(async () => {
-    load_hard_drive();
+    await load_hard_drive();
     load_wallpaper();
     await load_page('./xp/desktop.svelte');
    })
