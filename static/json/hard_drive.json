@@ -1103,7 +1103,8 @@
       "drmyArchImg19",
       "drmyArchImg20",
       "drmyArchImg21",
-      "drmyArchImg22"
+      "drmyArchImg22",
+      "drmyArchImg23"
     ],
     "date_created": 1676799354180,
     "date_modified": 1676799354180,
@@ -1134,6 +1135,22 @@
   "drmyArchImg00": {
     "id": "drmyArchImg00",
     "type": "file",
+    "name": "fern2_cropped.png",
+    "basename": "fern2_cropped",
+    "ext": ".png",
+    "storage_type": "remote",
+    "url": "/remake/current-site/arch/fern2_cropped.png",
+    "parent": "drmyGalleryFolder01",
+    "size": 0,
+    "children": [],
+    "date_created": 1676799354180,
+    "date_modified": 1676799354180,
+    "sort_option": 0,
+    "sort_order": 0
+  },
+  "drmyArchImg01": {
+    "id": "drmyArchImg01",
+    "type": "file",
     "name": "fern2_sketch.png",
     "basename": "fern2_sketch",
     "ext": ".png",
@@ -1147,8 +1164,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg01": {
-    "id": "drmyArchImg01",
+  "drmyArchImg02": {
+    "id": "drmyArchImg02",
     "type": "file",
     "name": "fern2.png",
     "basename": "fern2",
@@ -1163,8 +1180,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg02": {
-    "id": "drmyArchImg02",
+  "drmyArchImg03": {
+    "id": "drmyArchImg03",
     "type": "file",
     "name": "cupcake.png",
     "basename": "cupcake",
@@ -1179,8 +1196,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg03": {
-    "id": "drmyArchImg03",
+  "drmyArchImg04": {
+    "id": "drmyArchImg04",
     "type": "file",
     "name": "asya1.png",
     "basename": "asya1",
@@ -1195,8 +1212,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg04": {
-    "id": "drmyArchImg04",
+  "drmyArchImg05": {
+    "id": "drmyArchImg05",
     "type": "file",
     "name": "asya2.png",
     "basename": "asya2",
@@ -1211,8 +1228,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg05": {
-    "id": "drmyArchImg05",
+  "drmyArchImg06": {
+    "id": "drmyArchImg06",
     "type": "file",
     "name": "frierenbeach.png",
     "basename": "frierenbeach",
@@ -1227,8 +1244,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg06": {
-    "id": "drmyArchImg06",
+  "drmyArchImg07": {
+    "id": "drmyArchImg07",
     "type": "file",
     "name": "pyrami8k.png",
     "basename": "pyrami8k",
@@ -1243,8 +1260,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg07": {
-    "id": "drmyArchImg07",
+  "drmyArchImg08": {
+    "id": "drmyArchImg08",
     "type": "file",
     "name": "1.png",
     "basename": "1",
@@ -1259,8 +1276,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg08": {
-    "id": "drmyArchImg08",
+  "drmyArchImg09": {
+    "id": "drmyArchImg09",
     "type": "file",
     "name": "2.png",
     "basename": "2",
@@ -1275,8 +1292,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg09": {
-    "id": "drmyArchImg09",
+  "drmyArchImg10": {
+    "id": "drmyArchImg10",
     "type": "file",
     "name": "3.png",
     "basename": "3",
@@ -1291,8 +1308,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg10": {
-    "id": "drmyArchImg10",
+  "drmyArchImg11": {
+    "id": "drmyArchImg11",
     "type": "file",
     "name": "4.png",
     "basename": "4",
@@ -1307,8 +1324,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg11": {
-    "id": "drmyArchImg11",
+  "drmyArchImg12": {
+    "id": "drmyArchImg12",
     "type": "file",
     "name": "5.png",
     "basename": "5",
@@ -1323,8 +1340,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg12": {
-    "id": "drmyArchImg12",
+  "drmyArchImg13": {
+    "id": "drmyArchImg13",
     "type": "file",
     "name": "6.png",
     "basename": "6",
@@ -1339,8 +1356,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg13": {
-    "id": "drmyArchImg13",
+  "drmyArchImg14": {
+    "id": "drmyArchImg14",
     "type": "file",
     "name": "7.png",
     "basename": "7",
@@ -1355,8 +1372,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg14": {
-    "id": "drmyArchImg14",
+  "drmyArchImg15": {
+    "id": "drmyArchImg15",
     "type": "file",
     "name": "8.png",
     "basename": "8",
@@ -1371,8 +1388,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg15": {
-    "id": "drmyArchImg15",
+  "drmyArchImg16": {
+    "id": "drmyArchImg16",
     "type": "file",
     "name": "9.png",
     "basename": "9",
@@ -1387,8 +1404,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg16": {
-    "id": "drmyArchImg16",
+  "drmyArchImg17": {
+    "id": "drmyArchImg17",
     "type": "file",
     "name": "10.png",
     "basename": "10",
@@ -1403,8 +1420,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg17": {
-    "id": "drmyArchImg17",
+  "drmyArchImg18": {
+    "id": "drmyArchImg18",
     "type": "file",
     "name": "11.png",
     "basename": "11",
@@ -1419,8 +1436,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg18": {
-    "id": "drmyArchImg18",
+  "drmyArchImg19": {
+    "id": "drmyArchImg19",
     "type": "file",
     "name": "12.png",
     "basename": "12",
@@ -1435,8 +1452,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg19": {
-    "id": "drmyArchImg19",
+  "drmyArchImg20": {
+    "id": "drmyArchImg20",
     "type": "file",
     "name": "13.png",
     "basename": "13",
@@ -1451,8 +1468,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg20": {
-    "id": "drmyArchImg20",
+  "drmyArchImg21": {
+    "id": "drmyArchImg21",
     "type": "file",
     "name": "14.png",
     "basename": "14",
@@ -1467,8 +1484,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg21": {
-    "id": "drmyArchImg21",
+  "drmyArchImg22": {
+    "id": "drmyArchImg22",
     "type": "file",
     "name": "15.png",
     "basename": "15",
@@ -1483,8 +1500,8 @@
     "sort_option": 0,
     "sort_order": 0
   },
-  "drmyArchImg22": {
-    "id": "drmyArchImg22",
+  "drmyArchImg23": {
+    "id": "drmyArchImg23",
     "type": "file",
     "name": "16.png",
     "basename": "16",
