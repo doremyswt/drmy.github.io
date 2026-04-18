@@ -1,0 +1,1 @@
+import{f as r,b as t,h as i}from"./BlmnAMwX.js";import{g as o}from"./DUpt28KJ.js";import"./9-PsTJc7.js";let u=({type:m,originator:a})=>({required_width:200,required_height:101,menu:[[{name:"Open",action:()=>{let e=o(i)[r];t.set({path:"./programs/my_computer.svelte",fs_item:e})},font:"bold"}],[{name:"Properties",action:()=>{}}]]});export{u as make};
