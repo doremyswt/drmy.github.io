@@ -108,8 +108,29 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Trigger deploy workflow
+      - name: Patch gh-pages directly (fast path)
         if: steps.commit.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh workflow run deploy.yml --ref main
+        run: |
+          # Stage the files we want to push to gh-pages
+          mkdir -p /tmp/ghp-stage/json /tmp/ghp-stage/remake/current-site/arch
+          cp static/json/hard_drive.json /tmp/ghp-stage/json/hard_drive.json
+          cp static/remake/current-site/arch/images.json /tmp/ghp-stage/remake/current-site/arch/images.json
+          cp static/remake/current-site/arch/*.png static/remake/current-site/arch/*.jpg static/remake/current-site/arch/*.jpeg static/remake/current-site/arch/*.gif static/remake/current-site/arch/*.webp /tmp/ghp-stage/remake/current-site/arch/ 2>/dev/null || true
+
+          # Check out gh-pages in a worktree and overlay staged files
+          git worktree add /tmp/ghp origin/gh-pages
+          cd /tmp/ghp
+
+          # Replace arch folder entirely so deletions propagate
+          rm -rf remake/current-site/arch
+          mkdir -p remake/current-site/arch json
+          cp -r /tmp/ghp-stage/remake/current-site/arch/. remake/current-site/arch/
+          cp /tmp/ghp-stage/json/hard_drive.json json/hard_drive.json
+
+          git add -A
+          if git diff --cached --quiet; then
+            echo "nothing to patch on gh-pages"
+          else
+            git commit -m "patch: sync arch gallery"
+            git push origin HEAD:gh-pages
+          fi
