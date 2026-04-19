@@ -123,6 +123,48 @@
         popups = popups.filter(p => p.id !== id);
     }
 
+    // Build a selector for an element inside the popup body so the iframe can find
+    // the matching element in its detached ghost and dispatch the event.
+    function popup_selector_for(el, root) {
+        let cur = el;
+        while (cur && cur !== root) {
+            const attrs = cur.attributes ? Array.from(cur.attributes) : [];
+            const data = attrs.find(a => a.name.startsWith('data-'));
+            if (data) {
+                return data.value ? `[${data.name}="${data.value}"]` : `[${data.name}]`;
+            }
+            if (cur.className && typeof cur.className === 'string') {
+                const cls = cur.className.split(/\s+/).filter(Boolean);
+                const pick = cls.find(c => c.startsWith('popup-') || c.startsWith('bonzi-'));
+                if (pick) return '.' + pick;
+            }
+            if (cur.tagName === 'BUTTON' || cur.tagName === 'A' || cur.tagName === 'INPUT') {
+                // fallback: index among siblings of same tag
+                const parent = cur.parentElement;
+                if (parent) {
+                    const sibs = Array.from(parent.children).filter(s => s.tagName === cur.tagName);
+                    const idx = sibs.indexOf(cur);
+                    return cur.tagName.toLowerCase() + ':nth-of-type(' + (idx + 1) + ')';
+                }
+            }
+            cur = cur.parentElement;
+        }
+        return null;
+    }
+
+    function relay_popup_event(e, popup_id) {
+        const iframe = document.querySelector('iframe');
+        if (!iframe || !iframe.contentWindow) return;
+        const root = e.currentTarget;
+        const target = e.target;
+        const selector = popup_selector_for(target, root);
+        if (!selector) return;
+        const msg = { type: 'forum-popup-event', id: popup_id, eventType: e.type, selector };
+        if (e.type === 'input' || e.type === 'change') msg.value = target.value;
+        if (e.type === 'keydown') msg.key = e.key;
+        iframe.contentWindow.postMessage(msg, '*');
+    }
+
     let drag_popup = null;
     let drag_ox = 0, drag_oy = 0;
 
@@ -407,7 +449,14 @@
         <span>{popup.title || 'Alert'}</span>
         <span class="virus-popup-close" on:click={() => close_popup(popup.id)}>[x]</span>
     </div>
-    <div class="virus-popup-body">
+    <div
+        role="presentation"
+        class="virus-popup-body"
+        on:click={(e) => relay_popup_event(e, popup.id)}
+        on:input={(e) => relay_popup_event(e, popup.id)}
+        on:change={(e) => relay_popup_event(e, popup.id)}
+        on:keydown={(e) => relay_popup_event(e, popup.id)}
+    >
         {#if popup.opts.html}
             {@html popup.opts.html}
         {:else}
