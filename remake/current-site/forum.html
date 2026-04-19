@@ -2329,18 +2329,37 @@ const _PARENT_DOC=document;
 // The parent listens for 'forum-popup-spawn' messages and renders them.
 let _popupBridgeId=0;
 const _popupBridgeCallbacks={}; // id → {cleanup,onClose}
+const _ghostPopups={}; // id → detached DOM element holding real handlers
 
 if(_IN_IFRAME){
   window.addEventListener('message',function(ev){
     if(ev.source!==window.parent)return;
     const d=ev.data;
-    if(!d||d.type!=='forum-popup-ack')return;
-    // Parent tells us a popup was closed — fire local callbacks.
-    const cb=_popupBridgeCallbacks[d.id];
-    if(cb){
-      if(cb.cleanup)cb.cleanup();
-      if(cb.onClose)cb.onClose();
-      delete _popupBridgeCallbacks[d.id];
+    if(!d)return;
+    if(d.type==='forum-popup-ack'){
+      const cb=_popupBridgeCallbacks[d.id];
+      if(cb){
+        if(cb.cleanup)cb.cleanup();
+        if(cb.onClose)cb.onClose();
+        delete _popupBridgeCallbacks[d.id];
+      }
+      delete _ghostPopups[d.id];
+    } else if(d.type==='forum-popup-event'){
+      const ghost=_ghostPopups[d.id];
+      if(!ghost)return;
+      let target=null;
+      if(d.selector){try{target=ghost.querySelector(d.selector);}catch{}}
+      if(!target)return;
+      if(d.eventType==='click'){
+        target.click();
+      } else if(d.eventType==='input'||d.eventType==='change'){
+        if('value' in target){
+          target.value=d.value==null?'':d.value;
+          target.dispatchEvent(new Event(d.eventType,{bubbles:true}));
+        }
+      } else if(d.eventType==='keydown'){
+        target.dispatchEvent(new KeyboardEvent('keydown',{key:d.key,bubbles:true}));
+      }
     }
   });
 }
@@ -2365,8 +2384,33 @@ function spawnRetroWindow(title,message,source,options){
     const allowed=['variant','headColor','borderColor','glitchShift','width','html',
                    'showSource','projectToViewport','centered','closeOnBody','autoCloseMs','className'];
     for(const k of allowed){if(opts[k]!=null)safeOpts[k]=opts[k];}
+    // Build a detached ghost with same DOM structure so callers can querySelector
+    // and attach handlers. Parent relays click/input events to these handlers via
+    // forum-popup-event messages.
+    const ghost=document.createElement('div');
+    ghost.className='virus-popup'+(opts.variant==='info'?' retro-info':'')+(opts.className?' '+opts.className:'');
+    const bodyHtml=opts.html||(message+(opts.showSource===false?'':'<small>source: '+source+'</small>'));
+    ghost.innerHTML=
+      '<div class="virus-popup-head"><span>'+title+'</span><span class="virus-popup-close">[x]</span></div>'+
+      '<div class="virus-popup-body">'+bodyHtml+'</div>';
+    _ghostPopups[id]=ghost;
+    // Close hookup: clicking [x] posts close upstream.
+    ghost.querySelector('.virus-popup-close').addEventListener('click',function(){
+      window.parent.postMessage({type:'forum-popup-close',id},'*');
+    });
+    if(opts.closeOnBody){
+      ghost.querySelector('.virus-popup-body').addEventListener('click',function(){
+        window.parent.postMessage({type:'forum-popup-close',id},'*');
+      });
+    }
+    if(opts.autoCloseMs){
+      setTimeout(function(){window.parent.postMessage({type:'forum-popup-close',id},'*');},opts.autoCloseMs);
+    }
     window.parent.postMessage({type:'forum-popup-spawn',id,title,message,source,opts:safeOpts},'*');
-    return {remove:function(){window.parent.postMessage({type:'forum-popup-close',id},'*');}};
+    // Augment ghost with a remove() so callers that call popup.remove() still work.
+    const _origRemove=ghost.remove.bind(ghost);
+    ghost.remove=function(){window.parent.postMessage({type:'forum-popup-close',id},'*');_origRemove();};
+    return ghost;
   }
   const opts=options||{};
   const pop=document.createElement('div');
